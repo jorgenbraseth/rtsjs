@@ -4,10 +4,8 @@ import Sprite from './Sprite'
 import Image from '../../images/grass.jpg'
 
 export default class Rock extends Sprite {
-  constructor(x,y){
-    super();
-    this.pos.x = x;
-    this.pos.y = y;
+  constructor(game,coords=[0,0]){
+    super(game, coords);
     this.width = GRID_SIZE;
     this.color = "black";
 

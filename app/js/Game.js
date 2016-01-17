@@ -1,57 +1,72 @@
-import ClickMonitor from './ClickMonitor'
+import UserInput from './UserInput'
 
-import DummyUnit from './sprites/DummyUnit'
+import WoodenBall from './sprites/WoodenBall'
 import Rock from './sprites/Rock'
 import Grass from './sprites/Grass'
 
+import { toGridPos } from './Utils'
 
-import { LAYER_BACK, LAYER_BACKGROUND, LAYER_FRONT, GRID_SIZE } from './constants/GameConstants.js'
+import { world } from './Maps'
+
+import { LAYER_GROUND, LAYER_MAP, LAYER_AIR, GRID_SIZE, KEY_BINDS } from './constants/GameConstants.js'
+
+import '../images/sword.png'
 
 export default class Game {
 
   constructor(canvas){
     this.canvas = canvas;
     this.screen = canvas.getContext('2d');
-    this.clickMonitor = new ClickMonitor(canvas);
+    this.userInput = new UserInput(canvas);
 
-    this.clickMonitor.onLeftClick(function(x,y){this.gridClicked(Math.floor(x/GRID_SIZE),Math.floor(y/GRID_SIZE))}.bind(this));
+    this.userInput.onLeftClick(
+      function(x,y){
+        this.gridLeftClicked(toGridPos(x,y))
+      }.bind(this)
+    );
+
+    this.userInput.onRightClick(
+      function(x,y){
+        this.gridRightClicked(toGridPos(x,y))
+      }.bind(this)
+    );
+
+    this.userInput.onKey(KEY_BINDS.ATTACK, this.enableAttackMode.bind(this));
+    this.userInput.onKey(KEY_BINDS.MOVE, this.enableMoveMode.bind(this));
     this.init();
   }
 
+
+  enableAttackMode(){
+    this.actionMode = 'ATTACK';
+    console.log(this.actionMode);
+  }
+  enableMoveMode(){
+    this.actionMode = 'MOVE';
+    console.log(this.actionMode);
+  }
+
+
+
   init(){
     this.layers = {};
-    this.layers[LAYER_BACKGROUND] = [];
-    this.layers[LAYER_BACK] = [];
-    this.layers[LAYER_FRONT] = [];
-
-    var world = [
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,1,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,1,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,1,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,1,0,0,0,1,0,0,0,0,0],
-      [0,0,0,0,0,1,0,0,0,1,0,0,0,0,0],
-      [0,0,0,0,0,1,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
-      [0,0,0,0,0,1,0,0,0,1,0,0,0,0,0],
-      [1,0,0,0,0,1,0,1,1,0,1,0,0,0,0],
-      [0,1,0,0,0,1,1,0,0,0,1,0,0,0,0],
-      [0,0,0,0,0,1,0,0,0,0,1,0,0,0,0],
-      [0,1,1,1,1,1,0,0,0,0,1,0,0,0,0],
-      [0,0,0,0,0,1,0,0,0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-    ];
+    this.layers[LAYER_MAP] = [];
+    this.layers[LAYER_GROUND] = [];
+    this.layers[LAYER_AIR] = [];
 
     this.world = world;
 
-    this.addSprite(LAYER_FRONT, new DummyUnit(this,0,0));
+    var firstUnit = new WoodenBall(this,[0,0]);
+    firstUnit.select();
+    this.selectedSprite = firstUnit;
+      this.addSprite(LAYER_AIR, firstUnit);
 
     for (var x = 0; x < world.length; x++) {
       for (var y = 0; y < world[x].length; y++) {
         if(world[x][y] === 1){
-          this.addSprite(LAYER_BACK, new Rock(x,y));
+          this.addSprite(LAYER_GROUND, new Rock(this, [x,y]));
         }
-        this.addSprite(LAYER_BACKGROUND, new Grass(x,y));
+        this.addSprite(LAYER_MAP, new Grass(this, [x,y]));
       }
     }
 
@@ -64,33 +79,61 @@ export default class Game {
       }
     }
 
-    this.tickLayer(LAYER_BACKGROUND);
-    this.tickLayer(LAYER_BACK);
-    this.tickLayer(LAYER_FRONT);
+    this.tickLayer(LAYER_MAP);
+    this.tickLayer(LAYER_GROUND);
+    this.tickLayer(LAYER_AIR);
   }
 
-  gridClicked(x,y){
-    var currentSelected = this.selectedSprite;
-    this.selectedSprite = undefined;
-    if(currentSelected){
-      currentSelected.unselect();
-    }
-
-    for (var i = 0; i < this.layers[LAYER_FRONT].length; i++) {
-      var sprite = this.layers[LAYER_FRONT][i];
+  spriteAt(coords){
+    var x = coords[0];
+    var y = coords[1];
+    for (var i = this.layers[LAYER_AIR].length -1; i >= 0; i--) {
+      var sprite = this.layers[LAYER_AIR][i];
       if(sprite.pos.x == x && sprite.pos.y == y){
-
-        this.selectedSprite = sprite;
-        sprite.select();
+        return sprite;
+      }
+    }
+    for (var i = this.layers[LAYER_GROUND].length -1; i >= 0; i--) {
+      var sprite = this.layers[LAYER_GROUND][i];
+      if(sprite.pos.x == x && sprite.pos.y == y){
+        return sprite;
       }
     }
 
-    if(this.selectedSprite == undefined){
-        this.addSprite(LAYER_FRONT, new DummyUnit(this, x, y));
-    }
-
+    return undefined;
   }
 
+  clearSelection(){
+    if(this.selectedSprite){
+      this.selectedSprite.unselect();
+    }
+    this.selectedSprite = undefined;
+  }
+  selectSprite(sprite){
+    this.clearSelection();
+    this.selectedSprite = sprite;
+    sprite.select();
+  }
+
+  gridLeftClicked(coords){
+    var clickedSprite = this.spriteAt(coords);
+
+    if(clickedSprite){
+      this.selectSprite(clickedSprite);
+    }else{
+      this.addSprite(LAYER_AIR, new WoodenBall(this, coords));
+    }
+  }
+
+  gridRightClicked(coords){
+    var clickedSprite = this.spriteAt(coords);
+
+    if(clickedSprite){
+      this.selectedSprite.attackTarget(clickedSprite);
+    }else{
+      this.selectedSprite.moveTo(coords);
+    }
+  }
   tickLayer(layer){
     var sprites = this.layers[layer];
 
@@ -123,31 +166,10 @@ export default class Game {
 
    // this.drawGrid();
 
-    this.drawLayer(this.layers[LAYER_BACKGROUND]);
-    this.drawLayer(this.layers[LAYER_BACK]);
-    this.drawLayer(this.layers[LAYER_FRONT]);
+    this.drawLayer(this.layers[LAYER_MAP]);
+    this.drawLayer(this.layers[LAYER_GROUND]);
+    this.drawLayer(this.layers[LAYER_AIR]);
 
-  }
-
-  drawGrid(){
-    this.screen.strokeStyle = "rgba(0,0,250,0.2)";
-    this.screen.lineWidth = 1;
-    for(var x=0;x<this.canvas.width;x+=GRID_SIZE){
-        this.screen.beginPath();
-        this.screen.lineTo(x,0);
-        this.screen.lineTo(x,this.canvas.height);
-        this.screen.closePath();
-      this.screen.stroke();
-    }
-
-    for(var y=0;y<this.canvas.height;y+=GRID_SIZE){
-
-      this.screen.beginPath();
-      this.screen.lineTo(0,y);
-      this.screen.lineTo(this.canvas.width,y);
-      this.screen.closePath();
-      this.screen.stroke();
-    }
   }
 
   addSprite(layer, sprite){
@@ -155,11 +177,10 @@ export default class Game {
   }
 
   run(){
-
     setInterval(function(){
       this.tick();
       this.draw();
-    }.bind(this),1000/10);
+    }.bind(this),1000/60);
 
   }
 }

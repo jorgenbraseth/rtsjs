@@ -2,9 +2,10 @@ import { GRID_SIZE } from '../constants/GameConstants.js'
 
 export default class Sprite {
 
-  constructor(game, x=1, y=1){
+  constructor(game, coords=[0,0]){
     this.game = game;
-    this.pos = {x: x, y: y};
+    this.pos = {x: coords[0], y: coords[1]};
+
     let red = Math.floor(Math.random() * 150)+100;
     let green = Math.floor(Math.random() * 150)+100;
     let blue = Math.floor(Math.random() * 150)+100;
