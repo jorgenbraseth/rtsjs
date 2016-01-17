@@ -9,7 +9,7 @@ export default class WoodenBall extends Unit {
   constructor(game, coords=[0,0]){
     super(game,coords,100,.3);
 
-    this.moveCost = 0;
+    this.moveCost = 1;
     this.movingTo = [this.pos.x,this.pos.y];
     this.world = game.world;
 

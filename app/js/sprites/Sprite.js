@@ -4,7 +4,16 @@ export default class Sprite {
 
   constructor(game, coords=[0,0]){
     this.game = game;
-    this.pos = {x: coords[0], y: coords[1]};
+    this.pos = {
+      x: coords[0],
+      y: coords[1],
+      centerPixelX: function(){
+        return this.x * GRID_SIZE + GRID_SIZE/2;
+      },
+      centerPixelY: function(){
+        return this.y * GRID_SIZE + GRID_SIZE/2;
+      }
+    };
 
     let red = Math.floor(Math.random() * 150)+100;
     let green = Math.floor(Math.random() * 150)+100;

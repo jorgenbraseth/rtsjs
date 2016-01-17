@@ -9,9 +9,10 @@ export default class Unit extends Sprite {
     super(game,coords);
     this.hp = hp;
     this.initialHp = hp;
-    this.attackRange = 1.5;
+    this.attackRange = 2.5;
     this.attackDamage = attackDamage;
     this.dead = false;
+    this.moveCost = 1;
   }
 
   moveTo(coords){
@@ -34,6 +35,12 @@ export default class Unit extends Sprite {
   }
 
   tick(){
+    this.firedThisRound = false;
+    if(this.targetOfAttack && this.targetOfAttack.dead == true){
+      this.targetOfAttack = undefined;
+      this.moveTo([this.pos.x,this.pos.y]);
+    }
+
     if(this.targetOfAttack && this.inAttackRange(this.targetOfAttack)){
       this.fireAt(this.targetOfAttack);
       if(this.targetOfAttack.dead){
@@ -66,6 +73,7 @@ export default class Unit extends Sprite {
 
   fireAt(unit){
     unit.takeDamage(this.attackDamage);
+    this.firedThisRound = true;
   }
 
   die(){
@@ -76,6 +84,14 @@ export default class Unit extends Sprite {
 
   draw(screen){
     super.draw(screen);
+
+    if(this.firedThisRound && this.targetOfAttack){
+      screen.beginPath();
+      screen.moveTo(this.pos.centerPixelX(),this.pos.centerPixelY());
+      screen.lineTo(this.targetOfAttack.pos.centerPixelX(),this.targetOfAttack.pos.centerPixelY());
+      screen.closePath();
+      screen.stroke();
+    }
   }
   drawHp(screen){
     screen.fillStyle = "rgba(0,250,0,1)";
