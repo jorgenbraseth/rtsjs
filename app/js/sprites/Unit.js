@@ -1,16 +1,21 @@
 import Sprite from './Sprite'
 import AStar from '../AStar'
+import { GRID_SIZE } from '../constants/GameConstants.js'
 
 
 export default class Unit extends Sprite {
 
-  constructor(game, coords=[0,0], hp){
+  constructor(game, coords=[0,0], hp, attackDamage=0){
     super(game,coords);
     this.hp = hp;
+    this.initialHp = hp;
     this.attackRange = 1.5;
+    this.attackDamage = attackDamage;
+    this.dead = false;
   }
 
   moveTo(coords){
+    this.targetOfAttack = undefined;
     this.movingTo = coords;
   }
 
@@ -29,16 +34,64 @@ export default class Unit extends Sprite {
   }
 
   tick(){
-    this.moveTowardsTarget();
+    if(this.targetOfAttack && this.inAttackRange(this.targetOfAttack)){
+      this.fireAt(this.targetOfAttack);
+      if(this.targetOfAttack.dead){
+        this.targetOfAttack = undefined;
+      }
+    }else{
+      if(this.targetOfAttack){
+        this.movingTo = [this.targetOfAttack.pos.x, this.targetOfAttack.pos.y];
+        this.calculatePath();
+      }
+      this.moveTowardsTarget();
+    }
+  }
 
+  inAttackRange(unit){
+    var posOfTarget = unit.pos;
+    var dx = Math.abs(this.pos.x - posOfTarget.x);
+    var dy = Math.abs(this.pos.y - posOfTarget.y);
 
+    var rangeToTarget = Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
+    return rangeToTarget <= this.attackRange;
+  }
+
+  takeDamage(damage){
+    this.hp -= damage;
+    if(this.hp <= 0){
+      this.die();
+    }
+  }
+
+  fireAt(unit){
+    unit.takeDamage(this.attackDamage);
+  }
+
+  die(){
+    console.log("I'm dead!");
+    this.dead = true;
+    this.game.removeSprite(this);
+  }
+
+  draw(screen){
+    super.draw(screen);
+  }
+  drawHp(screen){
+    screen.fillStyle = "rgba(0,250,0,1)";
+    screen.fillRect(
+      this.pos.x*GRID_SIZE+3,
+      this.pos.y*GRID_SIZE+3,
+      (GRID_SIZE-6)*(this.hp/this.initialHp),
+      5
+    )
   }
 
   moveTowardsTarget() {
     this.moving = !(this.pos.x === this.targetX && this.pos.y === this.targetY);
     if(!this.moving){
       this.calculatePath();
-      var nextPos = this.moveQueue.shift();
+      this.moveQueue.shift();
     }
 
     if(!this.moving){
@@ -51,25 +104,27 @@ export default class Unit extends Sprite {
       this.targetY = nextPos.y;
     }
 
-    let distX = this.targetX - this.pos.x;
-    let distY = this.targetY - this.pos.y;
-    let dist = Math.sqrt(distX*distX + distY*distY);
+    if(this.game.positionFree(this.targetX,this.targetY)){
+      let distX = this.targetX - this.pos.x;
+      let distY = this.targetY - this.pos.y;
+      let dist = Math.sqrt(distX*distX + distY*distY);
 
-    if(dist>0) {
-      let sinA = distY / dist;
-      let cosA = distX / dist;
+      if(dist>0) {
+        let sinA = distY / dist;
+        let cosA = distX / dist;
 
-      this.dx = cosA * Math.min(this.speed,dist);
-      this.dy = sinA * Math.min(this.speed,dist);
+        this.dx = cosA * Math.min(this.speed,dist);
+        this.dy = sinA * Math.min(this.speed,dist);
 
-      this.pos.x += this.dx;
-      this.pos.y += this.dy;
+        this.pos.x += this.dx;
+        this.pos.y += this.dy;
+      }
     }
+
+
   }
 
   attackTarget(unit) {
-    console.log("Attacking: "+unit.constructor.name+" @ "+unit.pos.x+","+unit.pos.y);
-
     this.targetOfAttack = unit;
   }
 }

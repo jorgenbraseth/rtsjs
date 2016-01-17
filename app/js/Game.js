@@ -134,6 +134,26 @@ export default class Game {
       this.selectedSprite.moveTo(coords);
     }
   }
+
+  removeSprite(sprite){
+    this.removeSpriteFromLayer(this.layers[LAYER_AIR],sprite);
+    this.removeSpriteFromLayer(this.layers[LAYER_GROUND],sprite);
+
+  }
+
+  positionFree(x,y){
+    return this.spriteAt([x,y]) === undefined;
+  }
+
+  removeSpriteFromLayer(layer, sprite){
+    for (var i = 0; i < layer.length; i++) {
+      var spr = layer[i];
+      if(spr == sprite){
+        layer.splice(i,1);
+      }
+    }
+  }
+
   tickLayer(layer){
     var sprites = this.layers[layer];
 
