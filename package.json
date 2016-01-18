@@ -22,6 +22,5 @@
   },
   "scripts": {
     "start": "webpack-dev-server"
-    "build-and-serve": ""
   }
 }
