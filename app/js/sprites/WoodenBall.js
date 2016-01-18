@@ -57,12 +57,23 @@ export default class WoodenBall extends Unit {
 
   }
   drawMoveQueue(screen){
+    var prevPos = this.pos;
     for (var i = 0; i < this.moveQueue.length; i++) {
       var pos = this.moveQueue[i];
+      screen.fillStyle = "rgba(0,5,0,0.5";
       screen.beginPath();
       screen.arc(this.grid2draw(pos.x),this.grid2draw(pos.y),3,0,Math.PI*2);
       screen.closePath();
       screen.fill();
+
+      screen.strokeStyle = "rgba(0,50,0,0.7)";
+      screen.beginPath();
+      screen.moveTo(this.grid2draw(prevPos.x), this.grid2draw(prevPos.y));
+      screen.lineTo(this.grid2draw(pos.x), this.grid2draw(pos.y));
+      screen.closePath();
+      screen.stroke();
+
+      prevPos = pos;
     }
 
   }
