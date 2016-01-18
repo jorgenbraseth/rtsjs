@@ -6,7 +6,7 @@ import Image from '../../images/rock-tiles.png'
 export default class Rock extends Sprite {
   constructor(game, coords=[0,0]){
     super(game, coords);
-    this.moveCost = 1;
+    this.moveCost = 0;
     this.width = GRID_SIZE;
     this.color = "black";
 

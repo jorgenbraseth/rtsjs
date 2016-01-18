@@ -6,7 +6,7 @@ import Grass from './sprites/Grass'
 
 import { toGridPos } from './Utils'
 
-import { world } from './Maps'
+import { map, map2 } from './Maps'
 
 import { LAYER_GROUND, LAYER_MAP, LAYER_AIR, GRID_SIZE, KEY_BINDS } from './constants/GameConstants.js'
 
@@ -54,16 +54,16 @@ export default class Game {
     this.layers[LAYER_GROUND] = [];
     this.layers[LAYER_AIR] = [];
 
-    this.world = world;
+    this.world = map2;
 
     var firstUnit = new WoodenBall(this,[0,0]);
     firstUnit.select();
     this.selectedSprite = firstUnit;
-      this.addSprite(LAYER_AIR, firstUnit);
+      this.addSprite(LAYER_GROUND, firstUnit);
 
-    for (var x = 0; x < world.length; x++) {
-      for (var y = 0; y < world[x].length; y++) {
-        if(world[x][y] === 1){
+    for (var x = 0; x < this.world.length; x++) {
+      for (var y = 0; y < this.world[x].length; y++) {
+        if(this.world[x][y] === 0){
           this.addSprite(LAYER_GROUND, new Rock(this, [x,y]));
         }
         this.addSprite(LAYER_MAP, new Grass(this, [x,y]));
@@ -73,12 +73,7 @@ export default class Game {
   }
 
   tick(){
-    for (var x = 0; x < this.world.length; x++) {
-      for (var y = 0; y < this.world[x].length; y++) {
-        this.world[x][y] = 0;
-      }
-    }
-
+    this.updateMapCosts();
     this.tickLayer(LAYER_MAP);
     this.tickLayer(LAYER_GROUND);
     this.tickLayer(LAYER_AIR);
@@ -121,7 +116,7 @@ export default class Game {
     if(clickedSprite){
       this.selectSprite(clickedSprite);
     }else{
-      this.addSprite(LAYER_AIR, new WoodenBall(this, coords));
+      this.addSprite(LAYER_GROUND, new WoodenBall(this, coords));
     }
   }
 
@@ -154,18 +149,28 @@ export default class Game {
     }
   }
 
+  updateMapCosts(){
+    for (var x = 0; x < this.world.length; x++) {
+      for (var y = 0; y < this.world[x].length; y++) {
+        this.world[x][y] = 1;
+      }
+    }
+
+    var sprites = this.layers[LAYER_GROUND];
+    for (var i = 0; i < sprites.length; i++) {
+      var sprite = sprites[i];
+      this.world[sprite.targetX][sprite.targetY] = sprite.moveCost;
+    }
+
+
+  }
+
   tickLayer(layer){
     var sprites = this.layers[layer];
 
     for (var i = 0; i < sprites.length; i++) {
       var sprite = sprites[i];
-      this.world[Math.round(sprite.pos.x)][Math.round(sprite.pos.y)] += sprite.moveCost;
-    }
-
-    for (var i = 0; i < sprites.length; i++) {
-      var sprite = sprites[i];
       sprite.tick(this.world);
-      this.world[Math.round(sprite.pos.x)][Math.round(sprite.pos.y)] += sprite.moveCost;
     }
   }
 

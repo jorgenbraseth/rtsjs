@@ -19,8 +19,8 @@ module.exports = {
   // Note that this A-star implementation expects the world array to be square:
   // it must have equal height and width. If your game world is rectangular,
   // just fill the array with dummy values to pad the empty space.
-  var worldWidth = world[0].length;
-  var worldHeight = world.length;
+  var worldWidth = world.length;
+  var worldHeight = world[0].length;
   var worldSize = worldWidth * worldHeight;
 
   // which heuristic should we use?
@@ -142,12 +142,12 @@ module.exports = {
   function canWalkHere(x, y) {
     return ((world[x] != null) &&
     (world[x][y] != null) &&
-    (world[x][y] <= maxWalkableTileNum));
-  };
+    (world[x][y] > 0 ));
+  }
 
   // Node function, returns a new object with Node properties
   // Used in the calculatePath function to store route costs, etc.
-  function Node(Parent, Point) {
+  function Node(Parent, Point, cost=0) {
     var newNode = {
       // pointer to another Node object
       Parent: Parent,
@@ -158,10 +158,10 @@ module.exports = {
       y: Point.y,
       // the heuristic estimated cost
       // of an entire path using this node
-      f: 0,
+      f: cost,
       // the distanceFunction cost to get
       // from the starting point to this node
-      g: 0
+      g: cost
     };
 
     return newNode;
@@ -190,7 +190,7 @@ module.exports = {
     var length, max, min, i, j;
     // iterate through the open list until none are left
     while (length = Open.length) {
-      max = worldSize;
+      max = worldSize*999999;
       min = -1;
       for (i = 0; i < length; i++) {
         if (Open[i].f < max) {
@@ -219,10 +219,10 @@ module.exports = {
         myNeighbours = Neighbours(myNode.x, myNode.y);
         // test each one that hasn't been tried already
         for (i = 0, j = myNeighbours.length; i < j; i++) {
-          myPath = Node(myNode, myNeighbours[i]);
+          myPath = Node(myNode, myNeighbours[i], world[myNeighbours[i].x][myNeighbours[i].y]);
           if (!AStar[myPath.value]) {
             // estimated cost of this particular route so far
-            myPath.g = myNode.g + distanceFunction(myNeighbours[i], myNode);
+            myPath.g += myNode.g + distanceFunction(myNeighbours[i], myNode);
             // estimated cost of entire guessed route to the destination
             myPath.f = myPath.g + distanceFunction(myNeighbours[i], mypathEnd);
             // remember this new path for testing above
@@ -245,4 +245,4 @@ module.exports = {
 
 } // end of findPath() function
 
-}
+};

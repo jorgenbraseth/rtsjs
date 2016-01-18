@@ -7,9 +7,10 @@ import Image from '../../images/wood-tiles.png';
 export default class WoodenBall extends Unit {
 
   constructor(game, coords=[0,0]){
-    super(game,coords,100,.3);
+    super(game,coords,100,1);
 
-    this.moveCost = 1;
+    this.width=25;
+    this.moveCost = 10000;
     this.movingTo = [this.pos.x,this.pos.y];
     this.world = game.world;
 
@@ -50,7 +51,7 @@ export default class WoodenBall extends Unit {
     screen.beginPath();
     screen.arc(centerX,centerY,this.width/2, 0,Math.PI*2);
     screen.closePath();
-    screen.fill();
+    screen.stroke();
 
     this.drawHp(screen);
 

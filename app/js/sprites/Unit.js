@@ -12,12 +12,15 @@ export default class Unit extends Sprite {
     this.attackRange = 2.5;
     this.attackDamage = attackDamage;
     this.dead = false;
-    this.moveCost = 1;
+    this.moveCost = 0;
   }
 
   moveTo(coords){
     this.targetOfAttack = undefined;
     this.movingTo = coords;
+    this.targetX = this.pos.x;
+    this.targetY = this.pos.y;
+    this.calculatePath();
   }
 
   calculatePath(){
@@ -37,6 +40,7 @@ export default class Unit extends Sprite {
   tick(){
     this.firedThisRound = false;
     if(this.targetOfAttack && this.targetOfAttack.dead == true){
+      console.log(1);
       this.targetOfAttack = undefined;
       this.moveTo([this.pos.x,this.pos.y]);
     }
@@ -94,21 +98,27 @@ export default class Unit extends Sprite {
     }
   }
   drawHp(screen){
-    screen.fillStyle = "rgba(0,250,0,1)";
+    var hpPercent = (this.hp/this.initialHp);
+    if(hpPercent > 0.8){
+      screen.fillStyle = "rgba(0,250,0,1)";
+    }else if(hpPercent>.25){
+      screen.fillStyle = "rgba(250,250,0,1)";
+    }else{
+      screen.fillStyle = "rgba(250,0,0,1)";
+    }
     screen.fillRect(
       this.pos.x*GRID_SIZE+3,
       this.pos.y*GRID_SIZE+3,
-      (GRID_SIZE-6)*(this.hp/this.initialHp),
+      (GRID_SIZE-6)*hpPercent,
       5
     )
   }
 
   moveTowardsTarget() {
     this.moving = !(this.pos.x === this.targetX && this.pos.y === this.targetY);
-    if(!this.moving){
-      this.calculatePath();
-      this.moveQueue.shift();
-    }
+
+    this.calculatePath();
+    this.moveQueue.shift();
 
     if(!this.moving){
       this.moveQueue.shift();
@@ -118,6 +128,12 @@ export default class Unit extends Sprite {
       let nextPos = this.moveQueue.shift();
       this.targetX = nextPos.x;
       this.targetY = nextPos.y;
+    }
+
+    if(!this.game.positionFree(this.targetX,this.targetY)){
+      this.targetX = this.pos.x;
+      this.targetY = this.pos.y;
+      this.calculatePath();
     }
 
     if(this.game.positionFree(this.targetX,this.targetY)){
@@ -141,6 +157,8 @@ export default class Unit extends Sprite {
   }
 
   attackTarget(unit) {
+    this.targetX = this.pos.x;
+    this.targetY = this.pos.y;
     this.targetOfAttack = unit;
   }
 }
