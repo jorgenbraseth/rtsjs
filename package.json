@@ -21,6 +21,7 @@
     "webpack-hot-middleware": "^2.3.0"
   },
   "scripts": {
+    "build": "rm build/*; webpack",
     "start": "webpack-dev-server"
   }
 }
