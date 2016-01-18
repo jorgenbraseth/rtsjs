@@ -1,1 +1,1 @@
-web: ./serve.sh
+web: npm start
