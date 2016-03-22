@@ -6,7 +6,7 @@ import Grass from './sprites/Grass'
 
 import { toGridPos } from './Utils'
 
-import { map, map2 } from './Maps'
+import { map, map2, MAP_OBLONG, GENERATED } from './Maps'
 
 import { LAYER_GROUND, LAYER_MAP, LAYER_AIR, GRID_SIZE, KEY_BINDS } from './constants/GameConstants.js'
 
@@ -20,14 +20,17 @@ export default class Game {
     this.userInput = new UserInput(canvas);
 
     this.viewPort = {
-      width: 8,
-      height: 8,
-      minX: 1,
-      minY: 1,
+      width: 30,
+      height: 20,
+      minX: 0,
+      minY: 0,
       inView: function(pos) {
         return pos.x >= this.minX && pos.y >= this.minY && pos.x < (this.minX+this.width) && pos.y < (this.minY+this.height);
       }
     };
+
+    this.canvas.setAttribute("width", GRID_SIZE*this.viewPort.width);
+    this.canvas.setAttribute("height", GRID_SIZE*this.viewPort.height);
 
     this.userInput.onLeftClick(
       function(x,y){
@@ -49,6 +52,11 @@ export default class Game {
     this.userInput.onKey(KEY_BINDS.CAMERA_PAN_UP, this.panCameraUp.bind(this));
     this.userInput.onKey(KEY_BINDS.CAMERA_PAN_DOWN, this.panCameraDown.bind(this));
 
+    this.userInput.onKeyUp(KEY_BINDS.CAMERA_PAN_LEFT, () => {this.cameraPanX=0});
+    this.userInput.onKeyUp(KEY_BINDS.CAMERA_PAN_RIGHT, () => {this.cameraPanX=0});
+    this.userInput.onKeyUp(KEY_BINDS.CAMERA_PAN_UP, () => {this.cameraPanY=0});
+    this.userInput.onKeyUp(KEY_BINDS.CAMERA_PAN_DOWN, () => {this.cameraPanY=0});
+
     this.init();
   }
 
@@ -63,27 +71,39 @@ export default class Game {
   }
 
   panCameraDown(){
-    this.cameraY += 1;
+    this.cameraPanY = 1;
   }
   panCameraUp(){
-    this.cameraY -= 1;
+    this.cameraPanY = -1;
   }
   panCameraLeft(){
-    this.cameraX -= 1;
+    this.cameraPanX = -1;
   }
   panCameraRight(){
-    this.cameraX += 1;
+    this.cameraPanX = 1;
   }
 
 
+  loadMap(mapData){
+    var transposedMap = mapData[0].map(function(col, i) {
+      return mapData.map(function(row) {
+        return row[i]
+      })
+    });
+
+    this.world = transposedMap;
+  }
 
   init(){
+    this.cameraPanY = 0;
+    this.cameraPanX = 0;
+
     this.layers = {};
     this.layers[LAYER_MAP] = [];
     this.layers[LAYER_GROUND] = [];
     this.layers[LAYER_AIR] = [];
 
-    this.world = map2;
+    this.loadMap(GENERATED(100,100,0.05));
 
     var firstUnit = new WoodenBall(this,[0,0]);
     firstUnit.select();
@@ -102,10 +122,31 @@ export default class Game {
   }
 
   tick(){
+    this.moveCam();
+
     this.updateMapCosts();
     this.tickLayer(LAYER_MAP);
     this.tickLayer(LAYER_GROUND);
     this.tickLayer(LAYER_AIR);
+  }
+
+  moveCam(){
+    if(
+      (this.viewPort.minY+this.viewPort.height+this.cameraPanY <= this.world[0].length)
+    &&
+      (this.viewPort.minY+this.cameraPanY >= 0)
+    ){
+      this.viewPort.minY += this.cameraPanY;
+    }
+
+    if(
+      (this.viewPort.minX+this.viewPort.width+this.cameraPanX <= this.world.length)
+      &&
+      (this.viewPort.minX+this.cameraPanX >= 0)
+    ){
+      this.viewPort.minX += this.cameraPanX;
+    }
+
   }
 
   spriteAt(coords){
@@ -191,8 +232,6 @@ export default class Game {
       var sprite = sprites[i];
       this.world[sprite.targetX][sprite.targetY] = sprite.moveCost;
     }
-
-
   }
 
   tickLayer(layer){

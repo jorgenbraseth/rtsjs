@@ -18,8 +18,8 @@ export default class Unit extends Sprite {
   moveTo(coords){
     this.targetOfAttack = undefined;
     this.movingTo = coords;
-    this.targetX = this.pos.x;
-    this.targetY = this.pos.y;
+    this.targetX = parseInt(this.pos.x + Math.ceil(this.dx));
+    this.targetY = parseInt(this.pos.y + Math.ceil(this.dy));
     this.calculatePath();
   }
 

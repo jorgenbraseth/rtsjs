@@ -7,6 +7,10 @@ module.exports = {
 
   KEY_BINDS: {
     ATTACK: 65, // "A"
-    MOVE: 77 // "M"
+    MOVE: 77, // "M"
+    CAMERA_PAN_LEFT: 37, //LEFT ARROW
+    CAMERA_PAN_RIGHT: 39, //RIGHT ARROW
+    CAMERA_PAN_UP: 38, //UP ARROW
+    CAMERA_PAN_DOWN: 40, //DOWN ARROW
   }
 };
