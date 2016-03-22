@@ -5,6 +5,7 @@ import Rock from './sprites/Rock'
 import Tree from './sprites/Tree'
 import Grass from './sprites/Grass'
 import Grass2 from './sprites/Grass2'
+import Conveyor from './sprites/Conveyor'
 
 import { toGridPos } from './Utils'
 
@@ -32,8 +33,8 @@ export default class Game {
       }
     };
 
-    this.canvas.setAttribute("width", GRID_SIZE*this.viewPort.width);
-    this.canvas.setAttribute("height", GRID_SIZE*this.viewPort.height);
+    this.canvas.setAttribute("width", ""+GRID_SIZE*this.viewPort.width);
+    this.canvas.setAttribute("height", ""+GRID_SIZE*this.viewPort.height);
 
     this.userInput.onLeftClick(
       function(x,y){
@@ -110,7 +111,7 @@ export default class Game {
     this.layers[LAYER_GROUND] = [];
     this.layers[LAYER_AIR] = [];
 
-    this.loadMap(GENERATED(70,30,0.25));
+    this.loadMap(GENERATED(30,20,0));
     // this.loadMap(MAP_OBLONG);
 
     var firstUnit = new WoodenBall(this,[0,0]);
@@ -202,7 +203,7 @@ export default class Game {
     if(clickedSprite){
       this.select(clickedSprite, this.shiftHeld);
     }else{
-      this.addSprite(LAYER_GROUND, new WoodenBall(this, coords));
+      this.addSprite(LAYER_MAP, new Conveyor(this, coords));
       // this.clearSelection();
     }
   }

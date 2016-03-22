@@ -35,8 +35,7 @@ export default class WoodenBall extends Unit {
 
   draw(screen, viewport){
     screen.fillStyle = this.color;
-    this.drawMoveQueue(screen);
-    //super.draw(screen);
+    // this.drawMoveQueue(screen);
 
     screen.drawImage(
       this.image,
