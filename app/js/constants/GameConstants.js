@@ -12,5 +12,6 @@ module.exports = {
     CAMERA_PAN_RIGHT: 39, //RIGHT ARROW
     CAMERA_PAN_UP: 38, //UP ARROW
     CAMERA_PAN_DOWN: 40, //DOWN ARROW
+    SHIFT: 16 //SHIFT KEY
   }
 };

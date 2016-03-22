@@ -12,7 +12,7 @@ import { map, map2, MAP_OBLONG, GENERATED } from './Maps'
 
 import { LAYER_GROUND, LAYER_MAP, LAYER_AIR, GRID_SIZE, KEY_BINDS } from './constants/GameConstants.js'
 
-//import '../images/sword.png'
+import '../images/sword.png'
 
 export default class Game {
 
@@ -20,6 +20,7 @@ export default class Game {
     this.canvas = canvas;
     this.screen = canvas.getContext('2d');
     this.userInput = new UserInput(canvas);
+    this.shiftHeld = false;
 
     this.viewPort = {
       width: 30,
@@ -58,6 +59,9 @@ export default class Game {
     this.userInput.onKeyUp(KEY_BINDS.CAMERA_PAN_RIGHT, () => {this.cameraPanX=0});
     this.userInput.onKeyUp(KEY_BINDS.CAMERA_PAN_UP, () => {this.cameraPanY=0});
     this.userInput.onKeyUp(KEY_BINDS.CAMERA_PAN_DOWN, () => {this.cameraPanY=0});
+
+    this.userInput.onKey(KEY_BINDS.SHIFT, () => {this.shiftHeld = true});
+    this.userInput.onKeyUp(KEY_BINDS.SHIFT, () => {this.shiftHeld = false});
 
     this.init();
   }
@@ -108,9 +112,8 @@ export default class Game {
     this.loadMap(GENERATED(70,30,0.25));
 
     var firstUnit = new WoodenBall(this,[0,0]);
-    firstUnit.select();
-    this.selectedSprite = firstUnit;
-      this.addSprite(LAYER_GROUND, firstUnit);
+    this.select(firstUnit, false);
+    this.addSprite(LAYER_GROUND, firstUnit);
 
     for (var x = 0; x < this.world.length; x++) {
       for (var y = 0; y < this.world[x].length; y++) {
@@ -124,6 +127,14 @@ export default class Game {
       }
     }
 
+  }
+
+  select(sprite, addToSelection) {
+    if(!addToSelection){
+      this.clearSelection();
+    }
+    sprite.select();
+    this.selectedSprite.push(sprite);
   }
 
   tick(){
@@ -175,24 +186,22 @@ export default class Game {
 
   clearSelection(){
     if(this.selectedSprite){
-      this.selectedSprite.unselect();
+      for (var i = 0; i < this.selectedSprite.length; i++) {
+        var sprite = this.selectedSprite[i];
+        sprite.unselect();
+      }
     }
-    this.selectedSprite = undefined;
-  }
-
-  selectSprite(sprite){
-    this.clearSelection();
-    this.selectedSprite = sprite;
-    sprite.select();
+    this.selectedSprite = [];
   }
 
   gridLeftClicked(coords){
     var clickedSprite = this.spriteAt(coords);
 
     if(clickedSprite){
-      this.selectSprite(clickedSprite);
+      this.select(clickedSprite, this.shiftHeld);
     }else{
-      this.clearSelection();
+      this.addSprite(LAYER_GROUND, new WoodenBall(this, coords));
+      // this.clearSelection();
     }
   }
 
@@ -200,9 +209,15 @@ export default class Game {
     var clickedSprite = this.spriteAt(coords);
 
     if(clickedSprite){
-      this.selectedSprite.attackTarget(clickedSprite);
+      for (var i = 0; i < this.selectedSprite.length; i++) {
+        var selected = this.selectedSprite[i];
+        selected.attackTarget(clickedSprite);
+      }
     }else{
-      this.selectedSprite.moveTo(coords);
+      for (var i = 0; i < this.selectedSprite.length; i++) {
+        var selected = this.selectedSprite[i];
+        selected.moveTo(coords);
+      }
     }
   }
 
