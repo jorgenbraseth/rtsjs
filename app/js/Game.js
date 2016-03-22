@@ -2,7 +2,9 @@ import UserInput from './UserInput'
 
 import WoodenBall from './sprites/WoodenBall'
 import Rock from './sprites/Rock'
+import Tree from './sprites/Tree'
 import Grass from './sprites/Grass'
+import Grass2 from './sprites/Grass2'
 
 import { toGridPos } from './Utils'
 
@@ -64,9 +66,10 @@ export default class Game {
     for (var x = 0; x < this.world.length; x++) {
       for (var y = 0; y < this.world[x].length; y++) {
         if(this.world[x][y] === 0){
-          this.addSprite(LAYER_GROUND, new Rock(this, [x,y]));
+          //this.addSprite(LAYER_GROUND, new Rock(this, [x,y]));
+          this.addSprite(LAYER_GROUND, new Tree(this, [x,y]));
         }
-        this.addSprite(LAYER_MAP, new Grass(this, [x,y]));
+        this.addSprite(LAYER_MAP, new Grass2(this, [x,y]));
       }
     }
 
@@ -188,8 +191,6 @@ export default class Game {
   draw(){
 
     this.clearScreen();
-
-   // this.drawGrid();
 
     this.drawLayer(this.layers[LAYER_MAP]);
     this.drawLayer(this.layers[LAYER_GROUND]);
