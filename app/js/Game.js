@@ -105,7 +105,7 @@ export default class Game {
     this.layers[LAYER_GROUND] = [];
     this.layers[LAYER_AIR] = [];
 
-    this.loadMap(GENERATED(100,100,0.05));
+    this.loadMap(GENERATED(70,30,0.25));
 
     var firstUnit = new WoodenBall(this,[0,0]);
     firstUnit.select();
@@ -115,7 +115,9 @@ export default class Game {
     for (var x = 0; x < this.world.length; x++) {
       for (var y = 0; y < this.world[x].length; y++) {
         if(this.world[x][y] === 0){
-          //this.addSprite(LAYER_GROUND, new Rock(this, [x,y]));
+          this.addSprite(LAYER_GROUND, new Rock(this, [x,y]));
+        }
+        if(this.world[x][y] === 2){
           this.addSprite(LAYER_GROUND, new Tree(this, [x,y]));
         }
         this.addSprite(LAYER_MAP, new Grass2(this, [x,y]));

@@ -1,7 +1,7 @@
 body {
-  background-color: #eee;
+  background-color: #333;
 }
 
 #game {
-
+  border: 2px solid black;
 }

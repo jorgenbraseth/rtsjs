@@ -50,7 +50,9 @@ module.exports = {
     for (var y = 0; y < height; y++) {
       var row = [];
       for (var x = 0; x < width; x++) {
-        row.push(1);
+        var chance = Math.random();
+        var type = chance < (chanceOfObstacle / 5) ? 0 : chance < chanceOfObstacle ? 2 : 1;
+        row.push(type);
       }
       map.push(row);
     }
