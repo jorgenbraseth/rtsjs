@@ -28,4 +28,10 @@ export default class Rock extends Sprite {
   grid2draw(val){
     return val * GRID_SIZE + GRID_SIZE / 2;
   }
+
+
+  select(){
+    super.select();
+    console.log(this.constructor.name + " selected");
+  }
 }

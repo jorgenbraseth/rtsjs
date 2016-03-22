@@ -10,7 +10,7 @@ import { map, map2 } from './Maps'
 
 import { LAYER_GROUND, LAYER_MAP, LAYER_AIR, GRID_SIZE, KEY_BINDS } from './constants/GameConstants.js'
 
-import '../images/sword.png'
+//import '../images/sword.png'
 
 export default class Game {
 
@@ -19,20 +19,36 @@ export default class Game {
     this.screen = canvas.getContext('2d');
     this.userInput = new UserInput(canvas);
 
+    this.viewPort = {
+      width: 8,
+      height: 8,
+      minX: 1,
+      minY: 1,
+      inView: function(pos) {
+        return pos.x >= this.minX && pos.y >= this.minY && pos.x < (this.minX+this.width) && pos.y < (this.minY+this.height);
+      }
+    };
+
     this.userInput.onLeftClick(
       function(x,y){
-        this.gridLeftClicked(toGridPos(x,y))
+        this.gridLeftClicked(toGridPos(x,y,this.viewPort))
       }.bind(this)
     );
 
     this.userInput.onRightClick(
       function(x,y){
-        this.gridRightClicked(toGridPos(x,y))
+        this.gridRightClicked(toGridPos(x,y,this.viewPort))
       }.bind(this)
     );
 
     this.userInput.onKey(KEY_BINDS.ATTACK, this.enableAttackMode.bind(this));
     this.userInput.onKey(KEY_BINDS.MOVE, this.enableMoveMode.bind(this));
+
+    this.userInput.onKey(KEY_BINDS.CAMERA_PAN_LEFT, this.panCameraLeft.bind(this));
+    this.userInput.onKey(KEY_BINDS.CAMERA_PAN_RIGHT, this.panCameraRight.bind(this));
+    this.userInput.onKey(KEY_BINDS.CAMERA_PAN_UP, this.panCameraUp.bind(this));
+    this.userInput.onKey(KEY_BINDS.CAMERA_PAN_DOWN, this.panCameraDown.bind(this));
+
     this.init();
   }
 
@@ -44,6 +60,19 @@ export default class Game {
   enableMoveMode(){
     this.actionMode = 'MOVE';
     console.log(this.actionMode);
+  }
+
+  panCameraDown(){
+    this.cameraY += 1;
+  }
+  panCameraUp(){
+    this.cameraY -= 1;
+  }
+  panCameraLeft(){
+    this.cameraX -= 1;
+  }
+  panCameraRight(){
+    this.cameraX += 1;
   }
 
 
@@ -104,6 +133,7 @@ export default class Game {
     }
     this.selectedSprite = undefined;
   }
+
   selectSprite(sprite){
     this.clearSelection();
     this.selectedSprite = sprite;
@@ -116,7 +146,7 @@ export default class Game {
     if(clickedSprite){
       this.selectSprite(clickedSprite);
     }else{
-      this.addSprite(LAYER_GROUND, new WoodenBall(this, coords));
+      this.clearSelection();
     }
   }
 
@@ -177,7 +207,9 @@ export default class Game {
   drawLayer(layer){
     for (var i = 0; i < layer.length; i++) {
       var sprite = layer[i];
-      sprite.draw(this.screen);
+      if(this.viewPort.inView(sprite.pos)){
+        sprite.draw(this.screen);
+      }
     }
   }
 
@@ -188,13 +220,14 @@ export default class Game {
   draw(){
 
     this.clearScreen();
+    this.screen.translate(-this.viewPort.minX*GRID_SIZE,-this.viewPort.minY*GRID_SIZE);
 
    // this.drawGrid();
 
     this.drawLayer(this.layers[LAYER_MAP]);
     this.drawLayer(this.layers[LAYER_GROUND]);
     this.drawLayer(this.layers[LAYER_AIR]);
-
+    this.screen.translate(this.viewPort.minX*GRID_SIZE,this.viewPort.minY*GRID_SIZE);
   }
 
   addSprite(layer, sprite){
