@@ -86,8 +86,8 @@ export default class Unit extends Sprite {
     this.game.removeSprite(this);
   }
 
-  draw(screen){
-    super.draw(screen);
+  draw(screen, viewport){
+    super.draw(screen, viewport);
 
     if(this.firedThisRound && this.targetOfAttack){
       screen.beginPath();

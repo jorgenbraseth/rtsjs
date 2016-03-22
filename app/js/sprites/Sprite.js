@@ -49,11 +49,13 @@ export default class Sprite {
 
    }
 
-  draw(screen){
-    screen.fillStyle = this.color;
+  draw(screen, viewPort){
+    if(!viewPort.inView(this.pos)){
+      screen.fillStyle = this.color;
 
-    var centerX = this.pos.x * GRID_SIZE + GRID_SIZE/2;
-    var centerY = this.pos.y * GRID_SIZE + GRID_SIZE/2;
-    screen.fillRect(centerX - this.width/2,centerY - this.width/2 ,this.width,this.width);
+      var centerX = this.pos.x * GRID_SIZE + GRID_SIZE/2;
+      var centerY = this.pos.y * GRID_SIZE + GRID_SIZE/2;
+      screen.fillRect(centerX - this.width/2,centerY - this.width/2 ,this.width,this.width);
+    }
   }
 }

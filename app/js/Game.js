@@ -101,6 +101,7 @@ export default class Game {
   }
 
   init(){
+    this.selectedSprites = [];
     this.cameraPanY = 0;
     this.cameraPanX = 0;
 
@@ -134,7 +135,7 @@ export default class Game {
       this.clearSelection();
     }
     sprite.select();
-    this.selectedSprite.push(sprite);
+    this.selectedSprites.push(sprite);
   }
 
   tick(){
@@ -185,13 +186,13 @@ export default class Game {
   }
 
   clearSelection(){
-    if(this.selectedSprite){
-      for (var i = 0; i < this.selectedSprite.length; i++) {
-        var sprite = this.selectedSprite[i];
+    if(this.selectedSprites){
+      for (var i = 0; i < this.selectedSprites.length; i++) {
+        var sprite = this.selectedSprites[i];
         sprite.unselect();
       }
     }
-    this.selectedSprite = [];
+    this.selectedSprites = [];
   }
 
   gridLeftClicked(coords){
@@ -209,13 +210,13 @@ export default class Game {
     var clickedSprite = this.spriteAt(coords);
 
     if(clickedSprite){
-      for (var i = 0; i < this.selectedSprite.length; i++) {
-        var selected = this.selectedSprite[i];
+      for (var i = 0; i < this.selectedSprites.length; i++) {
+        var selected = this.selectedSprites[i];
         selected.attackTarget(clickedSprite);
       }
     }else{
-      for (var i = 0; i < this.selectedSprite.length; i++) {
-        var selected = this.selectedSprite[i];
+      for (var i = 0; i < this.selectedSprites.length; i++) {
+        var selected = this.selectedSprites[i];
         selected.moveTo(coords);
       }
     }
@@ -266,9 +267,7 @@ export default class Game {
   drawLayer(layer){
     for (var i = 0; i < layer.length; i++) {
       var sprite = layer[i];
-      if(this.viewPort.inView(sprite.pos)){
-        sprite.draw(this.screen);
-      }
+      sprite.draw(this.screen, this.viewPort);
     }
   }
 

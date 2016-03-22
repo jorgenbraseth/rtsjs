@@ -33,8 +33,8 @@ export default class WoodenBall extends Unit {
     this.color ="transparent";
   }
 
-  draw(screen){
-    super.draw(screen);
+  draw(screen, viewport){
+    super.draw(screen, viewport);
     screen.fillStyle = this.color;
     this.drawMoveQueue(screen);
     //super.draw(screen);
