@@ -111,6 +111,7 @@ export default class Game {
     this.layers[LAYER_AIR] = [];
 
     this.loadMap(GENERATED(70,30,0.25));
+    // this.loadMap(MAP_OBLONG);
 
     var firstUnit = new WoodenBall(this,[0,0]);
     this.select(firstUnit, false);
@@ -267,7 +268,7 @@ export default class Game {
   drawLayer(layer){
     for (var i = 0; i < layer.length; i++) {
       var sprite = layer[i];
-      sprite.draw(this.screen, this.viewPort);
+      sprite.drawSprite(this.screen, this.viewPort);
     }
   }
 

@@ -14,7 +14,7 @@ export default class Rock extends Sprite {
     this.image.setAttribute('src', Image);
   }
 
-  draw(screen){
+  draw(screen, viewport){
     screen.drawImage(
       this.image,
       385,14,86,143,

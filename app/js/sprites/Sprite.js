@@ -15,12 +15,9 @@ export default class Sprite {
       }
     };
 
-    let red = Math.floor(Math.random() * 150)+100;
-    let green = Math.floor(Math.random() * 150)+100;
-    let blue = Math.floor(Math.random() * 150)+100;
-    this.color = "rgba("+red+","+green+","+blue+",0.9)";
+    this.color = "rgba(255,0,255,0.6)";
 
-    this.width = 35;
+    this.width = GRID_SIZE;
     this.selected = false;
 
     this.speed = 0.2 + Math.random();
@@ -45,17 +42,22 @@ export default class Sprite {
     this.selected = false;
   }
 
-   tick(){
+  tick(){
 
-   }
+  }
 
-  draw(screen, viewPort){
-    if(!viewPort.inView(this.pos)){
-      screen.fillStyle = this.color;
-
-      var centerX = this.pos.x * GRID_SIZE + GRID_SIZE/2;
-      var centerY = this.pos.y * GRID_SIZE + GRID_SIZE/2;
-      screen.fillRect(centerX - this.width/2,centerY - this.width/2 ,this.width,this.width);
+  drawSprite(screen, viewPort){
+    if(viewPort.inView(this.pos)){
+      this.draw(screen);
     }
   }
+
+  draw(screen){
+    screen.fillStyle = this.color;
+
+    var centerX = this.pos.x * GRID_SIZE + GRID_SIZE/2;
+    var centerY = this.pos.y * GRID_SIZE + GRID_SIZE/2;
+    screen.fillRect(centerX - this.width/2,centerY - this.width/2 ,this.width,this.width);
+  }
+
 }

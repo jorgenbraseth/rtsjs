@@ -87,8 +87,6 @@ export default class Unit extends Sprite {
   }
 
   draw(screen, viewport){
-    super.draw(screen, viewport);
-
     if(this.firedThisRound && this.targetOfAttack){
       screen.beginPath();
       screen.moveTo(this.pos.centerPixelX(),this.pos.centerPixelY());
