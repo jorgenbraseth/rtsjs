@@ -27,8 +27,8 @@ export default class Game {
     this.canvas.onblur = () => {this.canvas.focus()};
 
     this.viewPort = {
-      width: 10,
-      height: 10,
+      width: 30,
+      height: 20,
       minX: 0,
       minY: 0,
       inView: function(pos) {
@@ -263,29 +263,50 @@ export default class Game {
 
   tickLayer(layer){
     var sprites = this.layers[layer];
-
-    this.viewPortItemsForLayer(layer);
     for (var i = 0; i < sprites.length; i++) {
       var sprite = sprites[i];
       sprite.tick(this.world);
     }
   }
 
-  viewPortItemsForLayer(layerID){
-    console.log(layerID);
-    var allSpritesInLayer = this.layers[layerID];
-    var visibleSpritesFromLayer = allSpritesInLayer.filter((sprite) => {
-      var inView = this.viewPort.inView(sprite.pos);
-      return inView
-    });
-    console.log(visibleSpritesFromLayer);
+  viewPortItemsForLayer(layer){
+    // var layer = this.layers[layerID];
+    var visibleSpritesFromLayer = layer.filter((sprite) => {return this.viewPort.inView(sprite.pos)});
+
+    var visibleMap = [];
+    for (var y = 0; y < this.viewPort.height; y++) {
+      var row = []
+      for (var x = 0; x < this.viewPort.width; x++) {
+        row.push([]);
+      }
+      visibleMap.push(row);
+    }
+
+    for (var spriteIdx = 0; spriteIdx < visibleSpritesFromLayer.length; spriteIdx++) {
+      var sprite = visibleSpritesFromLayer[spriteIdx];
+      var spriteX = parseInt(sprite.pos.x) - this.viewPort.minX;
+      var spriteY = parseInt(sprite.pos.y) - this.viewPort.minY;
+
+      visibleMap[spriteY][spriteX].push(sprite);
+    }
+
+    return visibleMap;
+    // console.log(visibleSpritesFromLayer);
 
   }
 
   drawLayer(layer){
-    for (var i = 0; i < layer.length; i++) {
-      var sprite = layer[i];
-      sprite.drawSprite(this.screen, this.viewPort);
+    var visibleMap = this.viewPortItemsForLayer(layer);
+
+    for (var y = 0; y < visibleMap.length; y++) {
+      var row = visibleMap[y];
+      for (var col = 0; col < row.length; col++) {
+        var spriteList = row[col];
+
+        for (var sprite = 0; sprite < spriteList.length; sprite++) {
+          spriteList[sprite].drawSprite(this.screen, this.viewPort);
+        }
+      }
     }
   }
 
