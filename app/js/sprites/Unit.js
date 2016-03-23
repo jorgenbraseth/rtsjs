@@ -106,7 +106,7 @@ export default class Unit extends Sprite {
     }
     screen.fillRect(
       this.pos.x*GRID_SIZE+3,
-      this.pos.y*GRID_SIZE+3,
+      this.pos.y*GRID_SIZE-5,
       (GRID_SIZE-6)*hpPercent,
       5
     )

@@ -1,26 +1,28 @@
 import Unit from './Unit'
-import { GRID_SIZE } from '../constants/GameConstants.js'
+import Blood from './Blood'
+import { GRID_SIZE, LAYER_MAP } from '../constants/GameConstants.js'
 
-import Image from '../../images/wood-tiles.png';
+// import Image from '../../images/wood-tiles.png';
+import Image from '../../images/person1.png';
 
 
-export default class WoodenBall extends Unit {
+export default class Player extends Unit {
 
   constructor(game, coords=[0,0]){
     super(game,coords,100,1);
 
-    this.width=25;
+    this.animAge = 0;
+    this.width=GRID_SIZE*0.9;
     this.moveCost = 10000;
     this.movingTo = [this.pos.x,this.pos.y];
     this.world = game.world;
 
     this.unselect();
 
-    this.speed = .15;
+    this.speed = .08;
 
     this.image = document.createElement("img");
     this.image.setAttribute('src', Image);
-
   }
 
   select(){
@@ -33,25 +35,46 @@ export default class WoodenBall extends Unit {
     this.color ="transparent";
   }
 
+  tick() {
+    super.tick();
+
+    if(this.moving){
+      this.animAge = (this.animAge+1)%15;
+    }
+  }
   draw(screen, viewport){
     screen.fillStyle = this.color;
     // this.drawMoveQueue(screen);
 
+    var animFrame = parseInt(this.animAge/5);
+    var directionRow = 0;
+
+    if(this.dy < 0){
+      directionRow = 3;
+    }else if(this.dx < 0){
+      directionRow = 1;
+    }else if(this.dx > 0){
+      directionRow = 2;
+    }
+
     screen.drawImage(
       this.image,
-      170,85,70,75,
+      animFrame*32,directionRow*32,32,32,
       this.grid2draw(this.pos.x)-this.width/2,this.grid2draw(this.pos.y)-this.width/2,
       this.width,this.width
     );
 
-    var centerX = this.pos.x * GRID_SIZE + GRID_SIZE/2;
-    var centerY = this.pos.y * GRID_SIZE + GRID_SIZE/2;
-    screen.beginPath();
-    screen.arc(centerX,centerY,this.width/2, 0,Math.PI*2);
-    screen.closePath();
-    screen.stroke();
+    // var centerX = this.pos.x * GRID_SIZE + GRID_SIZE/2;
+    // var centerY = this.pos.y * GRID_SIZE + GRID_SIZE/2;
+    // screen.beginPath();
+    // screen.arc(centerX,centerY,this.width/2, 0,Math.PI*2);
+    // screen.closePath();
+    // screen.stroke();
 
-    this.drawHp(screen);
+    if(this.selected){
+      this.drawHp(screen);
+    }
+
 
   }
   drawMoveQueue(screen){
@@ -78,6 +101,12 @@ export default class WoodenBall extends Unit {
 
   grid2draw(val){
     return val * GRID_SIZE + GRID_SIZE / 2;
+  }
+
+  die() {
+    super.die();
+    console.log("Adding!");
+    this.game.addSprite(LAYER_MAP, new Blood(this.game, [this.pos.x,this.pos.y]));
   }
 
 }

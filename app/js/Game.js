@@ -1,11 +1,12 @@
 import UserInput from './UserInput'
 
-import WoodenBall from './sprites/WoodenBall'
+import Player from './sprites/Player'
 import Rock from './sprites/Rock'
 import Tree from './sprites/Tree'
 import Grass from './sprites/Grass'
 import Grass2 from './sprites/Grass2'
 import Conveyor from './sprites/Conveyor'
+import Blood from './sprites/Blood'
 
 import { toGridPos } from './Utils'
 
@@ -111,10 +112,10 @@ export default class Game {
     this.layers[LAYER_GROUND] = [];
     this.layers[LAYER_AIR] = [];
 
-    this.loadMap(GENERATED(30,20,0));
+    this.loadMap(GENERATED(60,70,0.3));
     // this.loadMap(MAP_OBLONG);
 
-    var firstUnit = new WoodenBall(this,[0,0]);
+    var firstUnit = new Player(this,[0,0]);
     this.select(firstUnit, false);
     this.addSprite(LAYER_GROUND, firstUnit);
 
@@ -203,8 +204,9 @@ export default class Game {
     if(clickedSprite){
       this.select(clickedSprite, this.shiftHeld);
     }else{
-      this.addSprite(LAYER_MAP, new Conveyor(this, coords));
-      // this.clearSelection();
+      // this.addSprite(LAYER_MAP, new Conveyor(this, coords));
+      // this.addSprite(LAYER_MAP, new Blood(this, coords));
+      this.clearSelection();
     }
   }
 
@@ -227,7 +229,7 @@ export default class Game {
   removeSprite(sprite){
     this.removeSpriteFromLayer(this.layers[LAYER_AIR],sprite);
     this.removeSpriteFromLayer(this.layers[LAYER_GROUND],sprite);
-
+    this.removeSpriteFromLayer(this.layers[LAYER_MAP],sprite);
   }
 
   positionFree(x,y){
