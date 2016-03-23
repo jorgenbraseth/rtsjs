@@ -3,7 +3,7 @@ import Sprite from './Sprite'
 
 import Image from '../../images/grass.jpg'
 
-export default class Rock extends Sprite {
+export default class Grass extends Sprite {
   constructor(game,coords=[0,0]){
     super(game, coords);
     this.width = GRID_SIZE;

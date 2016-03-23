@@ -27,8 +27,8 @@ export default class Game {
     this.canvas.onblur = () => {this.canvas.focus()};
 
     this.viewPort = {
-      width: 30,
-      height: 20,
+      width: 10,
+      height: 10,
       minX: 0,
       minY: 0,
       inView: function(pos) {
@@ -155,7 +155,7 @@ export default class Game {
   moveCam(){
     if(
       (this.viewPort.minY+this.viewPort.height+this.cameraPanY <= this.world[0].length)
-    &&
+      &&
       (this.viewPort.minY+this.cameraPanY >= 0)
     ){
       this.viewPort.minY += this.cameraPanY;
@@ -264,10 +264,22 @@ export default class Game {
   tickLayer(layer){
     var sprites = this.layers[layer];
 
+    this.viewPortItemsForLayer(layer);
     for (var i = 0; i < sprites.length; i++) {
       var sprite = sprites[i];
       sprite.tick(this.world);
     }
+  }
+
+  viewPortItemsForLayer(layerID){
+    console.log(layerID);
+    var allSpritesInLayer = this.layers[layerID];
+    var visibleSpritesFromLayer = allSpritesInLayer.filter((sprite) => {
+      var inView = this.viewPort.inView(sprite.pos);
+      return inView
+    });
+    console.log(visibleSpritesFromLayer);
+
   }
 
   drawLayer(layer){
