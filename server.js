@@ -3,6 +3,9 @@ var serveStatic = require('serve-static');
 
 // when on Heroku, port will be exported to an environment variable
 // and available as process.env.PORT
-var port = process.env.PORT || CONFIG.port;
+var port = process.env.PORT || 8080;
 
-connect().use(serveStatic(__dirname+"/build/")).listen(port);
+console.log(__dirname);
+
+var app = connect().use(serveStatic("./build/"));
+app.listen(port);
