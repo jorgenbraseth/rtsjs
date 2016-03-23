@@ -12,7 +12,7 @@ import { toGridPos } from './Utils'
 
 import { map, map2, MAP_OBLONG, GENERATED } from './Maps'
 
-import { LAYER_GROUND, LAYER_MAP, LAYER_AIR, GRID_SIZE, KEY_BINDS } from './constants/GameConstants.js'
+import { LAYER_GROUND, LAYER_FLOOR, LAYER_MAP, LAYER_AIR, GRID_SIZE, KEY_BINDS } from './constants/GameConstants.js'
 
 import '../images/sword.png'
 
@@ -111,11 +111,11 @@ export default class Game {
 
     this.layers = {};
     this.layers[LAYER_MAP] = [];
+    this.layers[LAYER_FLOOR] = [];
     this.layers[LAYER_GROUND] = [];
     this.layers[LAYER_AIR] = [];
 
     this.loadMap(GENERATED(60,70,0.3));
-    // this.loadMap(MAP_OBLONG);
 
     var firstUnit = new Player(this,[0,0]);
     this.select(firstUnit, false);
@@ -148,6 +148,7 @@ export default class Game {
 
     this.updateMapCosts();
     this.tickLayer(LAYER_MAP);
+    this.tickLayer(LAYER_FLOOR);
     this.tickLayer(LAYER_GROUND);
     this.tickLayer(LAYER_AIR);
   }
@@ -231,6 +232,7 @@ export default class Game {
   removeSprite(sprite){
     this.removeSpriteFromLayer(this.layers[LAYER_AIR],sprite);
     this.removeSpriteFromLayer(this.layers[LAYER_GROUND],sprite);
+    this.removeSpriteFromLayer(this.layers[LAYER_FLOOR],sprite);
     this.removeSpriteFromLayer(this.layers[LAYER_MAP],sprite);
   }
 
@@ -320,6 +322,7 @@ export default class Game {
     this.screen.translate(-this.viewPort.minX*GRID_SIZE,-this.viewPort.minY*GRID_SIZE);
 
     this.drawLayer(this.layers[LAYER_MAP]);
+    this.drawLayer(this.layers[LAYER_FLOOR]);
     this.drawLayer(this.layers[LAYER_GROUND]);
     this.drawLayer(this.layers[LAYER_AIR]);
     this.screen.translate(this.viewPort.minX*GRID_SIZE,this.viewPort.minY*GRID_SIZE);

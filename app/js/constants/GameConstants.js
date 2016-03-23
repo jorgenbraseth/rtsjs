@@ -1,7 +1,8 @@
 module.exports = {
   LAYER_MAP: 0,
-  LAYER_GROUND: 1,
-  LAYER_AIR: 2,
+  LAYER_FLOOR: 1,
+  LAYER_GROUND: 2,
+  LAYER_AIR: 3,
 
   GRID_SIZE: 40,
 

@@ -1,6 +1,6 @@
 import Unit from './Unit'
 import Blood from './Blood'
-import { GRID_SIZE, LAYER_MAP } from '../constants/GameConstants.js'
+import { GRID_SIZE, LAYER_FLOOR } from '../constants/GameConstants.js'
 
 // import Image from '../../images/wood-tiles.png';
 import Image from '../../images/person1.png';
@@ -105,7 +105,7 @@ export default class Player extends Unit {
 
   die() {
     super.die();
-    this.game.addSprite(LAYER_MAP, new Blood(this.game, [this.pos.x,this.pos.y]));
+    this.game.addSprite(LAYER_FLOOR, new Blood(this.game, [this.pos.x,this.pos.y]));
   }
 
 }
