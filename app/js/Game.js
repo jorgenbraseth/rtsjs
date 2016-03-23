@@ -3,10 +3,9 @@ import UserInput from './UserInput'
 import Player from './sprites/Player'
 import Rock from './sprites/Rock'
 import Tree from './sprites/Tree'
-import Grass from './sprites/Grass'
 import Grass2 from './sprites/Grass2'
-import Conveyor from './sprites/Conveyor'
-import Blood from './sprites/Blood'
+import StatusPanel from './sprites/StatusPanel'
+import Cursor from './sprites/Cursor'
 
 import { toGridPos } from './Utils'
 
@@ -38,6 +37,13 @@ export default class Game {
 
     this.canvas.setAttribute("width", ""+GRID_SIZE*this.viewPort.width);
     this.canvas.setAttribute("height", ""+GRID_SIZE*this.viewPort.height);
+
+    this.canvas.style.cursor = "none";
+
+    this.cursor = new Cursor();
+    this.canvas.onmousemove = (e) => {
+      this.cursor.setPosition(e.layerX,e.layerY);
+    };
 
     this.userInput.onLeftClick(
       function(x,y){
@@ -118,6 +124,7 @@ export default class Game {
     this.loadMap(GENERATED(60,70,0.3));
 
     var firstUnit = new Player(this,[0,0]);
+    this.statusPanel = new StatusPanel(firstUnit,this);
     this.select(firstUnit, false);
     this.addSprite(LAYER_GROUND, firstUnit);
 
@@ -207,7 +214,7 @@ export default class Game {
     if(clickedSprite){
       this.select(clickedSprite, this.shiftHeld);
     }else{
-      // this.addSprite(LAYER_MAP, new Conveyor(this, coords));
+      // this.addSprite(LAYER_FLOOR, new TreeStump(this, coords));
       // this.addSprite(LAYER_MAP, new Blood(this, coords));
       this.clearSelection();
     }
@@ -217,9 +224,16 @@ export default class Game {
     var clickedSprite = this.spriteAt(coords);
 
     if(clickedSprite){
-      for (var i = 0; i < this.selectedSprites.length; i++) {
-        var selected = this.selectedSprites[i];
-        selected.attackTarget(clickedSprite);
+      if(clickedSprite.fireAt){
+        for (var i = 0; i < this.selectedSprites.length; i++) {
+          var selected = this.selectedSprites[i];
+          selected.attackTarget(clickedSprite);
+        }
+      }else if(clickedSprite.gather){
+        for (var i = 0; i < this.selectedSprites.length; i++) {
+          var selected = this.selectedSprites[i];
+          selected.attackTarget(clickedSprite);
+        }
       }
     }else{
       for (var i = 0; i < this.selectedSprites.length; i++) {
@@ -320,12 +334,14 @@ export default class Game {
 
     this.clearScreen();
     this.screen.translate(-this.viewPort.minX*GRID_SIZE,-this.viewPort.minY*GRID_SIZE);
-
     this.drawLayer(this.layers[LAYER_MAP]);
     this.drawLayer(this.layers[LAYER_FLOOR]);
     this.drawLayer(this.layers[LAYER_GROUND]);
     this.drawLayer(this.layers[LAYER_AIR]);
     this.screen.translate(this.viewPort.minX*GRID_SIZE,this.viewPort.minY*GRID_SIZE);
+
+    this.statusPanel.draw(this.screen);
+    this.cursor.draw(this.screen);
   }
 
   addSprite(layer, sprite){

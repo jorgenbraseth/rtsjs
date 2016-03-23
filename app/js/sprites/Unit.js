@@ -2,7 +2,6 @@ import Sprite from './Sprite'
 import AStar from '../AStar'
 import { GRID_SIZE } from '../constants/GameConstants.js'
 
-
 export default class Unit extends Sprite {
 
   constructor(game, coords=[0,0], hp, attackDamage=0){
@@ -11,6 +10,7 @@ export default class Unit extends Sprite {
     this.initialHp = hp;
     this.attackRange = 1.5;
     this.attackDamage = attackDamage;
+    this.gatheringSpeed = 0.25;
     this.dead = false;
     this.moveCost = 0;
   }
@@ -46,9 +46,16 @@ export default class Unit extends Sprite {
     }
 
     if(this.targetOfAttack && this.inAttackRange(this.targetOfAttack)){
-      this.fireAt(this.targetOfAttack);
-      if(this.targetOfAttack.dead){
-        this.targetOfAttack = undefined;
+      if(this.targetOfAttack.fireAt){
+        this.fireAt(this.targetOfAttack);
+        if(this.targetOfAttack.dead){
+          this.targetOfAttack = undefined;
+        }
+      }else if(this.targetOfAttack.gather){
+        this.gatherFrom(this.targetOfAttack);
+        if(this.targetOfAttack.depleted){
+          this.targetOfAttack = undefined;
+        }
       }
     }else{
       if(this.targetOfAttack){
@@ -76,8 +83,12 @@ export default class Unit extends Sprite {
   }
 
   fireAt(unit){
-    unit.takeDamage(this.attackDamage);
+    unit.takeDamage(this.attackDamage, this);
     this.firedThisRound = true;
+  }
+
+  gatherFrom(resourceNode){
+    resourceNode.gather(this.gatheringSpeed, this);
   }
 
   die(){

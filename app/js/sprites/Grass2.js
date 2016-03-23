@@ -2,15 +2,14 @@ import { GRID_SIZE } from '../constants/GameConstants.js'
 import Sprite from './Sprite'
 
 import Image from '../../images/ground.png'
-
+import { loadImage } from '../Utils'
 export default class Grass2 extends Sprite {
   constructor(game,coords=[0,0]){
     super(game, coords);
     this.width = GRID_SIZE;
     this.color = "black";
 
-    this.image = document.createElement("img");
-    this.image.setAttribute('src', Image);
+    this.image = loadImage(Image);
   }
 
   draw(screen){
@@ -24,7 +23,4 @@ export default class Grass2 extends Sprite {
     )
   }
 
-  grid2draw(val){
-    return val * GRID_SIZE + GRID_SIZE / 2;
-  }
 }

@@ -1,4 +1,5 @@
 import { GRID_SIZE } from '../constants/GameConstants.js'
+import { loadImage } from '../Utils'
 import Sprite from './Sprite'
 
 import Image from '../../images/blood.png'
@@ -9,8 +10,7 @@ export default class Blood extends Sprite {
     this.moveCost = 0;
     this.age = 0;
 
-    this.image = document.createElement("img");
-    this.image.setAttribute('src', Image);
+    this.image = loadImage(Image);
   }
 
   draw(screen){
@@ -24,9 +24,7 @@ export default class Blood extends Sprite {
     )
   }
 
-  grid2draw(val){
-    return val * GRID_SIZE + GRID_SIZE / 2;
-  }
+  
 
   tick(){
     this.age +=1;

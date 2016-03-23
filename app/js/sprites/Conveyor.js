@@ -18,9 +18,4 @@ export default class Conveyor extends Sprite {
     }
 
   }
-
-
-  grid2draw(val){
-    return val * GRID_SIZE + GRID_SIZE / 2;
-  }
 }

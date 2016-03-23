@@ -1,8 +1,7 @@
 import Unit from './Unit'
 import Blood from './Blood'
 import { GRID_SIZE, LAYER_FLOOR } from '../constants/GameConstants.js'
-
-// import Image from '../../images/wood-tiles.png';
+import { loadImage } from '../Utils'
 import Image from '../../images/person1.png';
 
 
@@ -11,6 +10,7 @@ export default class Player extends Unit {
   constructor(game, coords=[0,0]){
     super(game,coords,100,1);
 
+    this.resources = {};
     this.animAge = 0;
     this.width=GRID_SIZE*0.9;
     this.moveCost = 10000;
@@ -21,8 +21,7 @@ export default class Player extends Unit {
 
     this.speed = .08;
 
-    this.image = document.createElement("img");
-    this.image.setAttribute('src', Image);
+    this.image = loadImage(Image);
   }
 
   select(){
@@ -97,10 +96,6 @@ export default class Player extends Unit {
       prevPos = pos;
     }
 
-  }
-
-  grid2draw(val){
-    return val * GRID_SIZE + GRID_SIZE / 2;
   }
 
   die() {

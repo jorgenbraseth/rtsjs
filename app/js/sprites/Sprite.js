@@ -60,4 +60,8 @@ export default class Sprite {
     screen.fillRect(centerX - this.width/2,centerY - this.width/2 ,this.width,this.width);
   }
 
+  grid2draw(val){
+    return val * GRID_SIZE + GRID_SIZE / 2;
+  }
+
 }
