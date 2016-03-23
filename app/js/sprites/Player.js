@@ -105,7 +105,6 @@ export default class Player extends Unit {
 
   die() {
     super.die();
-    console.log("Adding!");
     this.game.addSprite(LAYER_MAP, new Blood(this.game, [this.pos.x,this.pos.y]));
   }
 
