@@ -24,6 +24,8 @@ export default class Game {
     this.userInput = new UserInput(canvas);
     this.shiftHeld = false;
 
+    this.canvas.onblur = () => {this.canvas.focus()};
+
     this.viewPort = {
       width: 30,
       height: 20,
