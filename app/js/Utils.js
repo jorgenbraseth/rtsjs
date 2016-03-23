@@ -1,11 +1,16 @@
 import {GRID_SIZE} from './constants/GameConstants'
 
+const imageCache = {}
+
 module.exports = {
 
   loadImage: (img) => {
-    var imgElm = document.createElement("img");
-    imgElm.setAttribute('src', img);
-    return imgElm;
+    if(imageCache[img] === undefined){
+      var imgElm = document.createElement("img");
+      imgElm.setAttribute('src', img);
+      imageCache[img] = imgElm;
+    }
+    return imageCache[img];
   },
 
   toGridPos: function(x,y,viewPort){

@@ -5,6 +5,10 @@ import { loadImage } from '../Utils'
 import Image from '../../images/person1.png';
 
 
+const PLAYER_TYPE_MAN = 0;
+const PLAYER_TYPE_WOMAN_1 = 1;
+const PLAYER_TYPE_WOMAN_2 = 2;
+
 export default class Player extends Unit {
 
   constructor(game, coords=[0,0]){
@@ -47,6 +51,7 @@ export default class Player extends Unit {
 
     var animFrame = parseInt(this.animAge/5);
     var directionRow = 0;
+    var playerType = PLAYER_TYPE_MAN;
 
     if(this.dy < 0){
       directionRow = 3;
@@ -58,17 +63,10 @@ export default class Player extends Unit {
 
     screen.drawImage(
       this.image,
-      animFrame*32,directionRow*32,32,32,
+      playerType*(3*32)+animFrame*32,directionRow*32,32,32,
       this.grid2draw(this.pos.x)-this.width/2,this.grid2draw(this.pos.y)-this.width/2,
       this.width,this.width
     );
-
-    // var centerX = this.pos.x * GRID_SIZE + GRID_SIZE/2;
-    // var centerY = this.pos.y * GRID_SIZE + GRID_SIZE/2;
-    // screen.beginPath();
-    // screen.arc(centerX,centerY,this.width/2, 0,Math.PI*2);
-    // screen.closePath();
-    // screen.stroke();
 
     if(this.selected){
       this.drawHp(screen);

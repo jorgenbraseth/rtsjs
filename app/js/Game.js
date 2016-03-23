@@ -9,7 +9,7 @@ import Cursor from './sprites/Cursor'
 
 import { toGridPos } from './Utils'
 
-import { map, map2, MAP_OBLONG, GENERATED } from './Maps'
+import { GENERATED } from './Maps'
 
 import { LAYER_GROUND, LAYER_FLOOR, LAYER_MAP, LAYER_AIR, GRID_SIZE, KEY_BINDS } from './constants/GameConstants.js'
 
@@ -121,7 +121,7 @@ export default class Game {
     this.layers[LAYER_GROUND] = [];
     this.layers[LAYER_AIR] = [];
 
-    this.loadMap(GENERATED(60,70,0.3));
+    this.loadMap(GENERATED(100,70,0.3));
 
     var firstUnit = new Player(this,[0,0]);
     this.statusPanel = new StatusPanel(firstUnit,this);
@@ -286,12 +286,11 @@ export default class Game {
   }
 
   viewPortItemsForLayer(layer){
-    // var layer = this.layers[layerID];
     var visibleSpritesFromLayer = layer.filter((sprite) => {return this.viewPort.inView(sprite.pos)});
 
     var visibleMap = [];
     for (var y = 0; y < this.viewPort.height; y++) {
-      var row = []
+      var row = [];
       for (var x = 0; x < this.viewPort.width; x++) {
         row.push([]);
       }
@@ -303,7 +302,8 @@ export default class Game {
       var spriteX = parseInt(sprite.pos.x) - this.viewPort.minX;
       var spriteY = parseInt(sprite.pos.y) - this.viewPort.minY;
 
-      visibleMap[spriteY][spriteX].push(sprite);
+      if(spriteY < visibleMap.length && spriteX < visibleMap[0].length)
+        visibleMap[spriteY][spriteX].push(sprite);
     }
 
     return visibleMap;
