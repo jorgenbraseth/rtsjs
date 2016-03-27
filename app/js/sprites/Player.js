@@ -41,7 +41,7 @@ export default class Player extends Unit {
   tick() {
     super.tick();
 
-    if(this.moving){
+    if(this.isMoving){
       this.animAge = (this.animAge+1)%15;
     }
   }

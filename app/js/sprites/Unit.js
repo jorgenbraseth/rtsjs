@@ -43,12 +43,15 @@ export default class Unit extends Sprite {
     return calculatedPath;
   }
 
+  get isMoving() {
+    return this.nextGridPosition !== undefined;
+  }
+
   tick(){
     this.firedThisRound = false;
     if(this.targetOfAttack && this.targetOfAttack.dead == true){
       console.log(1);
       this.targetOfAttack = undefined;
-      // this.moveTo([this.pos.x,this.pos.y]);
     }
 
     if(this.targetOfAttack && this.inAttackRange(this.targetOfAttack)){
@@ -65,10 +68,14 @@ export default class Unit extends Sprite {
       }
     }else{
       if(this.targetOfAttack){
-        this.movingTo = [this.targetOfAttack.pos.x, this.targetOfAttack.pos.y];
-        // this.moveQueue = this.calculatePath();
+        const movingTo = [this.targetOfAttack.pos.x, this.targetOfAttack.pos.y];
+        this.moveTo(movingTo)
       }
       this.moveTowardsTarget();
+    }
+
+    if(this.isMoving){
+      this.age
     }
   }
 
@@ -195,47 +202,6 @@ export default class Unit extends Sprite {
 
   }
 
-  /*moveTowardsTarget_old() {
-    this.moving = !(this.pos.x === this.targetX && this.pos.y === this.targetY);
-
-    // this.calculatePath();
-    // this.moveQueue.shift();
-
-    if(!this.moving){
-      this.moveQueue.shift();
-    }
-
-    if(!this.moving && this.moveQueue.length > 0){
-      let nextPos = this.moveQueue.shift();
-      this.targetX = nextPos.x;
-      this.targetY = nextPos.y;
-    }
-
-    if(!this.game.positionFree(this.targetX,this.targetY)){
-      this.targetX = this.pos.x;
-      this.targetY = this.pos.y;
-      this.moveQueue = this.calculatePath();
-    }
-
-    if(this.game.positionFree(this.targetX,this.targetY)){
-      let distX = this.targetX - this.pos.x;
-      let distY = this.targetY - this.pos.y;
-      let dist = Math.sqrt(distX*distX + distY*distY);
-
-      if(dist>0) {
-        let sinA = distY / dist;
-        let cosA = distX / dist;
-
-        this.dx = cosA * Math.min(this.speed,dist);
-        this.dy = sinA * Math.min(this.speed,dist);
-
-        this.pos.x += this.dx;
-        this.pos.y += this.dy;
-      }
-    }
-
-
-  }*/
 
   attackTarget(unit) {
     // this.targetX = this.pos.x;
