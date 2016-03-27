@@ -25,12 +25,10 @@ module.exports = {
 
   // which heuristic should we use?
   // default: no diagonals (Manhattan)
-  /*
   var distanceFunction = ManhattanDistance;
+
   var findNeighbours = function () {
   }; // empty
-*/
-
 
    // alternate heuristics, depending on your game:
 
@@ -44,8 +42,8 @@ module.exports = {
    var findNeighbours = DiagonalNeighboursFree;
 */
    // euclidean but no squeezing through cracks:
-   var distanceFunction = EuclideanDistance;
-   var findNeighbours = DiagonalNeighbours;
+   // var distanceFunction = EuclideanDistance;
+   // var findNeighbours = DiagonalNeighbours;
 /*
    // euclidean and squeezing through cracks allowed:
    var distanceFunction = EuclideanDistance;
