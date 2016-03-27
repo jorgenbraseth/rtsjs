@@ -28,7 +28,6 @@ export default class Unit extends Sprite {
   }
 
   calculatePath(start,end){
-    console.log(JSON.stringify([start, end]));
     if(start==undefined || end==undefined){
       return [];
     }
@@ -50,27 +49,17 @@ export default class Unit extends Sprite {
   tick(){
     this.firedThisRound = false;
     if(this.targetOfAttack && this.targetOfAttack.dead == true){
-      console.log(1);
       this.targetOfAttack = undefined;
     }
 
     if(this.targetOfAttack && this.inAttackRange(this.targetOfAttack)){
+      this.moveQueue = [];
       if(this.targetOfAttack.fireAt){
         this.fireAt(this.targetOfAttack);
-        if(this.targetOfAttack.dead){
-          this.targetOfAttack = undefined;
-        }
       }else if(this.targetOfAttack.gather){
         this.gatherFrom(this.targetOfAttack);
-        if(this.targetOfAttack.depleted){
-          this.targetOfAttack = undefined;
-        }
       }
     }else{
-      if(this.targetOfAttack){
-        const movingTo = [this.targetOfAttack.pos.x, this.targetOfAttack.pos.y];
-        this.moveTo(movingTo)
-      }
       this.moveTowardsTarget();
     }
   }
@@ -84,11 +73,17 @@ export default class Unit extends Sprite {
     return rangeToTarget <= this.attackRange;
   }
 
-  takeDamage(damage){
+  takeDamage(damage, attacker){
     this.hp -= damage;
     if(this.hp <= 0){
       this.die();
+      attacker.killed(this);
     }
+  }
+
+  killed(unit) {
+    this.targetOfAttack = undefined;
+    console.log(this.constructor.name + " killed a "+unit.constructor.name);
   }
 
   fireAt(unit){
@@ -164,7 +159,6 @@ export default class Unit extends Sprite {
 
     if(this.nextGridPosition && !this.game.positionFree(this.nextGridPosition)){
       this.moveQueue = [];
-      console.log("not free!");
     }
   }
 
@@ -199,8 +193,7 @@ export default class Unit extends Sprite {
 
 
   attackTarget(unit) {
-    // this.targetX = this.pos.x;
-    // this.targetY = this.pos.y;
+    this.moveTo(unit.gridPos);
     this.targetOfAttack = unit;
   }
 }

@@ -42,6 +42,7 @@ export default class Tree extends Sprite {
 
     if(this.resourceAmount <= 0){
       this.deplete();
+      gatherer.killed(this);
     }
   }
 
