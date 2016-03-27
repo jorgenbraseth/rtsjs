@@ -16,7 +16,7 @@ export default class Blood extends Sprite {
   draw(screen){
     var imageAgeOffset = parseInt(this.age / (500/6));
     var x = imageAgeOffset*150;
-      screen.drawImage(
+    screen.drawImage(
       this.image,
       x,0,150,150,
       -GRID_SIZE/2,-GRID_SIZE/5,

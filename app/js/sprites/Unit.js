@@ -8,33 +8,39 @@ export default class Unit extends Sprite {
     super(game,coords);
     this.hp = hp;
     this.initialHp = hp;
-    this.attackRange = 1.5;
+    this.gridPos = coords;
+    this.attackRange = 1;
     this.attackDamage = attackDamage;
     this.gatheringSpeed = 0.25;
     this.dead = false;
     this.moveCost = 0;
   }
 
-  moveTo(coords){
+  moveTo(targetPosition){
     this.targetOfAttack = undefined;
-    this.movingTo = coords;
-    this.targetX = parseInt(this.pos.x + Math.round(this.dx));
-    this.targetY = parseInt(this.pos.y + Math.round(this.dy));
-    // this.calculatePath();
+
+    var newMoveQueue = [];
+    if(this.nextGridPosition){
+      newMoveQueue.push([this.nextGridPosition[0],this.nextGridPosition[1]]);
+    }
+    var startPoint = this.nextGridPosition || this.gridPos;
+    this.moveQueue = newMoveQueue.concat([...this.calculatePath(startPoint,targetPosition)]);
   }
 
-  calculatePath(){
-    this.moveQueue = [[this.targetX,this.targetY]];
-    var myPos = [this.targetX,this.targetY];
-    var path = AStar.findPath(this.world, myPos,this.movingTo);
+  calculatePath(start,end){
+    console.log(JSON.stringify([start, end]));
+    if(start==undefined || end==undefined){
+      return [];
+    }
+    var calculatedPath = [];
+    var path = AStar.findPath(this.world, start,end);
 
     for (var pos = 0; pos < path.length; pos++) {
       var coords = path[pos];
-      this.moveQueue.push({
-        x: coords[0],
-        y: coords[1]
-      })
+      calculatedPath.push(coords);
     }
+
+    return calculatedPath;
   }
 
   tick(){
@@ -42,7 +48,7 @@ export default class Unit extends Sprite {
     if(this.targetOfAttack && this.targetOfAttack.dead == true){
       console.log(1);
       this.targetOfAttack = undefined;
-      this.moveTo([this.pos.x,this.pos.y]);
+      // this.moveTo([this.pos.x,this.pos.y]);
     }
 
     if(this.targetOfAttack && this.inAttackRange(this.targetOfAttack)){
@@ -60,7 +66,7 @@ export default class Unit extends Sprite {
     }else{
       if(this.targetOfAttack){
         this.movingTo = [this.targetOfAttack.pos.x, this.targetOfAttack.pos.y];
-        // this.calculatePath();
+        // this.moveQueue = this.calculatePath();
       }
       this.moveTowardsTarget();
     }
@@ -97,7 +103,7 @@ export default class Unit extends Sprite {
     this.game.removeSprite(this);
   }
 
-  
+
   draw(screen, viewport){
     if(this.firedThisRound && this.targetOfAttack){
       screen.beginPath();
@@ -107,6 +113,7 @@ export default class Unit extends Sprite {
       screen.stroke();
     }
   }
+
   drawHp(screen){
     var hpPercent = (this.hp/this.initialHp);
     if(hpPercent > 0.8){
@@ -116,14 +123,83 @@ export default class Unit extends Sprite {
     }else{
       screen.fillStyle = "rgba(250,0,0,1)";
     }
-    screen.fillRect(3,5,(GRID_SIZE-6)*hpPercent,5)
+
+    var dx = GRID_SIZE/2-3;
+    var dy = GRID_SIZE/2+5;
+    screen.translate(-dx,- dy);
+    screen.fillRect(0,0,(GRID_SIZE-6)*hpPercent,5);
+    screen.translate(dx,dy);
   }
 
   moveTowardsTarget() {
+    if(this.nextGridPosition && !this.game.positionFree(this.nextGridPosition)){
+      this.moveQueue = [];
+    }
+
+    if(this.nextGridPosition === undefined){
+      return;
+    }
+
+    if(this.atPosition(this.nextGridPosition)){
+      this.gridPos = [this.nextGridPosition[0],this.nextGridPosition[1]];
+      this.moveQueue.shift();
+    }else{
+      let distX = this.nextGridPosition[0] - this.pos.x;
+      let distY = this.nextGridPosition[1] - this.pos.y;
+      let dist = Math.sqrt(distX*distX + distY*distY);
+
+      if(dist>0) {
+        let sinA = distY / dist;
+        let cosA = distX / dist;
+
+        this.dx = cosA * Math.min(this.speed,dist);
+        this.dy = sinA * Math.min(this.speed,dist);
+
+        this.pos.x += this.dx;
+        this.pos.y += this.dy;
+      }
+    }
+
+    if(this.nextGridPosition && !this.game.positionFree(this.nextGridPosition)){
+      this.moveQueue = [];
+      console.log("not free!");
+    }
+  }
+
+  set gridPos(coords) {
+    this._gridPos = coords;
+  }
+  get gridPos() {
+    return this._gridPos;
+  }
+
+  get targetX() {
+    if(this.nextGridPosition)
+      return this.nextGridPosition[0];
+    else
+      return this.gridPos[0]
+  }
+  get targetY() {
+    if(this.nextGridPosition)
+      return this.nextGridPosition[1];
+    else
+      return this.gridPos[1]
+  }
+
+  get nextGridPosition() {
+    return this.moveQueue[0] || undefined;
+  }
+
+  atPosition(pos) {
+    return pos == undefined || (this.pos.x == pos[0] && this.pos.y == pos[1]);
+
+  }
+
+  /*moveTowardsTarget_old() {
     this.moving = !(this.pos.x === this.targetX && this.pos.y === this.targetY);
 
-    this.calculatePath();
-    this.moveQueue.shift();
+    // this.calculatePath();
+    // this.moveQueue.shift();
 
     if(!this.moving){
       this.moveQueue.shift();
@@ -138,7 +214,7 @@ export default class Unit extends Sprite {
     if(!this.game.positionFree(this.targetX,this.targetY)){
       this.targetX = this.pos.x;
       this.targetY = this.pos.y;
-      this.calculatePath();
+      this.moveQueue = this.calculatePath();
     }
 
     if(this.game.positionFree(this.targetX,this.targetY)){
@@ -159,11 +235,11 @@ export default class Unit extends Sprite {
     }
 
 
-  }
+  }*/
 
   attackTarget(unit) {
-    this.targetX = this.pos.x;
-    this.targetY = this.pos.y;
+    // this.targetX = this.pos.x;
+    // this.targetY = this.pos.y;
     this.targetOfAttack = unit;
   }
 }

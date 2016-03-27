@@ -15,10 +15,6 @@ export default class Rock extends Sprite {
     this.image = [loadImage(Image),0,0,85,85,-GRID_SIZE/2,-GRID_SIZE/2,this.width,this.width]
   }
 
-  draw(screen){
-    screen.drawImage(...this.image)
-  }
-
   select(){
     super.select();
     console.log(this.constructor.name + " selected");

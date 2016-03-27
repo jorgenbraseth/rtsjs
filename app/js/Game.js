@@ -17,6 +17,8 @@ import '../images/sword.png'
 
 export default class Game {
 
+  canvas: undefined;
+
   constructor(canvas){
     this.canvas = canvas;
     this.screen = canvas.getContext('2d');
@@ -84,7 +86,6 @@ export default class Game {
 
   setMode(mode,args){
     this.actionMode = mode;
-    console.log(this.actionMode);
     this.cursor.setMode(this.actionMode,args);
   }
   enableAttackMode(){
@@ -92,6 +93,9 @@ export default class Game {
   }
   enableMoveMode(){
     this.setMode('MOVE')
+  }
+  enableDefaultMode(){
+    this.setMode('DEFAULT')
   }
   enablePlacementMode(){
     var sprite = new Tree(this,[0,0]);
@@ -155,6 +159,8 @@ export default class Game {
       }
     }
 
+    this.enableDefaultMode();
+
   }
 
   select(sprite, addToSelection) {
@@ -194,23 +200,28 @@ export default class Game {
 
   }
 
-  spriteAt(coords){
+  spriteAt(coords, countPlayer=false){
     var x = coords[0];
     var y = coords[1];
+
+    var found = undefined;
     for (var i = this.layers[LAYER_AIR].length -1; i >= 0; i--) {
       var sprite = this.layers[LAYER_AIR][i];
       if(sprite.pos.x == x && sprite.pos.y == y){
-        return sprite;
+        found = sprite;
       }
     }
     for (var i = this.layers[LAYER_GROUND].length -1; i >= 0; i--) {
       var sprite = this.layers[LAYER_GROUND][i];
       if(sprite.pos.x == x && sprite.pos.y == y){
-        return sprite;
+        found = sprite;
       }
     }
 
-    return undefined;
+    if(found && !countPlayer && found.constructor.name === 'Player'){
+      found = undefined;
+    }
+    return found;
   }
 
   clearSelection(){
@@ -227,14 +238,10 @@ export default class Game {
     var clickedSprite = this.spriteAt(coords);
 
     if(this.actionMode === 'PLACE' && clickedSprite === undefined){
-      console.log(this.placingUnit);
-      console.log(...coords);
       this.placingUnit.setPosition(...coords);
-      console.log(this.placingUnit.pos);
       this.addSprite(LAYER_GROUND, this.placingUnit);
-      this.setMode('MOVE');
       this.placingUnit=undefined;
-      console.log(clickedSprite);
+      this.enableDefaultMode();
     }
 
     // if(clickedSprite){
@@ -248,22 +255,27 @@ export default class Game {
 
   gridRightClicked(coords){
     var clickedSprite = this.spriteAt(coords);
-    if(clickedSprite){
-      if(clickedSprite.fireAt){
-        for (var i = 0; i < this.selectedSprites.length; i++) {
-          var selected = this.selectedSprites[i];
-          selected.attackTarget(clickedSprite);
-        }
-      }else if(clickedSprite.gather){
-        for (var i = 0; i < this.selectedSprites.length; i++) {
-          var selected = this.selectedSprites[i];
-          selected.attackTarget(clickedSprite);
-        }
-      }
+    if(this.actionMode!=='DEFAULT'){
+      this.enableDefaultMode();
     }else{
-      for (var i = 0; i < this.selectedSprites.length; i++) {
-        var selected = this.selectedSprites[i];
-        selected.moveTo(coords);
+
+      if(clickedSprite){
+        if(clickedSprite.fireAt){
+          for (var i = 0; i < this.selectedSprites.length; i++) {
+            var selected = this.selectedSprites[i];
+            selected.attackTarget(clickedSprite);
+          }
+        }else if(clickedSprite.gather){
+          for (var i = 0; i < this.selectedSprites.length; i++) {
+            var selected = this.selectedSprites[i];
+            selected.attackTarget(clickedSprite);
+          }
+        }
+      }else{
+        for (var i = 0; i < this.selectedSprites.length; i++) {
+          var selected = this.selectedSprites[i];
+          selected.moveTo(coords);
+        }
       }
     }
   }
@@ -275,8 +287,9 @@ export default class Game {
     this.removeSpriteFromLayer(this.layers[LAYER_MAP],sprite);
   }
 
-  positionFree(x,y){
-    return this.spriteAt([x,y]) === undefined;
+  positionFree(coords){
+    var found = this.spriteAt(coords);
+    return found === undefined;
   }
 
   removeSpriteFromLayer(layer, sprite){

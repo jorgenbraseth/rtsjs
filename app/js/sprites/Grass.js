@@ -12,7 +12,4 @@ export default class Grass extends Sprite {
     this.image = [loadImage(Image)-GRID_SIZE/2,-GRID_SIZE/2,this.width,this.width];
   }
 
-  draw(screen){
-    screen.drawImage(...this.image)
-  }
 }

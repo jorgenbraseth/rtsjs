@@ -32,10 +32,6 @@ export default class Tree extends Sprite {
 
   }
 
-  draw(screen, viewport){
-    screen.drawImage(...this.image);
-  }
-
   gather(gatherAmount, gatherer){
     var amountBeforeGather = parseInt(this.resourceAmount);
     this.resourceAmount -= gatherAmount;

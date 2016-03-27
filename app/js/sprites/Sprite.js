@@ -1,6 +1,7 @@
 import { GRID_SIZE } from '../constants/GameConstants.js'
 
 export default class Sprite {
+  image: undefined;
 
   constructor(game, coords=[0,0]){
     this.game = game;
@@ -26,12 +27,23 @@ export default class Sprite {
     this.dy = 1;
 
 
-    this.targetX = this.pos.x;
-    this.targetY = this.pos.y;
+    // this.targetX = this.pos.x;
+    // this.targetY = this.pos.y;
 
     this.moveQueue = [];
 
     this.moveCost = 0;
+  }
+
+  get targetX() {
+      return this.gridPos[0]
+  }
+  get targetY() {
+      return this.gridPos[1]
+  }
+
+  get gridPos(){
+    return [this.pos.x,this.pos.y]
   }
 
   select(){
@@ -58,11 +70,15 @@ export default class Sprite {
   }
 
   draw(screen){
-    screen.fillStyle = this.color;
+    if(this.image) {
+      screen.drawImage(...this.image);
+    }else{
+      screen.fillStyle = this.color;
 
-    var centerX = GRID_SIZE/2;
-    var centerY = GRID_SIZE/2;
-    screen.fillRect(centerX - this.width/2,centerY - this.width/2 ,this.width,this.width);
+      var centerX = GRID_SIZE/2;
+      var centerY = GRID_SIZE/2;
+      screen.fillRect(centerX - this.width/2,centerY - this.width/2 ,this.width,this.width);
+    }
   }
 
   grid2draw(val){

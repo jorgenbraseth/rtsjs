@@ -10,18 +10,17 @@ const cursors = {};
 export default class StatusPanel {
 
   constructor(){
-    cursors.default = [loadImage(CURSOR_PLAIN), 0, 0, 24, 24, -hotspot.x, -hotspot.y, 24, 24];
-    this.currentLook = cursors.default;
+    cursors.DEFAULT = [loadImage(CURSOR_PLAIN), 0, 0, 24, 24, -hotspot.x, -hotspot.y, 24, 24];
+    cursors.ATTACK = [loadImage(CURSOR_PLAIN), 0, 0, 24, 24, -hotspot.x, -hotspot.y, 24, 24];
+    cursors.MOVE = [loadImage(CURSOR_PLAIN), 0, 0, 24, 24, -hotspot.x, -hotspot.y, 24, 24];
+
+    this.currentLook = cursors.DEFAULT;
     this.placingSprite = undefined;
   }
 
   setPosition(x,y) {
     this.posX = x;
     this.posY = y;
-
-    if(this.placingSprite){
-      console.log([this.grid2draw(x), this.grid2draw(y)]);
-    }
   }
 
   setImage(img){
@@ -34,7 +33,12 @@ export default class StatusPanel {
   draw(screen){
     screen.translate(this.posX,this.posY);
 
+
+    if(this.mode === 'PLACE'){
+      screen.globalAlpha=0.7;
+    }
     screen.drawImage(...this.currentLook);
+    screen.globalAlpha=1;
 
     screen.translate(-this.posX,-this.posY);
   }
@@ -44,12 +48,12 @@ export default class StatusPanel {
   }
 
   setMode(mode, args){
-    console.log("Cursor set for mode "+mode);
+    this.mode = mode;
     if(mode==='PLACE' && args){
       this.setImage(args.image);
       // this.placingSprite = args;
     }else{
-      this.currentLook = cursors.default;
+      this.currentLook = cursors[this.mode];
     }
   }
 }
