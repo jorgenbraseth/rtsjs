@@ -21,7 +21,7 @@ export default class TreeStump extends Sprite {
     screen.drawImage(
       this.image,
       0,0,98,78,
-      this.grid2draw(this.pos.x)-GRID_SIZE/5,this.grid2draw(this.pos.y),
+      -GRID_SIZE/5,0,
       12 ,12
     )
   }

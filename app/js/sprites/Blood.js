@@ -19,12 +19,10 @@ export default class Blood extends Sprite {
       screen.drawImage(
       this.image,
       x,0,150,150,
-      this.grid2draw(this.pos.x)-GRID_SIZE/2,this.grid2draw(this.pos.y)-GRID_SIZE/5,
+      -GRID_SIZE/2,-GRID_SIZE/5,
       this.width,this.width
     )
   }
-
-  
 
   tick(){
     this.age +=1;

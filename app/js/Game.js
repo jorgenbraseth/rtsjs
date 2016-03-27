@@ -59,7 +59,17 @@ export default class Game {
 
     this.userInput.onKey(KEY_BINDS.ATTACK, this.enableAttackMode.bind(this));
     this.userInput.onKey(KEY_BINDS.MOVE, this.enableMoveMode.bind(this));
+    this.userInput.onKey(KEY_BINDS.PLACE_BUILDING, this.enablePlacementMode.bind(this));
 
+    this.bindCameraControls();
+
+    this.userInput.onKey(KEY_BINDS.SHIFT, () => {this.shiftHeld = true});
+    this.userInput.onKeyUp(KEY_BINDS.SHIFT, () => {this.shiftHeld = false});
+
+    this.init();
+  }
+
+  bindCameraControls(){
     this.userInput.onKey(KEY_BINDS.CAMERA_PAN_LEFT, this.panCameraLeft.bind(this));
     this.userInput.onKey(KEY_BINDS.CAMERA_PAN_RIGHT, this.panCameraRight.bind(this));
     this.userInput.onKey(KEY_BINDS.CAMERA_PAN_UP, this.panCameraUp.bind(this));
@@ -69,21 +79,24 @@ export default class Game {
     this.userInput.onKeyUp(KEY_BINDS.CAMERA_PAN_RIGHT, () => {this.cameraPanX=0});
     this.userInput.onKeyUp(KEY_BINDS.CAMERA_PAN_UP, () => {this.cameraPanY=0});
     this.userInput.onKeyUp(KEY_BINDS.CAMERA_PAN_DOWN, () => {this.cameraPanY=0});
-
-    this.userInput.onKey(KEY_BINDS.SHIFT, () => {this.shiftHeld = true});
-    this.userInput.onKeyUp(KEY_BINDS.SHIFT, () => {this.shiftHeld = false});
-
-    this.init();
-  }
+  };
 
 
-  enableAttackMode(){
-    this.actionMode = 'ATTACK';
+  setMode(mode,args){
+    this.actionMode = mode;
     console.log(this.actionMode);
+    this.cursor.setMode(this.actionMode,args);
+  }
+  enableAttackMode(){
+    this.setMode('ATTACK')
   }
   enableMoveMode(){
-    this.actionMode = 'MOVE';
-    console.log(this.actionMode);
+    this.setMode('MOVE')
+  }
+  enablePlacementMode(){
+    var sprite = new Tree(this,[0,0]);
+    this.placingUnit = sprite;
+    this.setMode('PLACE',sprite);
   }
 
   panCameraDown(){
@@ -98,6 +111,8 @@ export default class Game {
   panCameraRight(){
     this.cameraPanX = 1;
   }
+
+
 
 
   loadMap(mapData){
@@ -211,18 +226,28 @@ export default class Game {
   gridLeftClicked(coords){
     var clickedSprite = this.spriteAt(coords);
 
-    if(clickedSprite){
-      this.select(clickedSprite, this.shiftHeld);
-    }else{
-      // this.addSprite(LAYER_FLOOR, new TreeStump(this, coords));
-      // this.addSprite(LAYER_MAP, new Blood(this, coords));
-      this.clearSelection();
+    if(this.actionMode === 'PLACE' && clickedSprite === undefined){
+      console.log(this.placingUnit);
+      console.log(...coords);
+      this.placingUnit.setPosition(...coords);
+      console.log(this.placingUnit.pos);
+      this.addSprite(LAYER_GROUND, this.placingUnit);
+      this.setMode('MOVE');
+      this.placingUnit=undefined;
+      console.log(clickedSprite);
     }
+
+    // if(clickedSprite){
+    //   this.select(clickedSprite, this.shiftHeld);
+    // }else{
+    //   // this.addSprite(LAYER_FLOOR, new TreeStump(this, coords));
+    //   // this.addSprite(LAYER_MAP, new Blood(this, coords));
+    //   this.clearSelection();
+    // }
   }
 
   gridRightClicked(coords){
     var clickedSprite = this.spriteAt(coords);
-
     if(clickedSprite){
       if(clickedSprite.fireAt){
         for (var i = 0; i < this.selectedSprites.length; i++) {

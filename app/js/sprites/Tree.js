@@ -7,13 +7,13 @@ import TreeStump from './TreeStump'
 import Image from '../../images/trees2.png'
 
 const VARIANTS = [
-  {x: 385, y:14, w:86, h:143},
-  {x: 515, y:332, w:53, h:88},
-  {x: 268, y:14, w:93, h:153},
-  {x: 547, y:139, w:103, h:172},
-  {x: 27, y:281, w:101, h:168},
-  {x: 353, y:311, w:57, h:95},
-  {x: 155, y:145, w:87, h:145}
+  {x: 385, y:14, w:86, h:143, cX:GRID_SIZE/2, cY:45},
+  {x: 515, y:332, w:53, h:88, cX:GRID_SIZE/2, cY:45},
+  {x: 268, y:14, w:93, h:153, cX:GRID_SIZE/2, cY:45},
+  {x: 547, y:139, w:103, h:172, cX:GRID_SIZE/2, cY:45},
+  {x: 27, y:281, w:101, h:168, cX:GRID_SIZE/2, cY:45},
+  {x: 353, y:311, w:57, h:95, cX:GRID_SIZE/2, cY:45},
+  {x: 155, y:145, w:87, h:145, cX:GRID_SIZE/2, cY:45}
 ];
 
 export default class Tree extends Sprite {
@@ -27,19 +27,13 @@ export default class Tree extends Sprite {
     this.color = "black";
     this.depleted = false;
 
-    this.image = loadImage(Image);
-
     this.variant = VARIANTS[parseInt(Math.random()*VARIANTS.length)];
+    this.image = [loadImage(Image), this.variant.x,this.variant.y,this.variant.w,this.variant.h,-this.variant.cX,-this.variant.cY,40,65];
 
   }
 
   draw(screen, viewport){
-    screen.drawImage(
-      this.image,
-      this.variant.x,this.variant.y,this.variant.w,this.variant.h,
-      this.grid2draw(this.pos.x)-GRID_SIZE/2,this.grid2draw(this.pos.y)-45,
-      40 ,65
-    )
+    screen.drawImage(...this.image);
   }
 
   gather(gatherAmount, gatherer){

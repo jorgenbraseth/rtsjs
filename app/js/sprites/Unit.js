@@ -18,9 +18,9 @@ export default class Unit extends Sprite {
   moveTo(coords){
     this.targetOfAttack = undefined;
     this.movingTo = coords;
-    this.targetX = parseInt(this.pos.x + Math.ceil(this.dx));
-    this.targetY = parseInt(this.pos.y + Math.ceil(this.dy));
-    this.calculatePath();
+    this.targetX = parseInt(this.pos.x + Math.round(this.dx));
+    this.targetY = parseInt(this.pos.y + Math.round(this.dy));
+    // this.calculatePath();
   }
 
   calculatePath(){
@@ -60,7 +60,7 @@ export default class Unit extends Sprite {
     }else{
       if(this.targetOfAttack){
         this.movingTo = [this.targetOfAttack.pos.x, this.targetOfAttack.pos.y];
-        this.calculatePath();
+        // this.calculatePath();
       }
       this.moveTowardsTarget();
     }
@@ -97,6 +97,7 @@ export default class Unit extends Sprite {
     this.game.removeSprite(this);
   }
 
+  
   draw(screen, viewport){
     if(this.firedThisRound && this.targetOfAttack){
       screen.beginPath();
@@ -115,12 +116,7 @@ export default class Unit extends Sprite {
     }else{
       screen.fillStyle = "rgba(250,0,0,1)";
     }
-    screen.fillRect(
-      this.pos.x*GRID_SIZE+3,
-      this.pos.y*GRID_SIZE-5,
-      (GRID_SIZE-6)*hpPercent,
-      5
-    )
+    screen.fillRect(3,5,(GRID_SIZE-6)*hpPercent,5)
   }
 
   moveTowardsTarget() {

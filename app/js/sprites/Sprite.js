@@ -48,15 +48,20 @@ export default class Sprite {
 
   drawSprite(screen, viewPort){
     if(viewPort.inView(this.pos)){
+      var dx = this.grid2draw(this.pos.x);
+      var dy = this.grid2draw(this.pos.y);
+
+      screen.translate(dx,dy);
       this.draw(screen);
+      screen.translate(-dx,-dy);
     }
   }
 
   draw(screen){
     screen.fillStyle = this.color;
 
-    var centerX = this.pos.x * GRID_SIZE + GRID_SIZE/2;
-    var centerY = this.pos.y * GRID_SIZE + GRID_SIZE/2;
+    var centerX = GRID_SIZE/2;
+    var centerY = GRID_SIZE/2;
     screen.fillRect(centerX - this.width/2,centerY - this.width/2 ,this.width,this.width);
   }
 
@@ -64,4 +69,9 @@ export default class Sprite {
     return val * GRID_SIZE + GRID_SIZE / 2;
   }
 
+  setPosition(x,y) {
+    this.pos.x = x;
+    this.pos.y = y;
+
+  }
 }

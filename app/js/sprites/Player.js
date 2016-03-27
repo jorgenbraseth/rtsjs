@@ -64,7 +64,7 @@ export default class Player extends Unit {
     screen.drawImage(
       this.image,
       playerType*(3*32)+animFrame*32,directionRow*32,32,32,
-      this.grid2draw(this.pos.x)-this.width/2,this.grid2draw(this.pos.y)-this.width/2,
+      -this.width/2,-this.width/2,
       this.width,this.width
     );
 
@@ -80,14 +80,14 @@ export default class Player extends Unit {
       var pos = this.moveQueue[i];
       screen.fillStyle = "rgba(0,5,0,0.5";
       screen.beginPath();
-      screen.arc(this.grid2draw(pos.x),this.grid2draw(pos.y),3,0,Math.PI*2);
+      screen.arc(0,0,3,0,Math.PI*2);
       screen.closePath();
       screen.fill();
 
       screen.strokeStyle = "rgba(0,50,0,0.7)";
       screen.beginPath();
-      screen.moveTo(this.grid2draw(prevPos.x), this.grid2draw(prevPos.y));
-      screen.lineTo(this.grid2draw(pos.x), this.grid2draw(pos.y));
+      screen.moveTo(0, 0);
+      screen.lineTo(0, 0);
       screen.closePath();
       screen.stroke();
 

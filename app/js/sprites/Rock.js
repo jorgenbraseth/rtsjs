@@ -12,16 +12,11 @@ export default class Rock extends Sprite {
     this.resourceAmount = this.startingResources;
     this.moveCost = 10000;
 
-    this.image = loadImage(Image);
+    this.image = [loadImage(Image),0,0,85,85,-GRID_SIZE/2,-GRID_SIZE/2,this.width,this.width]
   }
 
   draw(screen){
-    screen.drawImage(
-      this.image,
-      0,0,85,85,
-      this.grid2draw(this.pos.x)-GRID_SIZE/2,this.grid2draw(this.pos.y)-GRID_SIZE/2,
-      this.width,this.width
-    )
+    screen.drawImage(...this.image)
   }
 
   select(){
