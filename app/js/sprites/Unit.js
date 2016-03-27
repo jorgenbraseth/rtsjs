@@ -73,10 +73,6 @@ export default class Unit extends Sprite {
       }
       this.moveTowardsTarget();
     }
-
-    if(this.isMoving){
-      this.age
-    }
   }
 
   inAttackRange(unit){
@@ -109,7 +105,6 @@ export default class Unit extends Sprite {
     this.dead = true;
     this.game.removeSprite(this);
   }
-
 
   draw(screen, viewport){
     if(this.firedThisRound && this.targetOfAttack){
