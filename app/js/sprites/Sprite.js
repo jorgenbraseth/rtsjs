@@ -88,6 +88,5 @@ export default class Sprite {
   setPosition(x,y) {
     this.pos.x = x;
     this.pos.y = y;
-
   }
 }

@@ -11,7 +11,7 @@ import { toGridPos } from './Utils'
 
 import { GENERATED } from './Maps'
 
-import { LAYER_GROUND, LAYER_FLOOR, LAYER_MAP, LAYER_AIR, GRID_SIZE, KEY_BINDS } from './constants/GameConstants.js'
+import { LAYER_GROUND, LAYER_GROUND_PLACEMENT, LAYER_FLOOR, LAYER_MAP, LAYER_AIR, GRID_SIZE, KEY_BINDS } from './constants/GameConstants.js'
 
 import '../images/sword.png'
 
@@ -43,9 +43,7 @@ export default class Game {
     this.canvas.style.cursor = "none";
 
     this.cursor = new Cursor();
-    this.canvas.onmousemove = (e) => {
-      this.cursor.setPosition(e.layerX,e.layerY);
-    };
+    this.canvas.onmousemove = this.onMouseMove.bind(this);
 
     this.userInput.onLeftClick(
       function(x,y){
@@ -69,6 +67,20 @@ export default class Game {
     this.userInput.onKeyUp(KEY_BINDS.SHIFT, () => {this.shiftHeld = false});
 
     this.init();
+  }
+
+  onMouseMove(e){
+    var pixelPos = [e.layerX,e.layerY];
+
+    var gridPos = pixelPos.map((coord) => { return parseInt(coord / GRID_SIZE) });
+    gridPos[0] += this.viewPort.minX;
+    gridPos[1] += this.viewPort.minY;
+
+    this.cursor.setPosition(...pixelPos);
+
+    this.layers[LAYER_GROUND_PLACEMENT].forEach(spriteToBePlaced => {
+      spriteToBePlaced.setPosition(...gridPos);
+    });
   }
 
   bindCameraControls(){
@@ -99,6 +111,7 @@ export default class Game {
   }
   enablePlacementMode(){
     var sprite = new Tree(this,[0,0]);
+    this.addSprite(LAYER_GROUND_PLACEMENT, sprite);
     this.placingUnit = sprite;
     this.setMode('PLACE',sprite);
   }
@@ -138,6 +151,7 @@ export default class Game {
     this.layers[LAYER_MAP] = [];
     this.layers[LAYER_FLOOR] = [];
     this.layers[LAYER_GROUND] = [];
+    this.layers[LAYER_GROUND_PLACEMENT] = [];
     this.layers[LAYER_AIR] = [];
 
     this.loadMap(GENERATED(100,70,0.3));
@@ -239,6 +253,7 @@ export default class Game {
 
     if(this.actionMode === 'PLACE' && clickedSprite === undefined){
       this.placingUnit.setPosition(...coords);
+      this.removeSprite(this.placingUnit);
       this.addSprite(LAYER_GROUND, this.placingUnit);
       this.placingUnit=undefined;
       this.enableDefaultMode();
@@ -283,6 +298,7 @@ export default class Game {
   removeSprite(sprite){
     this.removeSpriteFromLayer(this.layers[LAYER_AIR],sprite);
     this.removeSpriteFromLayer(this.layers[LAYER_GROUND],sprite);
+    this.removeSpriteFromLayer(this.layers[LAYER_GROUND_PLACEMENT],sprite);
     this.removeSpriteFromLayer(this.layers[LAYER_FLOOR],sprite);
     this.removeSpriteFromLayer(this.layers[LAYER_MAP],sprite);
   }
@@ -369,12 +385,14 @@ export default class Game {
   }
 
   draw(){
-
     this.clearScreen();
     this.screen.translate(-this.viewPort.minX*GRID_SIZE,-this.viewPort.minY*GRID_SIZE);
     this.drawLayer(this.layers[LAYER_MAP]);
     this.drawLayer(this.layers[LAYER_FLOOR]);
     this.drawLayer(this.layers[LAYER_GROUND]);
+    this.screen.globalAlpha = 0.5;
+    this.drawLayer(this.layers[LAYER_GROUND_PLACEMENT]);
+    this.screen.globalAlpha = 1;
     this.drawLayer(this.layers[LAYER_AIR]);
     this.screen.translate(this.viewPort.minX*GRID_SIZE,this.viewPort.minY*GRID_SIZE);
 

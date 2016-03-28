@@ -15,7 +15,6 @@ export default class StatusPanel {
     cursors.MOVE = [loadImage(CURSOR_PLAIN), 0, 0, 24, 24, -hotspot.x, -hotspot.y, 24, 24];
 
     this.currentLook = cursors.DEFAULT;
-    this.placingSprite = undefined;
   }
 
   setPosition(x,y) {
@@ -24,7 +23,6 @@ export default class StatusPanel {
   }
 
   setImage(img){
-    console.log("Setting new image");
     if(img){
       this.currentLook = img;
     }
@@ -34,11 +32,9 @@ export default class StatusPanel {
     screen.translate(this.posX,this.posY);
 
 
-    if(this.mode === 'PLACE'){
-      screen.globalAlpha=0.7;
-    }
-    screen.drawImage(...this.currentLook);
-    screen.globalAlpha=1;
+    // if(this.mode !== 'PLACE'){
+      screen.drawImage(...this.currentLook);
+    // }
 
     screen.translate(-this.posX,-this.posY);
   }
@@ -49,11 +45,6 @@ export default class StatusPanel {
 
   setMode(mode, args){
     this.mode = mode;
-    if(mode==='PLACE' && args){
-      this.setImage(args.image);
-      // this.placingSprite = args;
-    }else{
-      this.currentLook = cursors[this.mode];
-    }
+    this.currentLook = cursors[this.mode] || cursors.DEFAULT;
   }
 }
