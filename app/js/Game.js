@@ -70,16 +70,16 @@ export default class Game {
   }
 
   onMouseMove(e){
-    var pixelPos = [e.layerX,e.layerY];
+    this.mousePixelPos = [e.layerX,e.layerY];
 
-    var gridPos = pixelPos.map((coord) => { return parseInt(coord / GRID_SIZE) });
-    gridPos[0] += this.viewPort.minX;
-    gridPos[1] += this.viewPort.minY;
+    this.mouseGridPos = this.mousePixelPos.map((coord) => { return parseInt(coord / GRID_SIZE) });
+    this.mouseGridPos[0] += this.viewPort.minX;
+    this.mouseGridPos[1] += this.viewPort.minY;
 
-    this.cursor.setPosition(...pixelPos);
+    this.cursor.setPosition(...this.mousePixelPos);
 
     this.layers[LAYER_GROUND_PLACEMENT].forEach(spriteToBePlaced => {
-      spriteToBePlaced.setPosition(...gridPos);
+      spriteToBePlaced.setPosition(...this.mouseGridPos);
     });
   }
 
@@ -96,7 +96,11 @@ export default class Game {
   };
 
 
-  setMode(mode,args){
+  setMode(mode,args) {
+    if(this.actionMode==='PLACE'){
+      this.removeSprite(this.placingUnit);
+      this.placingUnit = undefined;
+    }
     this.actionMode = mode;
     this.cursor.setMode(this.actionMode,args);
   }
@@ -110,10 +114,10 @@ export default class Game {
     this.setMode('DEFAULT')
   }
   enablePlacementMode(){
-    var sprite = new Tree(this,[0,0]);
+    var sprite = new Tree(this,this.mouseGridPos);
+    this.setMode('PLACE',sprite);
     this.addSprite(LAYER_GROUND_PLACEMENT, sprite);
     this.placingUnit = sprite;
-    this.setMode('PLACE',sprite);
   }
 
   panCameraDown(){
@@ -128,9 +132,6 @@ export default class Game {
   panCameraRight(){
     this.cameraPanX = 1;
   }
-
-
-
 
   loadMap(mapData){
     var transposedMap = mapData[0].map(function(col, i) {

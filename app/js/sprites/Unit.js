@@ -83,7 +83,6 @@ export default class Unit extends Sprite {
 
   killed(unit) {
     this.targetOfAttack = undefined;
-    console.log(this.constructor.name + " killed a "+unit.constructor.name);
   }
 
   fireAt(unit){
