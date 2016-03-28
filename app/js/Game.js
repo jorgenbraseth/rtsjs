@@ -6,6 +6,7 @@ import Tree from './sprites/Tree'
 import Grass2 from './sprites/Grass2'
 import StatusPanel from './sprites/StatusPanel'
 import Cursor from './sprites/Cursor'
+import House from './sprites/House'
 
 import { toGridPos } from './Utils'
 
@@ -131,7 +132,7 @@ export default class Game {
     this.setMode('DEFAULT')
   }
   enablePlacementMode(){
-    var sprite = new Tree(this,this.mouseGridPos);
+    var sprite = new House(this,this.mouseGridPos);
     this.setMode('PLACE',sprite);
     this.addSprite(LAYER_GROUND_PLACEMENT, sprite);
     this.placingUnit = sprite;
@@ -176,7 +177,7 @@ export default class Game {
 
     this._player = new Player(this,[0,0]);
     this.statusPanel = new StatusPanel(this.player,this);
-    this.select(this.player, false);
+    this.player.select();
     this.addSprite(LAYER_GROUND, this.player);
 
     this.initKeyboardPlayerMovement();
@@ -285,13 +286,13 @@ export default class Game {
       this.enableDefaultMode();
     }
 
-    // if(clickedSprite){
-    //   this.select(clickedSprite, this.shiftHeld);
-    // }else{
-    //   // this.addSprite(LAYER_FLOOR, new TreeStump(this, coords));
-    //   // this.addSprite(LAYER_MAP, new Blood(this, coords));
-    //   this.clearSelection();
-    // }
+    if(clickedSprite){
+      this.select(clickedSprite, this.shiftHeld);
+    }else{
+      // this.addSprite(LAYER_FLOOR, new TreeStump(this, coords));
+      // this.addSprite(LAYER_MAP, new Blood(this, coords));
+      this.clearSelection();
+    }
   }
 
   gridRightClicked(coords){
@@ -302,21 +303,12 @@ export default class Game {
 
       if(clickedSprite){
         if(clickedSprite.fireAt){
-          for (var i = 0; i < this.selectedSprites.length; i++) {
-            var selected = this.selectedSprites[i];
-            selected.attackTarget(clickedSprite);
-          }
+          this.player.attackTarget(clickedSprite);
         }else if(clickedSprite.gather){
-          for (var i = 0; i < this.selectedSprites.length; i++) {
-            var selected = this.selectedSprites[i];
-            selected.attackTarget(clickedSprite);
-          }
+          this.player.attackTarget(clickedSprite);
         }
       }else{
-        for (var i = 0; i < this.selectedSprites.length; i++) {
-          var selected = this.selectedSprites[i];
-          selected.moveTo(coords);
-        }
+        this.player.moveTo(coords);
       }
     }
   }
