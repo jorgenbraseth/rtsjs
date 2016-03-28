@@ -5,8 +5,24 @@ html, body {
   align-items: center;
   flex-direction: column;
   height: 100%;
+  font-family: sans-serif;
 }
 
 #game {
   border: 2px solid black;
+}
+
+.help {
+  border: 1px solid black;
+  background-color: #ccc;
+  padding: .5em;
+
+}
+
+dt {
+  font-weight:bold;
+}
+
+.help h1 {
+  margin: 0;
 }
