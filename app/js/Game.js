@@ -24,7 +24,7 @@ export default class Game {
     this.screen = canvas.getContext('2d');
     this.userInput = new UserInput(canvas);
     this.shiftHeld = false;
-
+    this.tickCallBacks = [];
     this.canvas.onblur = () => {this.canvas.focus()};
 
     this.viewPort = {
@@ -63,6 +63,7 @@ export default class Game {
 
     this.bindCameraControls();
 
+
     this.userInput.onKey(KEY_BINDS.SHIFT, () => {this.shiftHeld = true});
     this.userInput.onKeyUp(KEY_BINDS.SHIFT, () => {this.shiftHeld = false});
 
@@ -81,6 +82,22 @@ export default class Game {
     this.layers[LAYER_GROUND_PLACEMENT].forEach(spriteToBePlaced => {
       spriteToBePlaced.setPosition(...this.mouseGridPos);
     });
+  }
+
+  initKeyboardPlayerMovement() {
+    this.userInput.onKey(KEY_BINDS.MOVE_RIGHT, ()=>this.player.moveRight(true));
+    this.userInput.onKeyUp(KEY_BINDS.MOVE_RIGHT, ()=>this.player.moveRight(false));
+    this.userInput.onKey(KEY_BINDS.MOVE_LEFT, ()=>this.player.moveLeft(true));
+    this.userInput.onKeyUp(KEY_BINDS.MOVE_LEFT, ()=>this.player.moveLeft(false));
+
+    this.userInput.onKey(KEY_BINDS.MOVE_UP, ()=>this.player.moveUp(true));
+    this.userInput.onKeyUp(KEY_BINDS.MOVE_UP, ()=>this.player.moveUp(false));
+    this.userInput.onKey(KEY_BINDS.MOVE_DOWN, ()=>this.player.moveDown(true));
+    this.userInput.onKeyUp(KEY_BINDS.MOVE_DOWN, ()=>this.player.moveDown(false));
+  }
+
+  get player() {
+    return this._player;
   }
 
   bindCameraControls(){
@@ -155,12 +172,14 @@ export default class Game {
     this.layers[LAYER_GROUND_PLACEMENT] = [];
     this.layers[LAYER_AIR] = [];
 
-    this.loadMap(GENERATED(100,70,0.3));
+    this.loadMap(GENERATED(100,70,0.2));
 
-    var firstUnit = new Player(this,[0,0]);
-    this.statusPanel = new StatusPanel(firstUnit,this);
-    this.select(firstUnit, false);
-    this.addSprite(LAYER_GROUND, firstUnit);
+    this._player = new Player(this,[0,0]);
+    this.statusPanel = new StatusPanel(this.player,this);
+    this.select(this.player, false);
+    this.addSprite(LAYER_GROUND, this.player);
+
+    this.initKeyboardPlayerMovement();
 
     for (var x = 0; x < this.world.length; x++) {
       for (var y = 0; y < this.world[x].length; y++) {
@@ -194,6 +213,12 @@ export default class Game {
     this.tickLayer(LAYER_FLOOR);
     this.tickLayer(LAYER_GROUND);
     this.tickLayer(LAYER_AIR);
+
+    this.tickCallBacks.forEach(cb=>cb());
+  }
+
+  onTick(callback){
+    this.tickCallBacks.push(callback);
   }
 
   moveCam(){

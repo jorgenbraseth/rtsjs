@@ -23,7 +23,7 @@ export default class Player extends Unit {
 
     this.unselect();
 
-    this.speed = .08;
+    this.speed = .15;
 
     this.image = loadImage(Image);
   }
@@ -38,13 +38,39 @@ export default class Player extends Unit {
     this.color ="transparent";
   }
 
+  moveRight(startMovement){
+    this.movingLeft=false;
+    this.movingRight=startMovement;
+  }
+  moveLeft(startMovement){
+    this.movingRight=false;
+    this.movingLeft=startMovement;
+  }
+  moveUp(startMovement){
+    this.movingDown=false;
+    this.movingUp=startMovement;
+  }
+  moveDown(startMovement){
+    this.movingUp=false;
+    this.movingDown=startMovement;
+  }
+
   tick() {
     super.tick();
 
     if(this.isMoving){
       this.animAge = (this.animAge+1)%15;
+    }else if(this.movingLeft){
+      this.moveTo([this.gridPos[0]-1,this.gridPos[1]])
+    }else if(this.movingRight){
+      this.moveTo([this.gridPos[0]+1,this.gridPos[1]])
+    }else if(this.movingUp){
+      this.moveTo([this.gridPos[0],this.gridPos[1]-1])
+    }else if(this.movingDown){
+      this.moveTo([this.gridPos[0],this.gridPos[1]+1])
     }
   }
+
   draw(screen, viewport){
     screen.fillStyle = this.color;
     // this.drawMoveQueue(screen);
