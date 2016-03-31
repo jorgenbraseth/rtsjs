@@ -1,8 +1,8 @@
-import { GRID_SIZE } from '../constants/GameConstants.js'
-import { loadImage } from '../Utils'
-import Sprite from './Sprite'
+import { GRID_SIZE } from '../../constants/GameConstants.js'
+import { loadImage } from '../../Utils'
+import Sprite from './../Sprite'
 
-import Image from '../../images/buildings.png'
+import Image from '../../../images/buildings.png'
 
 export default class House extends Sprite {
   constructor(game, coords=[0,0]){
@@ -15,7 +15,13 @@ export default class House extends Sprite {
     this.width = (64/73)*GRID_SIZE;
     this.height = GRID_SIZE;
 
-    this.image = [loadImage(Image),463,118,64,73,-GRID_SIZE/2,-GRID_SIZE/2,this.width,this.height]
+    this.cost = {
+      wood: 10,
+      stone: 3
+    };
+
+
+    this.image = [loadImage(Image),463,118,64,73,0,0,this.width,this.height]
   }
 
   draw(screen){

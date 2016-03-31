@@ -1,8 +1,8 @@
-import { GRID_SIZE } from '../constants/GameConstants.js'
-import { loadImage } from '../Utils'
-import Sprite from './Sprite'
+import { GRID_SIZE } from '../../constants/GameConstants.js'
+import { loadImage } from '../../Utils'
+import Sprite from './../Sprite'
 
-import Image from '../../images/rock-tiles.png'
+import Image from '../../../images/rock-tiles.png'
 
 export default class Rock extends Sprite {
   constructor(game, coords=[0,0]){
@@ -12,7 +12,7 @@ export default class Rock extends Sprite {
     this.resourceAmount = this.startingResources;
     this.moveCost = 10000;
 
-    this.image = [loadImage(Image),0,0,85,85,-GRID_SIZE/2,-GRID_SIZE/2,this.width,this.width]
+    this.image = [loadImage(Image),0,0,85,85,0,0,this.width,this.width]
   }
 
   select(){

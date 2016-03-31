@@ -1,12 +1,13 @@
 import UserInput from './UserInput'
 
 import Player from './sprites/Player'
-import Rock from './sprites/Rock'
-import Tree from './sprites/Tree'
-import Grass2 from './sprites/Grass2'
+import Rock from './sprites/gatherables/Rock'
+import Tree from './sprites/gatherables/Tree'
+import Grass2 from './sprites/terrain/Grass2'
 import StatusPanel from './sprites/StatusPanel'
 import Cursor from './sprites/Cursor'
-import House from './sprites/House'
+import House from './sprites/buildings/House'
+import Renderer from './Renderer'
 
 import { toGridPos } from './Utils'
 
@@ -14,19 +15,15 @@ import { GENERATED, MAP_TEST } from './Maps'
 
 import { LAYER_GROUND, LAYER_GROUND_PLACEMENT, LAYER_FLOOR, LAYER_MAP, LAYER_AIR, GRID_SIZE, KEY_BINDS } from './constants/GameConstants.js'
 
-import '../images/sword.png'
-
 export default class Game {
 
-  canvas: undefined;
-
   constructor(canvas){
+
     this.canvas = canvas;
-    this.screen = canvas.getContext('2d');
     this.userInput = new UserInput(canvas);
     this.shiftHeld = false;
     this.tickCallBacks = [];
-    this.canvas.onblur = () => {this.canvas.focus()};
+    canvas.onblur = () => {canvas.focus()};
 
     this.viewPort = {
       width: 30,
@@ -38,13 +35,10 @@ export default class Game {
       }
     };
 
-    this.canvas.setAttribute("width", ""+GRID_SIZE*this.viewPort.width);
-    this.canvas.setAttribute("height", ""+GRID_SIZE*this.viewPort.height);
-
-    this.canvas.style.cursor = "none";
+    this.renderer = new Renderer(canvas, this.viewPort);
 
     this.cursor = new Cursor();
-    this.canvas.onmousemove = this.onMouseMove.bind(this);
+    canvas.onmousemove = this.onMouseMove.bind(this);
 
     this.userInput.onLeftClick(
       function(x,y){
@@ -133,6 +127,7 @@ export default class Game {
   }
   enablePlacementMode(){
     var sprite = new House(this,this.mouseGridPos);
+    sprite.beingPlaced = true;
     this.setMode('PLACE',sprite);
     this.addSprite(LAYER_GROUND_PLACEMENT, sprite);
     this.placingUnit = sprite;
@@ -280,11 +275,8 @@ export default class Game {
     var clickedSprite = this.spriteAt(coords);
 
     if(this.actionMode === 'PLACE' && this.positionFree(coords,true) ){
-      this.placingUnit.setPosition(...coords);
-      this.removeSprite(this.placingUnit);
-      this.addSprite(LAYER_GROUND, this.placingUnit);
+      this.build(coords,this.placingUnit);
       this.placingUnit=undefined;
-      this.enableDefaultMode();
     }
 
     if(clickedSprite){
@@ -294,6 +286,28 @@ export default class Game {
       // this.addSprite(LAYER_MAP, new Blood(this, coords));
       this.clearSelection();
     }
+  }
+
+  build(coords, unit){
+    var playerResources = this.player.resources;
+    var cost = unit.cost;
+
+    console.log(cost);
+    console.log(playerResources);
+    this.removeSprite(unit);
+    this.enableDefaultMode();
+
+    if(cost.wood < playerResources.wood && cost.stone < playerResources.stone) {
+      playerResources.wood -= cost.wood;
+      playerResources.stone -= cost.stone;
+      unit.beingPlaced = false;
+      unit.setPosition(...coords);
+      this.addSprite(LAYER_GROUND, unit);
+    }else{
+      console.log("Not enough resources to build " + unit.constructor.name);
+    }
+
+
   }
 
   gridRightClicked(coords){
@@ -327,6 +341,16 @@ export default class Game {
     return found === undefined;
   }
 
+  canAfford(cost){
+    var playerResources = this.player.resources;
+    for(var resourceType in cost){
+      if(playerResources[resourceType] === undefined || playerResources[resourceType]<cost[resourceType]){
+        return false;
+      }
+    }
+    return true;
+  }
+
   removeSpriteFromLayer(layer, sprite){
     for (var i = 0; i < layer.length; i++) {
       var spr = layer[i];
@@ -358,71 +382,15 @@ export default class Game {
     }
   }
 
-  viewPortItemsForLayer(layer){
-    var visibleSpritesFromLayer = layer.filter((sprite) => {return this.viewPort.inView(sprite.pos)});
-
-    var visibleMap = [];
-    for (var y = 0; y < this.viewPort.height; y++) {
-      var row = [];
-      for (var x = 0; x < this.viewPort.width; x++) {
-        row.push([]);
-      }
-      visibleMap.push(row);
-    }
-
-    for (var spriteIdx = 0; spriteIdx < visibleSpritesFromLayer.length; spriteIdx++) {
-      var sprite = visibleSpritesFromLayer[spriteIdx];
-      var spriteX = parseInt(sprite.pos.x) - this.viewPort.minX;
-      var spriteY = parseInt(sprite.pos.y) - this.viewPort.minY;
-
-      if(spriteY < visibleMap.length && spriteX < visibleMap[0].length)
-        visibleMap[spriteY][spriteX].push(sprite);
-    }
-
-    return visibleMap;
-    // console.log(visibleSpritesFromLayer);
-
-  }
-
-  drawLayer(layer){
-    var visibleMap = this.viewPortItemsForLayer(layer);
-
-    for (var y = 0; y < visibleMap.length; y++) {
-      var row = visibleMap[y];
-      for (var col = 0; col < row.length; col++) {
-        var spriteList = row[col];
-
-        for (var sprite = 0; sprite < spriteList.length; sprite++) {
-          spriteList[sprite].drawSprite(this.screen, this.viewPort);
-        }
-      }
-    }
-  }
-
-  clearScreen(){
-    this.screen.clearRect(0,0,this.canvas.width, this.canvas.height);
-  }
-
-  draw(){
-    this.clearScreen();
-    this.screen.translate(-this.viewPort.minX*GRID_SIZE,-this.viewPort.minY*GRID_SIZE);
-    this.drawLayer(this.layers[LAYER_MAP]);
-    this.drawLayer(this.layers[LAYER_FLOOR]);
-    this.drawLayer(this.layers[LAYER_GROUND]);
-    this.screen.globalAlpha = 0.5;
-    this.drawLayer(this.layers[LAYER_GROUND_PLACEMENT]);
-    this.screen.globalAlpha = 1;
-    this.drawLayer(this.layers[LAYER_AIR]);
-    this.screen.translate(this.viewPort.minX*GRID_SIZE,this.viewPort.minY*GRID_SIZE);
-
-    this.statusPanel.draw(this.screen);
-    this.cursor.draw(this.screen);
-  }
-
   addSprite(layer, sprite){
     this.layers[layer].push(sprite);
   }
 
+  draw(){
+    this.renderer.render(this.layers, this.viewPort);
+    this.renderer.renderStatusPanel(this.statusPanel);
+    this.renderer.renderCursor(this.cursor);
+  }
   run(){
     setInterval(function(){
       this.tick();

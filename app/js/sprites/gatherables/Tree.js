@@ -1,19 +1,19 @@
-import { GRID_SIZE, LAYER_FLOOR } from '../constants/GameConstants.js'
-import { loadImage } from '../Utils'
+import { GRID_SIZE, LAYER_FLOOR } from '../../constants/GameConstants.js'
+import { loadImage } from '../../Utils'
 
-import Sprite from './Sprite'
-import TreeStump from './TreeStump'
+import Sprite from './../Sprite'
+import TreeStump from './../decore/TreeStump'
 
-import Image from '../../images/trees2.png'
+import Image from '../../../images/trees2.png'
 
 const VARIANTS = [
-  {x: 385, y:14, w:86, h:143, cX:GRID_SIZE/2, cY:45},
-  {x: 515, y:332, w:53, h:88, cX:GRID_SIZE/2, cY:45},
-  {x: 268, y:14, w:93, h:153, cX:GRID_SIZE/2, cY:45},
-  {x: 547, y:139, w:103, h:172, cX:GRID_SIZE/2, cY:45},
-  {x: 27, y:281, w:101, h:168, cX:GRID_SIZE/2, cY:45},
-  {x: 353, y:311, w:57, h:95, cX:GRID_SIZE/2, cY:45},
-  {x: 155, y:145, w:87, h:145, cX:GRID_SIZE/2, cY:45}
+  {x: 385, y:14, w:86, h:143, cX:0, cY:5},
+  {x: 515, y:332, w:53, h:88, cX:0, cY:5},
+  {x: 268, y:14, w:93, h:153, cX:0, cY:5},
+  {x: 547, y:139, w:103, h:172, cX:0, cY:5},
+  {x: 27, y:281, w:101, h:168, cX:0, cY:5},
+  {x: 353, y:311, w:57, h:95, cX:0, cY:5},
+  {x: 155, y:145, w:87, h:145, cX:0, cY:5}
 ];
 
 export default class Tree extends Sprite {

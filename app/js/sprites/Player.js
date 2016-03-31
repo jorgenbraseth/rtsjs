@@ -1,5 +1,5 @@
 import Unit from './Unit'
-import Blood from './Blood'
+import Blood from './decore/Blood'
 import { GRID_SIZE, LAYER_FLOOR } from '../constants/GameConstants.js'
 import { loadImage } from '../Utils'
 import Image from '../../images/person1.png';
@@ -90,7 +90,7 @@ export default class Player extends Unit {
     screen.drawImage(
       this.image,
       playerType*(3*32)+animFrame*32,directionRow*32,32,32,
-      -this.width/2,-this.width/2,
+      0,0,
       this.width,this.width
     );
 

@@ -2,6 +2,8 @@ import { GRID_SIZE } from '../constants/GameConstants.js'
 
 export default class Sprite {
   image: undefined;
+  game: undefined;
+  beingPlaced: undefined;
 
   constructor(game, coords=[0,0]){
     this.game = game;
@@ -9,14 +11,16 @@ export default class Sprite {
       x: coords[0],
       y: coords[1],
       centerPixelX: function(){
-        return this.x * GRID_SIZE + GRID_SIZE/2;
+        return this.grid2draw(this.x) + GRID_SIZE/2;
       },
       centerPixelY: function(){
-        return this.y * GRID_SIZE + GRID_SIZE/2;
+        return this.grid2draw(this.x) + GRID_SIZE/2;
       }
     };
 
-    this.color = "rgba(255,0,255,0.6)";
+    this.beingPlaced = false;
+
+    this.color = "red";
 
     this.width = GRID_SIZE;
     this.selected = false;
@@ -25,10 +29,6 @@ export default class Sprite {
 
     this.dx = 1;
     this.dy = 1;
-
-
-    // this.targetX = this.pos.x;
-    // this.targetY = this.pos.y;
 
     this.moveQueue = [];
 
@@ -64,9 +64,20 @@ export default class Sprite {
       var dy = this.grid2draw(this.pos.y);
 
       screen.translate(dx,dy);
+      if(this.beingPlaced){
+        screen.globalAlpha = this.isPlaceable ? 0.9 : 0.3;
+        this.drawGridCell(screen);
+      }
       this.draw(screen);
+      screen.globalAlpha = 1;
       screen.translate(-dx,-dy);
     }
+  }
+
+  get isPlaceable(){
+    var positionFree = this.game.positionFree([this.pos.x,this.pos.y], true);
+    var affordable = this.game.canAfford(this.cost);
+    return positionFree && affordable;
   }
 
   draw(screen){
@@ -82,11 +93,16 @@ export default class Sprite {
   }
 
   grid2draw(val){
-    return val * GRID_SIZE + GRID_SIZE / 2;
+    return val * GRID_SIZE;
   }
 
   setPosition(x,y) {
     this.pos.x = x;
     this.pos.y = y;
+  }
+
+  drawGridCell(screen) {
+    screen.fillStyle = this.isPlaceable ? "rgba(0,255,0,0.9" : "red";
+    screen.fillRect(0,0,GRID_SIZE,GRID_SIZE);
   }
 }

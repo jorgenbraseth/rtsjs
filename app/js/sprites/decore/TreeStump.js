@@ -1,9 +1,9 @@
-import { GRID_SIZE } from '../constants/GameConstants.js'
-import { loadImage } from '../Utils'
+import { GRID_SIZE } from '../../constants/GameConstants.js'
+import { loadImage } from '../../Utils'
 
-import Sprite from './Sprite'
+import Sprite from './../Sprite'
 
-import Image from '../../images/tree_stump.png'
+import Image from '../../../images/tree_stump.png'
 
 export default class TreeStump extends Sprite {
 
@@ -21,7 +21,7 @@ export default class TreeStump extends Sprite {
     screen.drawImage(
       this.image,
       0,0,98,78,
-      -GRID_SIZE/5,0,
+      0,GRID_SIZE/2,
       12 ,12
     )
   }

@@ -1,8 +1,8 @@
-import { GRID_SIZE } from '../constants/GameConstants.js'
-import { loadImage } from '../Utils'
-import Sprite from './Sprite'
+import { GRID_SIZE } from '../../constants/GameConstants.js'
+import { loadImage } from '../../Utils'
+import Sprite from './../Sprite'
 
-import Image from '../../images/blood.png'
+import Image from '../../../images/blood.png'
 
 export default class Blood extends Sprite {
   constructor(game, coords=[0,0]){
@@ -19,7 +19,7 @@ export default class Blood extends Sprite {
     screen.drawImage(
       this.image,
       x,0,150,150,
-      -GRID_SIZE/2,-GRID_SIZE/5,
+      0,0,
       this.width,this.width
     )
   }
