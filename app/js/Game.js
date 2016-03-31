@@ -10,7 +10,7 @@ import House from './sprites/House'
 
 import { toGridPos } from './Utils'
 
-import { GENERATED } from './Maps'
+import { GENERATED, MAP_TEST } from './Maps'
 
 import { LAYER_GROUND, LAYER_GROUND_PLACEMENT, LAYER_FLOOR, LAYER_MAP, LAYER_AIR, GRID_SIZE, KEY_BINDS } from './constants/GameConstants.js'
 
@@ -173,7 +173,8 @@ export default class Game {
     this.layers[LAYER_GROUND_PLACEMENT] = [];
     this.layers[LAYER_AIR] = [];
 
-    this.loadMap(GENERATED(100,70,0.2));
+    // this.loadMap(GENERATED(100,70,0.2));
+    this.loadMap(MAP_TEST);
 
     this._player = new Player(this,[0,0]);
     this.statusPanel = new StatusPanel(this.player,this);
