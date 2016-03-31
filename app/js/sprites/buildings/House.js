@@ -12,8 +12,8 @@ export default class House extends Sprite {
     this.resourceAmount = this.startingResources;
     this.moveCost = 0;
 
-    this.width = (64/73)*GRID_SIZE;
-    this.height = GRID_SIZE;
+    this.width = GRID_SIZE;
+    this.height = (73/64)*GRID_SIZE;
 
     this.cost = {
       wood: 10,
@@ -21,7 +21,7 @@ export default class House extends Sprite {
     };
 
 
-    this.image = [loadImage(Image),463,118,64,73,0,0,this.width,this.height]
+    this.image = [loadImage(Image),463,118,64,73,0,GRID_SIZE-this.height,this.width,this.height]
   }
 
   draw(screen){

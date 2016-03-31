@@ -31,12 +31,12 @@ export default class Rock extends Sprite {
 
     if(this.resourceAmount <= 0){
       this.deplete();
+      gatherer.killed(this);
     }
   }
 
   deplete() {
     this.game.removeSprite(this);
     this.depleted = true;
-    // this.game.addSprite(LAYER_FLOOR, new TreeStump(this.game, [this.pos.x,this.pos.y]))
   }
 }

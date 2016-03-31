@@ -65,7 +65,7 @@ export default class Sprite {
 
       screen.translate(dx,dy);
       if(this.beingPlaced){
-        screen.globalAlpha = this.isPlaceable ? 0.9 : 0.3;
+        screen.globalAlpha = 0.5;
         this.drawGridCell(screen);
       }
       this.draw(screen);
@@ -77,7 +77,8 @@ export default class Sprite {
   get isPlaceable(){
     var positionFree = this.game.positionFree([this.pos.x,this.pos.y], true);
     var affordable = this.game.canAfford(this.cost);
-    return positionFree && affordable;
+    var isInRange = this.game.isWithinBuildRange([this.pos.x,this.pos.y]);
+    return positionFree && affordable && isInRange;
   }
 
   draw(screen){

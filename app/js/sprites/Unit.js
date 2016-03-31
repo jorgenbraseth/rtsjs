@@ -120,10 +120,10 @@ export default class Unit extends Sprite {
       screen.fillStyle = "rgba(250,0,0,1)";
     }
 
-    var dx = GRID_SIZE/2-3;
-    var dy = GRID_SIZE/2+5;
+    var dx = 0;
+    var dy = 5;
     screen.translate(-dx,- dy);
-    screen.fillRect(0,0,(GRID_SIZE-6)*hpPercent,5);
+    screen.fillRect(0,0,(GRID_SIZE)*hpPercent,5);
     screen.translate(dx,dy);
   }
 

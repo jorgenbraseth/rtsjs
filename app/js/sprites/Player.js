@@ -17,6 +17,7 @@ export default class Player extends Unit {
     this.resources = {};
     this.animAge = 0;
     this.width=GRID_SIZE*0.9;
+    this.height=GRID_SIZE*0.9;
     this.moveCost = 10000;
     this.movingTo = [this.pos.x,this.pos.y];
     this.world = game.world;
@@ -90,8 +91,8 @@ export default class Player extends Unit {
     screen.drawImage(
       this.image,
       playerType*(3*32)+animFrame*32,directionRow*32,32,32,
-      0,0,
-      this.width,this.width
+      GRID_SIZE/2-this.width/2,GRID_SIZE/2-this.height/2,
+      this.width,this.height
     );
 
     if(this.selected){

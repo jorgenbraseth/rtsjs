@@ -274,7 +274,7 @@ export default class Game {
   gridLeftClicked(coords){
     var clickedSprite = this.spriteAt(coords);
 
-    if(this.actionMode === 'PLACE' && this.positionFree(coords,true) ){
+    if(this.actionMode === 'PLACE' && this.placingUnit.isPlaceable){
       this.build(coords,this.placingUnit);
       this.placingUnit=undefined;
     }
@@ -297,17 +297,11 @@ export default class Game {
     this.removeSprite(unit);
     this.enableDefaultMode();
 
-    if(cost.wood < playerResources.wood && cost.stone < playerResources.stone) {
-      playerResources.wood -= cost.wood;
-      playerResources.stone -= cost.stone;
-      unit.beingPlaced = false;
-      unit.setPosition(...coords);
-      this.addSprite(LAYER_GROUND, unit);
-    }else{
-      console.log("Not enough resources to build " + unit.constructor.name);
-    }
-
-
+    playerResources.wood -= cost.wood;
+    playerResources.stone -= cost.stone;
+    unit.beingPlaced = false;
+    unit.setPosition(...coords);
+    this.addSprite(LAYER_GROUND, unit);
   }
 
   gridRightClicked(coords){
@@ -349,6 +343,15 @@ export default class Game {
       }
     }
     return true;
+  }
+
+  isWithinBuildRange(coords){
+    var dx = Math.abs(coords[0]-this.player.pos.x);
+    var dy = Math.abs(coords[1]-this.player.pos.y);
+
+    var distance = Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
+    return distance <= 5;
+
   }
 
   removeSpriteFromLayer(layer, sprite){
