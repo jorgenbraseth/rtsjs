@@ -279,7 +279,7 @@ export default class Game {
   gridLeftClicked(coords){
     var clickedSprite = this.spriteAt(coords);
 
-    if(this.actionMode === 'PLACE' && clickedSprite === undefined){
+    if(this.actionMode === 'PLACE' && this.positionFree(coords,true) ){
       this.placingUnit.setPosition(...coords);
       this.removeSprite(this.placingUnit);
       this.addSprite(LAYER_GROUND, this.placingUnit);
@@ -322,8 +322,8 @@ export default class Game {
     this.removeSpriteFromLayer(this.layers[LAYER_MAP],sprite);
   }
 
-  positionFree(coords){
-    var found = this.spriteAt(coords);
+  positionFree(coords, countPlayer=false){
+    var found = this.spriteAt(coords,countPlayer);
     return found === undefined;
   }
 
