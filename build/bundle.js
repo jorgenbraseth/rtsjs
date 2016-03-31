@@ -421,17 +421,17 @@
 	
 	var _spritesPlayer2 = _interopRequireDefault(_spritesPlayer);
 	
-	var _spritesRock = __webpack_require__(18);
+	var _spritesGatherablesRock = __webpack_require__(18);
 	
-	var _spritesRock2 = _interopRequireDefault(_spritesRock);
+	var _spritesGatherablesRock2 = _interopRequireDefault(_spritesGatherablesRock);
 	
-	var _spritesTree = __webpack_require__(20);
+	var _spritesGatherablesTree = __webpack_require__(20);
 	
-	var _spritesTree2 = _interopRequireDefault(_spritesTree);
+	var _spritesGatherablesTree2 = _interopRequireDefault(_spritesGatherablesTree);
 	
-	var _spritesGrass2 = __webpack_require__(24);
+	var _spritesTerrainGrass2 = __webpack_require__(24);
 	
-	var _spritesGrass22 = _interopRequireDefault(_spritesGrass2);
+	var _spritesTerrainGrass22 = _interopRequireDefault(_spritesTerrainGrass2);
 	
 	var _spritesStatusPanel = __webpack_require__(26);
 	
@@ -441,17 +441,19 @@
 	
 	var _spritesCursor2 = _interopRequireDefault(_spritesCursor);
 	
-	var _spritesHouse = __webpack_require__(33);
+	var _spritesBuildingsHouse = __webpack_require__(33);
 	
-	var _spritesHouse2 = _interopRequireDefault(_spritesHouse);
+	var _spritesBuildingsHouse2 = _interopRequireDefault(_spritesBuildingsHouse);
+	
+	var _Renderer = __webpack_require__(35);
+	
+	var _Renderer2 = _interopRequireDefault(_Renderer);
 	
 	var _Utils = __webpack_require__(15);
 	
-	var _Maps = __webpack_require__(35);
+	var _Maps = __webpack_require__(36);
 	
 	var _constantsGameConstantsJs = __webpack_require__(9);
-	
-	__webpack_require__(36);
 	
 	var Game = (function () {
 	  function Game(canvas) {
@@ -460,12 +462,11 @@
 	    _classCallCheck(this, Game);
 	
 	    this.canvas = canvas;
-	    this.screen = canvas.getContext('2d');
 	    this.userInput = new _UserInput2['default'](canvas);
 	    this.shiftHeld = false;
 	    this.tickCallBacks = [];
-	    this.canvas.onblur = function () {
-	      _this.canvas.focus();
+	    canvas.onblur = function () {
+	      canvas.focus();
 	    };
 	
 	    this.viewPort = {
@@ -478,13 +479,10 @@
 	      }
 	    };
 	
-	    this.canvas.setAttribute("width", "" + _constantsGameConstantsJs.GRID_SIZE * this.viewPort.width);
-	    this.canvas.setAttribute("height", "" + _constantsGameConstantsJs.GRID_SIZE * this.viewPort.height);
-	
-	    this.canvas.style.cursor = "none";
+	    this.renderer = new _Renderer2['default'](canvas, this.viewPort);
 	
 	    this.cursor = new _spritesCursor2['default']();
-	    this.canvas.onmousemove = this.onMouseMove.bind(this);
+	    canvas.onmousemove = this.onMouseMove.bind(this);
 	
 	    this.userInput.onLeftClick((function (x, y) {
 	      this.gridLeftClicked((0, _Utils.toGridPos)(x, y, this.viewPort));
@@ -612,7 +610,8 @@
 	  }, {
 	    key: 'enablePlacementMode',
 	    value: function enablePlacementMode() {
-	      var sprite = new _spritesHouse2['default'](this, this.mouseGridPos);
+	      var sprite = new _spritesBuildingsHouse2['default'](this, this.mouseGridPos);
+	      sprite.beingPlaced = true;
 	      this.setMode('PLACE', sprite);
 	      this.addSprite(_constantsGameConstantsJs.LAYER_GROUND_PLACEMENT, sprite);
 	      this.placingUnit = sprite;
@@ -662,7 +661,8 @@
 	      this.layers[_constantsGameConstantsJs.LAYER_GROUND_PLACEMENT] = [];
 	      this.layers[_constantsGameConstantsJs.LAYER_AIR] = [];
 	
-	      this.loadMap((0, _Maps.GENERATED)(100, 70, 0.2));
+	      // this.loadMap(GENERATED(100,70,0.2));
+	      this.loadMap(_Maps.MAP_TEST);
 	
 	      this._player = new _spritesPlayer2['default'](this, [0, 0]);
 	      this.statusPanel = new _spritesStatusPanel2['default'](this.player, this);
@@ -674,12 +674,12 @@
 	      for (var x = 0; x < this.world.length; x++) {
 	        for (var y = 0; y < this.world[x].length; y++) {
 	          if (this.world[x][y] === 0) {
-	            this.addSprite(_constantsGameConstantsJs.LAYER_GROUND, new _spritesRock2['default'](this, [x, y]));
+	            this.addSprite(_constantsGameConstantsJs.LAYER_GROUND, new _spritesGatherablesRock2['default'](this, [x, y]));
 	          }
 	          if (this.world[x][y] === 2) {
-	            this.addSprite(_constantsGameConstantsJs.LAYER_GROUND, new _spritesTree2['default'](this, [x, y]));
+	            this.addSprite(_constantsGameConstantsJs.LAYER_GROUND, new _spritesGatherablesTree2['default'](this, [x, y]));
 	          }
-	          this.addSprite(_constantsGameConstantsJs.LAYER_MAP, new _spritesGrass22['default'](this, [x, y]));
+	          this.addSprite(_constantsGameConstantsJs.LAYER_MAP, new _spritesTerrainGrass22['default'](this, [x, y]));
 	        }
 	      }
 	
@@ -768,14 +768,9 @@
 	    value: function gridLeftClicked(coords) {
 	      var clickedSprite = this.spriteAt(coords);
 	
-	      if (this.actionMode === 'PLACE' && clickedSprite === undefined) {
-	        var _placingUnit;
-	
-	        (_placingUnit = this.placingUnit).setPosition.apply(_placingUnit, _toConsumableArray(coords));
-	        this.removeSprite(this.placingUnit);
-	        this.addSprite(_constantsGameConstantsJs.LAYER_GROUND, this.placingUnit);
+	      if (this.actionMode === 'PLACE' && this.placingUnit.isPlaceable) {
+	        this.build(coords, this.placingUnit);
 	        this.placingUnit = undefined;
-	        this.enableDefaultMode();
 	      }
 	
 	      if (clickedSprite) {
@@ -785,6 +780,23 @@
 	        // this.addSprite(LAYER_MAP, new Blood(this, coords));
 	        this.clearSelection();
 	      }
+	    }
+	  }, {
+	    key: 'build',
+	    value: function build(coords, unit) {
+	      var playerResources = this.player.resources;
+	      var cost = unit.cost;
+	
+	      console.log(cost);
+	      console.log(playerResources);
+	      this.removeSprite(unit);
+	      this.enableDefaultMode();
+	
+	      playerResources.wood -= cost.wood;
+	      playerResources.stone -= cost.stone;
+	      unit.beingPlaced = false;
+	      unit.setPosition.apply(unit, _toConsumableArray(coords));
+	      this.addSprite(_constantsGameConstantsJs.LAYER_GROUND, unit);
 	    }
 	  }, {
 	    key: 'gridRightClicked',
@@ -817,8 +829,30 @@
 	  }, {
 	    key: 'positionFree',
 	    value: function positionFree(coords) {
-	      var found = this.spriteAt(coords);
+	      var countPlayer = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+	
+	      var found = this.spriteAt(coords, countPlayer);
 	      return found === undefined;
+	    }
+	  }, {
+	    key: 'canAfford',
+	    value: function canAfford(cost) {
+	      var playerResources = this.player.resources;
+	      for (var resourceType in cost) {
+	        if (playerResources[resourceType] === undefined || playerResources[resourceType] < cost[resourceType]) {
+	          return false;
+	        }
+	      }
+	      return true;
+	    }
+	  }, {
+	    key: 'isWithinBuildRange',
+	    value: function isWithinBuildRange(coords) {
+	      var dx = Math.abs(coords[0] - this.player.pos.x);
+	      var dy = Math.abs(coords[1] - this.player.pos.y);
+	
+	      var distance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+	      return distance <= 5;
 	    }
 	  }, {
 	    key: 'removeSpriteFromLayer',
@@ -855,76 +889,16 @@
 	      }
 	    }
 	  }, {
-	    key: 'viewPortItemsForLayer',
-	    value: function viewPortItemsForLayer(layer) {
-	      var _this5 = this;
-	
-	      var visibleSpritesFromLayer = layer.filter(function (sprite) {
-	        return _this5.viewPort.inView(sprite.pos);
-	      });
-	
-	      var visibleMap = [];
-	      for (var y = 0; y < this.viewPort.height; y++) {
-	        var row = [];
-	        for (var x = 0; x < this.viewPort.width; x++) {
-	          row.push([]);
-	        }
-	        visibleMap.push(row);
-	      }
-	
-	      for (var spriteIdx = 0; spriteIdx < visibleSpritesFromLayer.length; spriteIdx++) {
-	        var sprite = visibleSpritesFromLayer[spriteIdx];
-	        var spriteX = parseInt(sprite.pos.x) - this.viewPort.minX;
-	        var spriteY = parseInt(sprite.pos.y) - this.viewPort.minY;
-	
-	        if (spriteY < visibleMap.length && spriteX < visibleMap[0].length) visibleMap[spriteY][spriteX].push(sprite);
-	      }
-	
-	      return visibleMap;
-	      // console.log(visibleSpritesFromLayer);
-	    }
-	  }, {
-	    key: 'drawLayer',
-	    value: function drawLayer(layer) {
-	      var visibleMap = this.viewPortItemsForLayer(layer);
-	
-	      for (var y = 0; y < visibleMap.length; y++) {
-	        var row = visibleMap[y];
-	        for (var col = 0; col < row.length; col++) {
-	          var spriteList = row[col];
-	
-	          for (var sprite = 0; sprite < spriteList.length; sprite++) {
-	            spriteList[sprite].drawSprite(this.screen, this.viewPort);
-	          }
-	        }
-	      }
-	    }
-	  }, {
-	    key: 'clearScreen',
-	    value: function clearScreen() {
-	      this.screen.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	    key: 'addSprite',
+	    value: function addSprite(layer, sprite) {
+	      this.layers[layer].push(sprite);
 	    }
 	  }, {
 	    key: 'draw',
 	    value: function draw() {
-	      this.clearScreen();
-	      this.screen.translate(-this.viewPort.minX * _constantsGameConstantsJs.GRID_SIZE, -this.viewPort.minY * _constantsGameConstantsJs.GRID_SIZE);
-	      this.drawLayer(this.layers[_constantsGameConstantsJs.LAYER_MAP]);
-	      this.drawLayer(this.layers[_constantsGameConstantsJs.LAYER_FLOOR]);
-	      this.drawLayer(this.layers[_constantsGameConstantsJs.LAYER_GROUND]);
-	      this.screen.globalAlpha = 0.5;
-	      this.drawLayer(this.layers[_constantsGameConstantsJs.LAYER_GROUND_PLACEMENT]);
-	      this.screen.globalAlpha = 1;
-	      this.drawLayer(this.layers[_constantsGameConstantsJs.LAYER_AIR]);
-	      this.screen.translate(this.viewPort.minX * _constantsGameConstantsJs.GRID_SIZE, this.viewPort.minY * _constantsGameConstantsJs.GRID_SIZE);
-	
-	      this.statusPanel.draw(this.screen);
-	      this.cursor.draw(this.screen);
-	    }
-	  }, {
-	    key: 'addSprite',
-	    value: function addSprite(layer, sprite) {
-	      this.layers[layer].push(sprite);
+	      this.renderer.render(this.layers, this.viewPort);
+	      this.renderer.renderStatusPanel(this.statusPanel);
+	      this.renderer.renderCursor(this.cursor);
 	    }
 	  }, {
 	    key: 'run',
@@ -1103,9 +1077,9 @@
 	
 	var _Unit3 = _interopRequireDefault(_Unit2);
 	
-	var _Blood = __webpack_require__(14);
+	var _decoreBlood = __webpack_require__(14);
 	
-	var _Blood2 = _interopRequireDefault(_Blood);
+	var _decoreBlood2 = _interopRequireDefault(_decoreBlood);
 	
 	var _constantsGameConstantsJs = __webpack_require__(9);
 	
@@ -1132,6 +1106,7 @@
 	    this.resources = {};
 	    this.animAge = 0;
 	    this.width = _constantsGameConstantsJs.GRID_SIZE * 0.9;
+	    this.height = _constantsGameConstantsJs.GRID_SIZE * 0.9;
 	    this.moveCost = 10000;
 	    this.movingTo = [this.pos.x, this.pos.y];
 	    this.world = game.world;
@@ -1214,7 +1189,7 @@
 	        directionRow = 2;
 	      }
 	
-	      screen.drawImage(this.image, playerType * (3 * 32) + animFrame * 32, directionRow * 32, 32, 32, -this.width / 2, -this.width / 2, this.width, this.width);
+	      screen.drawImage(this.image, playerType * (3 * 32) + animFrame * 32, directionRow * 32, 32, 32, _constantsGameConstantsJs.GRID_SIZE / 2 - this.width / 2, _constantsGameConstantsJs.GRID_SIZE / 2 - this.height / 2, this.width, this.height);
 	
 	      if (this.selected) {
 	        this.drawHp(screen);
@@ -1246,7 +1221,7 @@
 	    key: 'die',
 	    value: function die() {
 	      _get(Object.getPrototypeOf(Player.prototype), 'die', this).call(this);
-	      this.game.addSprite(_constantsGameConstantsJs.LAYER_FLOOR, new _Blood2['default'](this.game, [this.pos.x, this.pos.y]));
+	      this.game.addSprite(_constantsGameConstantsJs.LAYER_FLOOR, new _decoreBlood2['default'](this.game, [this.pos.x, this.pos.y]));
 	    }
 	  }]);
 	
@@ -1420,10 +1395,10 @@
 	        screen.fillStyle = "rgba(250,0,0,1)";
 	      }
 	
-	      var dx = _constantsGameConstantsJs.GRID_SIZE / 2 - 3;
-	      var dy = _constantsGameConstantsJs.GRID_SIZE / 2 + 5;
+	      var dx = 0;
+	      var dy = 5;
 	      screen.translate(-dx, -dy);
-	      screen.fillRect(0, 0, (_constantsGameConstantsJs.GRID_SIZE - 6) * hpPercent, 5);
+	      screen.fillRect(0, 0, _constantsGameConstantsJs.GRID_SIZE * hpPercent, 5);
 	      screen.translate(dx, dy);
 	    }
 	  }, {
@@ -1537,14 +1512,16 @@
 	      x: coords[0],
 	      y: coords[1],
 	      centerPixelX: function centerPixelX() {
-	        return this.x * _constantsGameConstantsJs.GRID_SIZE + _constantsGameConstantsJs.GRID_SIZE / 2;
+	        return this.grid2draw(this.x) + _constantsGameConstantsJs.GRID_SIZE / 2;
 	      },
 	      centerPixelY: function centerPixelY() {
-	        return this.y * _constantsGameConstantsJs.GRID_SIZE + _constantsGameConstantsJs.GRID_SIZE / 2;
+	        return this.grid2draw(this.x) + _constantsGameConstantsJs.GRID_SIZE / 2;
 	      }
 	    };
 	
-	    this.color = "rgba(255,0,255,0.6)";
+	    this.beingPlaced = false;
+	
+	    this.color = "red";
 	
 	    this.width = _constantsGameConstantsJs.GRID_SIZE;
 	    this.selected = false;
@@ -1553,9 +1530,6 @@
 	
 	    this.dx = 1;
 	    this.dy = 1;
-	
-	    // this.targetX = this.pos.x;
-	    // this.targetY = this.pos.y;
 	
 	    this.moveQueue = [];
 	
@@ -1583,7 +1557,12 @@
 	        var dy = this.grid2draw(this.pos.y);
 	
 	        screen.translate(dx, dy);
+	        if (this.beingPlaced) {
+	          screen.globalAlpha = 0.5;
+	          this.drawGridCell(screen);
+	        }
 	        this.draw(screen);
+	        screen.globalAlpha = 1;
 	        screen.translate(-dx, -dy);
 	      }
 	    }
@@ -1603,13 +1582,19 @@
 	  }, {
 	    key: "grid2draw",
 	    value: function grid2draw(val) {
-	      return val * _constantsGameConstantsJs.GRID_SIZE + _constantsGameConstantsJs.GRID_SIZE / 2;
+	      return val * _constantsGameConstantsJs.GRID_SIZE;
 	    }
 	  }, {
 	    key: "setPosition",
 	    value: function setPosition(x, y) {
 	      this.pos.x = x;
 	      this.pos.y = y;
+	    }
+	  }, {
+	    key: "drawGridCell",
+	    value: function drawGridCell(screen) {
+	      screen.fillStyle = this.isPlaceable ? "rgba(0,255,0,0.9" : "red";
+	      screen.fillRect(0, 0, _constantsGameConstantsJs.GRID_SIZE, _constantsGameConstantsJs.GRID_SIZE);
 	    }
 	  }, {
 	    key: "targetX",
@@ -1625,6 +1610,14 @@
 	    key: "gridPos",
 	    get: function get() {
 	      return [this.pos.x, this.pos.y];
+	    }
+	  }, {
+	    key: "isPlaceable",
+	    get: function get() {
+	      var positionFree = this.game.positionFree([this.pos.x, this.pos.y], true);
+	      var affordable = this.game.canAfford(this.cost);
+	      var isInRange = this.game.isWithinBuildRange([this.pos.x, this.pos.y]);
+	      return positionFree && affordable && isInRange;
 	    }
 	  }]);
 	
@@ -1924,7 +1917,7 @@
 	    value: function draw(screen) {
 	      var imageAgeOffset = parseInt(this.age / (500 / 6));
 	      var x = imageAgeOffset * 150;
-	      screen.drawImage(this.image, x, 0, 150, 150, -_constantsGameConstantsJs.GRID_SIZE / 2, -_constantsGameConstantsJs.GRID_SIZE / 5, this.width, this.width);
+	      screen.drawImage(this.image, x, 0, 150, 150, 0, 0, this.width, this.width);
 	    }
 	  }, {
 	    key: 'tick',
@@ -2027,7 +2020,7 @@
 	    this.resourceAmount = this.startingResources;
 	    this.moveCost = 10000;
 	
-	    this.image = [(0, _Utils.loadImage)(_imagesRockTilesPng2['default']), 0, 0, 85, 85, -_constantsGameConstantsJs.GRID_SIZE / 2, -_constantsGameConstantsJs.GRID_SIZE / 2, this.width, this.width];
+	    this.image = [(0, _Utils.loadImage)(_imagesRockTilesPng2['default']), 0, 0, 85, 85, 0, 0, this.width, this.width];
 	  }
 	
 	  _createClass(Rock, [{
@@ -2048,6 +2041,7 @@
 	
 	      if (this.resourceAmount <= 0) {
 	        this.deplete();
+	        gatherer.killed(this);
 	      }
 	    }
 	  }, {
@@ -2055,7 +2049,6 @@
 	    value: function deplete() {
 	      this.game.removeSprite(this);
 	      this.depleted = true;
-	      // this.game.addSprite(LAYER_FLOOR, new TreeStump(this.game, [this.pos.x,this.pos.y]))
 	    }
 	  }]);
 	
@@ -2099,15 +2092,15 @@
 	
 	var _Sprite3 = _interopRequireDefault(_Sprite2);
 	
-	var _TreeStump = __webpack_require__(21);
+	var _decoreTreeStump = __webpack_require__(21);
 	
-	var _TreeStump2 = _interopRequireDefault(_TreeStump);
+	var _decoreTreeStump2 = _interopRequireDefault(_decoreTreeStump);
 	
 	var _imagesTrees2Png = __webpack_require__(23);
 	
 	var _imagesTrees2Png2 = _interopRequireDefault(_imagesTrees2Png);
 	
-	var VARIANTS = [{ x: 385, y: 14, w: 86, h: 143, cX: _constantsGameConstantsJs.GRID_SIZE / 2, cY: 45 }, { x: 515, y: 332, w: 53, h: 88, cX: _constantsGameConstantsJs.GRID_SIZE / 2, cY: 45 }, { x: 268, y: 14, w: 93, h: 153, cX: _constantsGameConstantsJs.GRID_SIZE / 2, cY: 45 }, { x: 547, y: 139, w: 103, h: 172, cX: _constantsGameConstantsJs.GRID_SIZE / 2, cY: 45 }, { x: 27, y: 281, w: 101, h: 168, cX: _constantsGameConstantsJs.GRID_SIZE / 2, cY: 45 }, { x: 353, y: 311, w: 57, h: 95, cX: _constantsGameConstantsJs.GRID_SIZE / 2, cY: 45 }, { x: 155, y: 145, w: 87, h: 145, cX: _constantsGameConstantsJs.GRID_SIZE / 2, cY: 45 }];
+	var VARIANTS = [{ x: 385, y: 14, w: 86, h: 143, cX: 0, cY: _constantsGameConstantsJs.GRID_SIZE - 65 }, { x: 515, y: 332, w: 53, h: 88, cX: 0, cY: _constantsGameConstantsJs.GRID_SIZE - 65 }, { x: 268, y: 14, w: 93, h: 153, cX: 0, cY: _constantsGameConstantsJs.GRID_SIZE - 65 }, { x: 547, y: 139, w: 103, h: 172, cX: 0, cY: _constantsGameConstantsJs.GRID_SIZE - 65 }, { x: 27, y: 281, w: 101, h: 168, cX: 0, cY: _constantsGameConstantsJs.GRID_SIZE - 65 }, { x: 353, y: 311, w: 57, h: 95, cX: 0, cY: _constantsGameConstantsJs.GRID_SIZE - 65 }, { x: 155, y: 145, w: 87, h: 145, cX: 0, cY: _constantsGameConstantsJs.GRID_SIZE - 65 }];
 	
 	var Tree = (function (_Sprite) {
 	  _inherits(Tree, _Sprite);
@@ -2126,7 +2119,7 @@
 	    this.depleted = false;
 	
 	    this.variant = VARIANTS[parseInt(Math.random() * VARIANTS.length)];
-	    this.image = [(0, _Utils.loadImage)(_imagesTrees2Png2['default']), this.variant.x, this.variant.y, this.variant.w, this.variant.h, -this.variant.cX, -this.variant.cY, 40, 65];
+	    this.image = [(0, _Utils.loadImage)(_imagesTrees2Png2['default']), this.variant.x, this.variant.y, this.variant.w, this.variant.h, this.variant.cX, this.variant.cY, 40, 65];
 	  }
 	
 	  _createClass(Tree, [{
@@ -2149,7 +2142,7 @@
 	    value: function deplete() {
 	      this.game.removeSprite(this);
 	      this.depleted = true;
-	      this.game.addSprite(_constantsGameConstantsJs.LAYER_FLOOR, new _TreeStump2['default'](this.game, [this.pos.x, this.pos.y]));
+	      this.game.addSprite(_constantsGameConstantsJs.LAYER_FLOOR, new _decoreTreeStump2['default'](this.game, [this.pos.x, this.pos.y]));
 	    }
 	  }]);
 	
@@ -2210,7 +2203,7 @@
 	  _createClass(TreeStump, [{
 	    key: 'draw',
 	    value: function draw(screen, viewport) {
-	      screen.drawImage(this.image, 0, 0, 98, 78, -_constantsGameConstantsJs.GRID_SIZE / 5, 0, 12, 12);
+	      screen.drawImage(this.image, 0, 0, 98, 78, _constantsGameConstantsJs.GRID_SIZE / 2 - 7, _constantsGameConstantsJs.GRID_SIZE / 2, 12, 12);
 	    }
 	  }]);
 	
@@ -2272,7 +2265,7 @@
 	
 	    _get(Object.getPrototypeOf(Grass2.prototype), 'constructor', this).call(this, game, coords);
 	
-	    this.image = [(0, _Utils.loadImage)(_imagesGroundPng2['default']), 0, 51, 24, 24, -_constantsGameConstantsJs.GRID_SIZE / 2, -_constantsGameConstantsJs.GRID_SIZE / 2, this.width, this.width];
+	    this.image = [(0, _Utils.loadImage)(_imagesGroundPng2['default']), 0, 51, 24, 24, 0, 0, this.width, this.width];
 	  }
 	
 	  return Grass2;
@@ -2576,13 +2569,23 @@
 	    this.resourceAmount = this.startingResources;
 	    this.moveCost = 0;
 	
-	    this.width = 64 / 73 * _constantsGameConstantsJs.GRID_SIZE;
-	    this.height = _constantsGameConstantsJs.GRID_SIZE;
+	    this.width = _constantsGameConstantsJs.GRID_SIZE;
+	    this.height = 73 / 64 * _constantsGameConstantsJs.GRID_SIZE;
 	
-	    this.image = [(0, _Utils.loadImage)(_imagesBuildingsPng2['default']), 463, 118, 64, 73, -_constantsGameConstantsJs.GRID_SIZE / 2, -_constantsGameConstantsJs.GRID_SIZE / 2, this.width, this.width];
+	    this.cost = {
+	      wood: 10,
+	      stone: 3
+	    };
+	
+	    this.image = [(0, _Utils.loadImage)(_imagesBuildingsPng2['default']), 463, 118, 64, 73, 0, _constantsGameConstantsJs.GRID_SIZE - this.height, this.width, this.height];
 	  }
 	
 	  _createClass(House, [{
+	    key: 'draw',
+	    value: function draw(screen) {
+	      _get(Object.getPrototypeOf(House.prototype), 'draw', this).call(this, screen);
+	    }
+	  }, {
 	    key: 'select',
 	    value: function select() {
 	      _get(Object.getPrototypeOf(House.prototype), 'select', this).call(this);
@@ -2604,6 +2607,113 @@
 
 /***/ },
 /* 35 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _constantsGameConstantsJs = __webpack_require__(9);
+	
+	var Renderer = (function () {
+	  function Renderer(canvas, viewPort) {
+	    _classCallCheck(this, Renderer);
+	
+	    this.canvas = canvas;
+	    this.screen = canvas.getContext('2d');
+	
+	    this.canvas.setAttribute("width", "" + _constantsGameConstantsJs.GRID_SIZE * viewPort.width);
+	    this.canvas.setAttribute("height", "" + _constantsGameConstantsJs.GRID_SIZE * viewPort.height);
+	
+	    this.canvas.style.cursor = "none";
+	  }
+	
+	  _createClass(Renderer, [{
+	    key: 'render',
+	    value: function render(layers, viewPort) {
+	      this.clearScreen();
+	      this.screen.translate(-viewPort.minX * _constantsGameConstantsJs.GRID_SIZE, -viewPort.minY * _constantsGameConstantsJs.GRID_SIZE);
+	      this.drawLayer(layers[_constantsGameConstantsJs.LAYER_MAP], viewPort);
+	      this.drawLayer(layers[_constantsGameConstantsJs.LAYER_FLOOR], viewPort);
+	      this.drawLayer(layers[_constantsGameConstantsJs.LAYER_GROUND], viewPort);
+	      this.drawLayer(layers[_constantsGameConstantsJs.LAYER_GROUND_PLACEMENT], viewPort);
+	      this.drawLayer(layers[_constantsGameConstantsJs.LAYER_AIR], viewPort);
+	      this.screen.translate(viewPort.minX * _constantsGameConstantsJs.GRID_SIZE, viewPort.minY * _constantsGameConstantsJs.GRID_SIZE);
+	    }
+	  }, {
+	    key: 'clearScreen',
+	    value: function clearScreen() {
+	      this.screen.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	    }
+	  }, {
+	    key: 'drawLayer',
+	    value: function drawLayer(layer, viewPort) {
+	      var visibleMap = this.viewPortItemsForLayer(layer, viewPort);
+	
+	      for (var y = 0; y < visibleMap.length; y++) {
+	        var row = visibleMap[y];
+	        for (var col = 0; col < row.length; col++) {
+	          var spriteList = row[col];
+	
+	          for (var sprite = 0; sprite < spriteList.length; sprite++) {
+	            spriteList[sprite].drawSprite(this.screen, viewPort);
+	          }
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'viewPortItemsForLayer',
+	    value: function viewPortItemsForLayer(layer, viewPort) {
+	      var visibleSpritesFromLayer = layer.filter(function (sprite) {
+	        return viewPort.inView(sprite.pos);
+	      });
+	
+	      var visibleMap = [];
+	      for (var y = 0; y < viewPort.height; y++) {
+	        var row = [];
+	        for (var x = 0; x < viewPort.width; x++) {
+	          row.push([]);
+	        }
+	        visibleMap.push(row);
+	      }
+	
+	      for (var spriteIdx = 0; spriteIdx < visibleSpritesFromLayer.length; spriteIdx++) {
+	        var sprite = visibleSpritesFromLayer[spriteIdx];
+	        var spriteX = parseInt(sprite.pos.x) - viewPort.minX;
+	        var spriteY = parseInt(sprite.pos.y) - viewPort.minY;
+	
+	        if (spriteY < visibleMap.length && spriteX < visibleMap[0].length) visibleMap[spriteY][spriteX].push(sprite);
+	      }
+	
+	      return visibleMap;
+	      // console.log(visibleSpritesFromLayer);
+	    }
+	  }, {
+	    key: 'renderStatusPanel',
+	    value: function renderStatusPanel(statusPanel) {
+	      statusPanel.draw(this.screen);
+	    }
+	  }, {
+	    key: 'renderCursor',
+	    value: function renderCursor(cursor) {
+	      cursor.draw(this.screen);
+	    }
+	  }]);
+	
+	  return Renderer;
+	})();
+	
+	exports['default'] = Renderer;
+	module.exports = exports['default'];
+
+/***/ },
+/* 36 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2613,6 +2723,12 @@
 	  map2: [[1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1], [0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1], [0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1], [1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1], [1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1], [1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1], [0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1], [1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1], [1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1], [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]],
 	
 	  MAP_OBLONG: [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0], [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0], [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0]],
+	
+	  MAP_TEST: ["111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111111111111111", "111111221111111111111111111111111111111111111111111111", "111122222111111111111111111111111111111111111111111111", "111122222111111111111111111111000011111111111111111111", "111122222111111111111111111111110011111111111111111111", "111122222111111111111111111111111111111111111111111111", "111122222111111111111110011111111111111111111111111111", "111112211111111111111100011111111111111111111111111111", "111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111110000011111111111", "111111111111111111111111111111111111111100011111111111", "111111111111111111111111111111111111111111111111111111", "111111111111111011111111111111111111111111111111111111", "111111111110000011111111111111212111111111111111111111", "111100000000011111111111111111222122221111111111111111", "111100000001111111111111111111221122222211111111111111", "111100111111100011111111111111111112222221111111111111", "111100000000011111111111111111112222211111111111111111", "111101111111111111111111111111111122221111111111111111", "111101111111111111111111111111111111221111111111111111", "111100111111111111111111111111111111122111111111111111", "111110001111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111222211111111", "111111111111111111111111111111111111111112222221111111", "111111111111111111111111111111111111111111112222111111", "111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111111111111111", "111111111111111111111111111111111111111111111111111111"].map(function (line) {
+	    return ("" + line).split("").map(function (s) {
+	      return parseInt(s);
+	    });
+	  }),
 	
 	  GENERATED: function GENERATED(width, height, chanceOfObstacle) {
 	    var map = [];
@@ -2628,12 +2744,6 @@
 	    return map;
 	  }
 	};
-
-/***/ },
-/* 36 */
-/***/ function(module, exports) {
-
-	module.exports = "data:image/png;base64,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"
 
 /***/ }
 /******/ ]);
