@@ -7,7 +7,14 @@ import Grass2 from './sprites/terrain/Grass2'
 import StatusPanel from './sprites/StatusPanel'
 import Cursor from './sprites/Cursor'
 import House from './sprites/buildings/House'
+import House2 from './sprites/buildings/House2'
 import Renderer from './Renderer'
+
+const UnitTypes = {
+  House: House,
+  House2: House2,
+  Rock: Rock
+};
 
 import { toGridPos } from './Utils'
 
@@ -54,7 +61,8 @@ export default class Game {
 
     this.userInput.onKey(KEY_BINDS.ATTACK, this.enableAttackMode.bind(this));
     this.userInput.onKey(KEY_BINDS.MOVE, this.enableMoveMode.bind(this));
-    this.userInput.onKey(KEY_BINDS.PLACE_BUILDING, this.enablePlacementMode.bind(this));
+    this.userInput.onKey(KEY_BINDS.QUICKSLOT_1, (()=>{this.enablePlacementMode("House")}).bind(this));
+    this.userInput.onKey(KEY_BINDS.QUICKSLOT_2, (()=>{this.enablePlacementMode("House2")}).bind(this));
 
     this.bindCameraControls();
 
@@ -125,8 +133,9 @@ export default class Game {
   enableDefaultMode(){
     this.setMode('DEFAULT')
   }
-  enablePlacementMode(){
-    var sprite = new House(this,this.mouseGridPos);
+  enablePlacementMode(unitType){
+    var sprite = new UnitTypes[unitType](this,this.mouseGridPos);
+
     sprite.beingPlaced = true;
     this.setMode('PLACE',sprite);
     this.addSprite(LAYER_GROUND_PLACEMENT, sprite);

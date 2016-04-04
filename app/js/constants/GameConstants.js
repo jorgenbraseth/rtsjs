@@ -19,6 +19,16 @@ module.exports = {
     MOVE_UP: 87, //W
     MOVE_DOWN: 83, //A
     MOVE_LEFT: 65, //S
-    MOVE_RIGHT: 68 //D
+    MOVE_RIGHT: 68, //D,
+    QUICKSLOT_0: 48,
+    QUICKSLOT_1: 49,
+    QUICKSLOT_2: 50,
+    QUICKSLOT_3: 51,
+    QUICKSLOT_4: 52,
+    QUICKSLOT_5: 53,
+    QUICKSLOT_6: 54,
+    QUICKSLOT_7: 55,
+    QUICKSLOT_8: 56,
+    QUICKSLOT_9: 57
   }
 };
