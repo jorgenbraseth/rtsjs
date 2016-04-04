@@ -445,15 +445,25 @@
 	
 	var _spritesBuildingsHouse2 = _interopRequireDefault(_spritesBuildingsHouse);
 	
-	var _Renderer = __webpack_require__(35);
+	var _spritesBuildingsHouse22 = __webpack_require__(35);
+	
+	var _spritesBuildingsHouse23 = _interopRequireDefault(_spritesBuildingsHouse22);
+	
+	var _Renderer = __webpack_require__(36);
 	
 	var _Renderer2 = _interopRequireDefault(_Renderer);
 	
 	var _Utils = __webpack_require__(15);
 	
-	var _Maps = __webpack_require__(36);
+	var _Maps = __webpack_require__(37);
 	
 	var _constantsGameConstantsJs = __webpack_require__(9);
+	
+	var UnitTypes = {
+	  House: _spritesBuildingsHouse2['default'],
+	  House2: _spritesBuildingsHouse23['default'],
+	  Rock: _spritesGatherablesRock2['default']
+	};
 	
 	var Game = (function () {
 	  function Game(canvas) {
@@ -494,7 +504,12 @@
 	
 	    this.userInput.onKey(_constantsGameConstantsJs.KEY_BINDS.ATTACK, this.enableAttackMode.bind(this));
 	    this.userInput.onKey(_constantsGameConstantsJs.KEY_BINDS.MOVE, this.enableMoveMode.bind(this));
-	    this.userInput.onKey(_constantsGameConstantsJs.KEY_BINDS.PLACE_BUILDING, this.enablePlacementMode.bind(this));
+	    this.userInput.onKey(_constantsGameConstantsJs.KEY_BINDS.QUICKSLOT_1, (function () {
+	      _this.enablePlacementMode("House");
+	    }).bind(this));
+	    this.userInput.onKey(_constantsGameConstantsJs.KEY_BINDS.QUICKSLOT_2, (function () {
+	      _this.enablePlacementMode("House2");
+	    }).bind(this));
 	
 	    this.bindCameraControls();
 	
@@ -609,8 +624,9 @@
 	    }
 	  }, {
 	    key: 'enablePlacementMode',
-	    value: function enablePlacementMode() {
-	      var sprite = new _spritesBuildingsHouse2['default'](this, this.mouseGridPos);
+	    value: function enablePlacementMode(unitType) {
+	      var sprite = new UnitTypes[unitType](this, this.mouseGridPos);
+	
 	      sprite.beingPlaced = true;
 	      this.setMode('PLACE', sprite);
 	      this.addSprite(_constantsGameConstantsJs.LAYER_GROUND_PLACEMENT, sprite);
@@ -1049,7 +1065,17 @@
 	    MOVE_UP: 87, //W
 	    MOVE_DOWN: 83, //A
 	    MOVE_LEFT: 65, //S
-	    MOVE_RIGHT: 68 //D
+	    MOVE_RIGHT: 68, //D,
+	    QUICKSLOT_0: 48,
+	    QUICKSLOT_1: 49,
+	    QUICKSLOT_2: 50,
+	    QUICKSLOT_3: 51,
+	    QUICKSLOT_4: 52,
+	    QUICKSLOT_5: 53,
+	    QUICKSLOT_6: 54,
+	    QUICKSLOT_7: 55,
+	    QUICKSLOT_8: 56,
+	    QUICKSLOT_9: 57
 	  }
 	};
 
@@ -2617,6 +2643,82 @@
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
+	var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _constantsGameConstantsJs = __webpack_require__(9);
+	
+	var _Utils = __webpack_require__(15);
+	
+	var _Sprite2 = __webpack_require__(12);
+	
+	var _Sprite3 = _interopRequireDefault(_Sprite2);
+	
+	var _imagesBuildingsPng = __webpack_require__(34);
+	
+	var _imagesBuildingsPng2 = _interopRequireDefault(_imagesBuildingsPng);
+	
+	var House = (function (_Sprite) {
+	  _inherits(House, _Sprite);
+	
+	  function House(game) {
+	    var coords = arguments.length <= 1 || arguments[1] === undefined ? [0, 0] : arguments[1];
+	
+	    _classCallCheck(this, House);
+	
+	    _get(Object.getPrototypeOf(House.prototype), 'constructor', this).call(this, game, coords);
+	
+	    this.startingResources = 15;
+	    this.resourceAmount = this.startingResources;
+	    this.moveCost = 0;
+	
+	    this.width = _constantsGameConstantsJs.GRID_SIZE;
+	    this.height = 73 / 64 * _constantsGameConstantsJs.GRID_SIZE;
+	
+	    this.cost = {
+	      wood: 15,
+	      stone: 3
+	    };
+	
+	    this.image = [(0, _Utils.loadImage)(_imagesBuildingsPng2['default']), 531, 120, 62, 73, 0, _constantsGameConstantsJs.GRID_SIZE - this.height, this.width, this.height];
+	  }
+	
+	  _createClass(House, [{
+	    key: 'draw',
+	    value: function draw(screen) {
+	      _get(Object.getPrototypeOf(House.prototype), 'draw', this).call(this, screen);
+	    }
+	  }, {
+	    key: 'select',
+	    value: function select() {
+	      _get(Object.getPrototypeOf(House.prototype), 'select', this).call(this);
+	      console.log(this.constructor.name + " selected");
+	    }
+	  }]);
+	
+	  return House;
+	})(_Sprite3['default']);
+	
+	exports['default'] = House;
+	module.exports = exports['default'];
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var _constantsGameConstantsJs = __webpack_require__(9);
@@ -2713,7 +2815,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports) {
 
 	"use strict";
