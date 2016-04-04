@@ -4,11 +4,15 @@ import Player from './sprites/Player'
 import Rock from './sprites/gatherables/Rock'
 import Tree from './sprites/gatherables/Tree'
 import Grass2 from './sprites/terrain/Grass2'
-import StatusPanel from './sprites/StatusPanel'
-import Cursor from './sprites/Cursor'
 import House from './sprites/buildings/House'
 import House2 from './sprites/buildings/House2'
+
 import Renderer from './Renderer'
+
+import StatusPanel from './sprites/ui/StatusPanel'
+import Cursor from './sprites/ui/Cursor'
+import QuickBar from './sprites/ui/QuickBar'
+
 
 const UnitTypes = {
   House: House,
@@ -46,6 +50,11 @@ export default class Game {
 
     this.cursor = new Cursor();
     canvas.onmousemove = this.onMouseMove.bind(this);
+
+    this.quickBar = new QuickBar(this, [canvas.width/2 - GRID_SIZE*5, canvas.height - GRID_SIZE*1.5]);
+    this.quickBar.setSlot(0,House);
+    this.quickBar.setSlot(1,UnitTypes.House2);
+
 
     this.userInput.onLeftClick(
       function(x,y){
@@ -291,8 +300,8 @@ export default class Game {
     if(clickedSprite){
       this.select(clickedSprite, this.shiftHeld);
     }else{
-      // this.addSprite(LAYER_FLOOR, new TreeStump(this, coords));
-      // this.addSprite(LAYER_MAP, new Blood(this, coords));
+      // this.addSprite(LAYER_FLOOR, new TreeStump(this, position));
+      // this.addSprite(LAYER_MAP, new Blood(this, position));
       this.clearSelection();
     }
   }
@@ -306,8 +315,9 @@ export default class Game {
     this.removeSprite(unit);
     this.enableDefaultMode();
 
-    playerResources.wood -= cost.wood;
-    playerResources.stone -= cost.stone;
+    for(var resourceType in cost){
+      playerResources[resourceType] -= cost[resourceType];
+    }
     unit.beingPlaced = false;
     unit.setPosition(...coords);
     this.addSprite(LAYER_GROUND, unit);
@@ -347,7 +357,7 @@ export default class Game {
   canAfford(cost){
     var playerResources = this.player.resources;
     for(var resourceType in cost){
-      if(playerResources[resourceType] === undefined || playerResources[resourceType]<cost[resourceType]){
+      if(playerResources[resourceType]<cost[resourceType]){
         return false;
       }
     }
@@ -400,8 +410,11 @@ export default class Game {
 
   draw(){
     this.renderer.render(this.layers, this.viewPort);
-    this.renderer.renderStatusPanel(this.statusPanel);
-    this.renderer.renderCursor(this.cursor);
+    this.renderer.renderUi(this.statusPanel);
+    this.renderer.renderUi(this.quickBar);
+
+    //Cursor last
+    this.renderer.renderUi(this.cursor);
   }
   run(){
     setInterval(function(){

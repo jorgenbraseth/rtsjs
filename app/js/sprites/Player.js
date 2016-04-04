@@ -9,12 +9,16 @@ const PLAYER_TYPE_MAN = 0;
 const PLAYER_TYPE_WOMAN_1 = 1;
 const PLAYER_TYPE_WOMAN_2 = 2;
 
+const CHOSEN_APPEARANCE = PLAYER_TYPE_WOMAN_1;
+
 export default class Player extends Unit {
 
   constructor(game, coords=[0,0]){
     super(game,coords,100,1);
 
-    this.resources = {};
+    this.resources = {
+      wood: 0, stone: 0, food: 0, gold: 0
+    };
     this.animAge = 0;
     this.width=GRID_SIZE*0.9;
     this.height=GRID_SIZE*0.9;
@@ -78,7 +82,7 @@ export default class Player extends Unit {
 
     var animFrame = parseInt(this.animAge/5);
     var directionRow = 0;
-    var playerType = PLAYER_TYPE_MAN;
+    var playerType = CHOSEN_APPEARANCE;
 
     if(this.dy < 0){
       directionRow = 3;

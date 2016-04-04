@@ -792,8 +792,8 @@
 	      if (clickedSprite) {
 	        this.select(clickedSprite, this.shiftHeld);
 	      } else {
-	        // this.addSprite(LAYER_FLOOR, new TreeStump(this, coords));
-	        // this.addSprite(LAYER_MAP, new Blood(this, coords));
+	        // this.addSprite(LAYER_FLOOR, new TreeStump(this, position));
+	        // this.addSprite(LAYER_MAP, new Blood(this, position));
 	        this.clearSelection();
 	      }
 	    }

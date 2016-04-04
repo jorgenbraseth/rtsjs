@@ -70,11 +70,7 @@ export default class Renderer {
 
   }
 
-  renderStatusPanel(statusPanel) {
-    statusPanel.draw(this.screen);
-  }
-
-  renderCursor(cursor) {
-    cursor.draw(this.screen);
+  renderUi(component){
+    component.draw(this.screen);
   }
 }

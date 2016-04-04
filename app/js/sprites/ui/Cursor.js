@@ -1,7 +1,7 @@
-import CURSOR_PLAIN from '../../images/plainCursor.png';
+import CURSOR_PLAIN from '../../../images/plainCursor.png';
 
-import { GRID_SIZE } from '../constants/GameConstants'
-import { loadImage } from '../Utils'
+import { GRID_SIZE } from '../../constants/GameConstants'
+import { loadImage } from '../../Utils'
 
 const hotspot = {x:3,y:3};
 

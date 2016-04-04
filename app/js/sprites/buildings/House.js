@@ -16,8 +16,7 @@ export default class House extends Sprite {
     this.height = (73/64)*GRID_SIZE;
 
     this.cost = {
-      wood: 10,
-      stone: 3
+      wood: 5
     };
 
 
