@@ -9,41 +9,15 @@ export default class Unit extends Sprite {
     this.hp = hp;
     this.initialHp = hp;
     this.gridPos = coords;
-    this.attackRange = 1;
+    this.attackRange = 1.4;
     this.attackDamage = attackDamage;
     this.gatheringSpeed = 0.25;
     this.dead = false;
     this.moveCost = 0;
   }
 
-  moveTo(targetPosition){
-    this.targetOfAttack = undefined;
-
-    var newMoveQueue = [];
-    if(this.nextGridPosition){
-      newMoveQueue.push([this.nextGridPosition[0],this.nextGridPosition[1]]);
-    }
-    var startPoint = this.nextGridPosition || this.gridPos;
-    this.moveQueue = newMoveQueue.concat([...this.calculatePath(startPoint,targetPosition)]);
-  }
-
-  calculatePath(start,end){
-    if(start==undefined || end==undefined){
-      return [];
-    }
-    var calculatedPath = [];
-    var path = AStar.findPath(this.world, start,end);
-
-    for (var pos = 0; pos < path.length; pos++) {
-      var coords = path[pos];
-      calculatedPath.push(coords);
-    }
-
-    return calculatedPath;
-  }
-
   get isMoving() {
-    return this.nextGridPosition !== undefined;
+    return true;
   }
 
   tick(){
@@ -53,14 +27,11 @@ export default class Unit extends Sprite {
     }
 
     if(this.targetOfAttack && this.inAttackRange(this.targetOfAttack)){
-      this.moveQueue = [];
       if(this.targetOfAttack.fireAt){
         this.fireAt(this.targetOfAttack);
       }else if(this.targetOfAttack.gather){
         this.gatherFrom(this.targetOfAttack);
       }
-    }else{
-      this.moveTowardsTarget();
     }
   }
 
@@ -101,7 +72,6 @@ export default class Unit extends Sprite {
   }
 
   draw(screen, viewport){
-    super.draw(...arguments);
     if(this.firedThisRound && this.targetOfAttack){
       screen.beginPath();
       screen.moveTo(this.pos.centerPixelX(),this.pos.centerPixelY());
@@ -128,40 +98,6 @@ export default class Unit extends Sprite {
     screen.translate(dx,dy);
   }
 
-  moveTowardsTarget() {
-    if(this.nextGridPosition && !this.game.positionFree(this.nextGridPosition)){
-      this.moveQueue = [];
-    }
-
-    if(this.nextGridPosition === undefined){
-      return;
-    }
-
-    if(this.atPosition(this.nextGridPosition)){
-      this.gridPos = [this.nextGridPosition[0],this.nextGridPosition[1]];
-      this.moveQueue.shift();
-    }else{
-      let distX = this.nextGridPosition[0] - this.pos.x;
-      let distY = this.nextGridPosition[1] - this.pos.y;
-      let dist = Math.sqrt(distX*distX + distY*distY);
-
-      if(dist>0) {
-        let sinA = distY / dist;
-        let cosA = distX / dist;
-
-        this.dx = cosA * Math.min(this.speed,dist);
-        this.dy = sinA * Math.min(this.speed,dist);
-
-        this.pos.x += this.dx;
-        this.pos.y += this.dy;
-      }
-    }
-
-    if(this.nextGridPosition && !this.game.positionFree(this.nextGridPosition)){
-      this.moveQueue = [];
-    }
-  }
-
   set gridPos(coords) {
     this._gridPos = coords;
   }
@@ -169,31 +105,7 @@ export default class Unit extends Sprite {
     return this._gridPos;
   }
 
-  get targetX() {
-    if(this.nextGridPosition)
-      return this.nextGridPosition[0];
-    else
-      return this.gridPos[0]
-  }
-  get targetY() {
-    if(this.nextGridPosition)
-      return this.nextGridPosition[1];
-    else
-      return this.gridPos[1]
-  }
-
-  get nextGridPosition() {
-    return this.moveQueue[0] || undefined;
-  }
-
-  atPosition(pos) {
-    return pos == undefined || (this.pos.x == pos[0] && this.pos.y == pos[1]);
-
-  }
-
-
   attackTarget(unit) {
-    this.moveTo(unit.gridPos);
     this.targetOfAttack = unit;
   }
 }

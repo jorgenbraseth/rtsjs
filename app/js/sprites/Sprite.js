@@ -1,4 +1,5 @@
 import { GRID_SIZE } from '../constants/GameConstants.js'
+import { intersects } from '../Utils'
 
 export default class Sprite {
   image: undefined;
@@ -23,6 +24,7 @@ export default class Sprite {
     this.color = "red";
 
     this.width = GRID_SIZE;
+    this.height = GRID_SIZE;
     this.selected = false;
 
     this.speed = 0.2 + Math.random();
@@ -58,19 +60,31 @@ export default class Sprite {
 
   }
 
+  get drawCoords() {
+    return [this.grid2draw(this.pos.x),this.grid2draw(this.pos.y)];
+  }
+
   drawSprite(screen, viewPort){
     if(viewPort.inView(this.pos)){
-      var dx = this.grid2draw(this.pos.x);
-      var dy = this.grid2draw(this.pos.y);
 
-      screen.translate(dx,dy);
+      screen.save();
+      screen.translate(...this.drawCoords);
       if(this.beingPlaced){
         screen.globalAlpha = 0.5;
         this.drawGridCell(screen);
       }
       this.draw(screen);
       screen.globalAlpha = 1;
-      screen.translate(-dx,-dy);
+      screen.restore();
+    }
+  }
+
+  get boundingBox() {
+    return {
+      left: this.pos.x,
+      right: this.pos.x + 1,
+      top: this.pos.y,
+      bottom: this.pos.y + 1
     }
   }
 
@@ -78,7 +92,8 @@ export default class Sprite {
     var positionFree = this.game.positionFree([this.pos.x,this.pos.y], true);
     var affordable = this.game.canAfford(this.cost);
     var isInRange = this.game.isWithinBuildRange([this.pos.x,this.pos.y]);
-    return positionFree && affordable && isInRange;
+    var collidesWithPlayer = intersects(this.game.player.boundingBox,this.boundingBox);
+    return positionFree && affordable && isInRange && !collidesWithPlayer;
   }
 
   draw(screen){

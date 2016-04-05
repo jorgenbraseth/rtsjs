@@ -1,6 +1,6 @@
 import UserInput from './UserInput'
 
-import Player from './sprites/Player'
+import Player from './sprites/KeyboardPlayer'
 import Rock from './sprites/gatherables/Rock'
 import Tree from './sprites/gatherables/Tree'
 import Grass2 from './sprites/terrain/Grass2'
@@ -14,13 +14,15 @@ import Cursor from './sprites/ui/Cursor'
 import QuickBar from './sprites/ui/QuickBar'
 
 
+
+
 const UnitTypes = {
   House: House,
   House2: House2,
   Rock: Rock
 };
 
-import { toGridPos } from './Utils'
+import { toGridPos, intersects } from './Utils'
 
 import { GENERATED, MAP_TEST } from './Maps'
 
@@ -68,8 +70,6 @@ export default class Game {
       }.bind(this)
     );
 
-    this.userInput.onKey(KEY_BINDS.ATTACK, this.enableAttackMode.bind(this));
-    this.userInput.onKey(KEY_BINDS.MOVE, this.enableMoveMode.bind(this));
     this.userInput.onKey(KEY_BINDS.QUICKSLOT_1, (()=>{this.enablePlacementMode("House")}).bind(this));
     this.userInput.onKey(KEY_BINDS.QUICKSLOT_2, (()=>{this.enablePlacementMode("House2")}).bind(this));
 
@@ -182,6 +182,7 @@ export default class Game {
     this.layers = {};
     this.layers[LAYER_MAP] = [];
     this.layers[LAYER_FLOOR] = [];
+    this.layers[LAYER_GROUND] = [];
     this.layers[LAYER_GROUND] = [];
     this.layers[LAYER_GROUND_PLACEMENT] = [];
     this.layers[LAYER_AIR] = [];
@@ -350,8 +351,24 @@ export default class Game {
   }
 
   positionFree(coords, countPlayer=false){
-    var found = this.spriteAt(coords,countPlayer);
+    var inLegalMapArea = coords[0] >=0 && coords[1] >= 0;
+    var found = inLegalMapArea && this.spriteAt(coords,countPlayer);
     return found === undefined;
+  }
+
+  findCollision(spriteToCheck){
+    var found = [LAYER_GROUND].map((layerIdx)=>{
+      var layer = this.layers[layerIdx];
+
+      var foundSprite = layer.find((sprite)=>{
+        return sprite != spriteToCheck && intersects(sprite.boundingBox, spriteToCheck.boundingBox)
+      });
+
+      return foundSprite;
+
+
+    });
+   return found[0];
   }
 
   canAfford(cost){

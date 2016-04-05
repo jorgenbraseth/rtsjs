@@ -19,7 +19,6 @@ export default class House extends Sprite {
       wood: 5
     };
 
-
     this.image = [loadImage(Image),463,118,64,73,0,GRID_SIZE-this.height,this.width,this.height]
   }
 
