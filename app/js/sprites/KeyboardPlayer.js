@@ -8,6 +8,8 @@ const PLAYER_TYPE_MAN = 0;
 const PLAYER_TYPE_WOMAN_1 = 1;
 const PLAYER_TYPE_WOMAN_2 = 2;
 
+
+
 const CHOSEN_APPEARANCE = PLAYER_TYPE_WOMAN_2;
 
 export default class Player extends Unit {
@@ -55,17 +57,17 @@ export default class Player extends Unit {
     this.movingDown = startMovement;
   }
 
+  ageTick() {
+    this.animAge = (this.animAge + 1) % 15;
+  }
+
   tick() {
     super.tick();
 
-    if (this.isMoving) {
-      this.animAge = (this.animAge + 1) % 15;
-    }
+    this.dx = this.movingLeft ? -this.speed : this.movingRight ? this.speed : 0;
+    this.dy = this.movingUp ? -this.speed : this.movingDown ? this.speed : 0;
 
-    const dx = this.movingLeft ? -this.speed : this.movingRight ? this.speed : 0;
-    const dy = this.movingUp ? -this.speed : this.movingDown ? this.speed : 0;
-
-    this.pos.x += dx;
+    this.pos.x += this.dx;
 
     var collision = this.game.findCollision(this);
     if(collision!==undefined){
@@ -81,7 +83,7 @@ export default class Player extends Unit {
       this.pos.x = 0;
     }
 
-    this.pos.y += dy;
+    this.pos.y += this.dy;
 
     var collision = this.game.findCollision(this);
     if(collision!==undefined){
@@ -98,6 +100,11 @@ export default class Player extends Unit {
       this.pos.y = 0;
     }
 
+    if(this.dx!=0 || this.dy !=0){
+      this.ageTick();
+      this.updateDirection();
+    }
+
     this.gridPos = [Math.ceil(this.pos.x),Math.ceil(this.pos.y)];
   }
 
@@ -106,20 +113,11 @@ export default class Player extends Unit {
     screen.fillStyle = this.color;
 
     var animFrame = parseInt(this.animAge / 5);
-    var directionRow = 0;
     var playerType = CHOSEN_APPEARANCE;
-
-    if (this.dy < 0) {
-      directionRow = 3;
-    } else if (this.dx < 0) {
-      directionRow = 1;
-    } else if (this.dx > 0) {
-      directionRow = 2;
-    }
 
     screen.drawImage(
       this.image,
-      playerType * (3 * 32) + animFrame * 32, directionRow * 32, 32, 32,
+      playerType * (3 * 32) + animFrame * 32, this.directionRow * 32, 32, 32,
       GRID_SIZE / 2 - this.width / 2, GRID_SIZE / 2 - this.height / 2,
       this.width, this.height
     );
@@ -130,6 +128,17 @@ export default class Player extends Unit {
 
 
   }
+
+  updateDirection(){
+      this.directionRow = 0;
+      if (this.dy < 0) {
+        this.directionRow = 3;
+      } else if (this.dx < 0) {
+        this.directionRow = 1;
+      } else if (this.dx > 0) {
+              this.directionRow = 2;
+          }
+      }
 
   die() {
     super.die();
