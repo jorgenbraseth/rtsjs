@@ -417,9 +417,9 @@
 	
 	var _UserInput2 = _interopRequireDefault(_UserInput);
 	
-	var _spritesPlayer = __webpack_require__(10);
+	var _spritesKeyboardPlayer = __webpack_require__(10);
 	
-	var _spritesPlayer2 = _interopRequireDefault(_spritesPlayer);
+	var _spritesKeyboardPlayer2 = _interopRequireDefault(_spritesKeyboardPlayer);
 	
 	var _spritesGatherablesRock = __webpack_require__(18);
 	
@@ -457,7 +457,7 @@
 	
 	var _spritesUiQuickBar2 = _interopRequireDefault(_spritesUiQuickBar);
 	
-	var _Utils = __webpack_require__(15);
+	var _Utils = __webpack_require__(13);
 	
 	var _Maps = __webpack_require__(38);
 	
@@ -510,8 +510,6 @@
 	      this.gridRightClicked((0, _Utils.toGridPos)(x, y, this.viewPort));
 	    }).bind(this));
 	
-	    this.userInput.onKey(_constantsGameConstantsJs.KEY_BINDS.ATTACK, this.enableAttackMode.bind(this));
-	    this.userInput.onKey(_constantsGameConstantsJs.KEY_BINDS.MOVE, this.enableMoveMode.bind(this));
 	    this.userInput.onKey(_constantsGameConstantsJs.KEY_BINDS.QUICKSLOT_1, (function () {
 	      _this.enablePlacementMode("House");
 	    }).bind(this));
@@ -682,13 +680,14 @@
 	      this.layers[_constantsGameConstantsJs.LAYER_MAP] = [];
 	      this.layers[_constantsGameConstantsJs.LAYER_FLOOR] = [];
 	      this.layers[_constantsGameConstantsJs.LAYER_GROUND] = [];
+	      this.layers[_constantsGameConstantsJs.LAYER_GROUND] = [];
 	      this.layers[_constantsGameConstantsJs.LAYER_GROUND_PLACEMENT] = [];
 	      this.layers[_constantsGameConstantsJs.LAYER_AIR] = [];
 	
 	      // this.loadMap(GENERATED(100,70,0.2));
 	      this.loadMap(_Maps.MAP_TEST);
 	
-	      this._player = new _spritesPlayer2['default'](this, [0, 0]);
+	      this._player = new _spritesKeyboardPlayer2['default'](this, [0, 0]);
 	      this.statusPanel = new _spritesUiStatusPanel2['default'](this.player, this);
 	      this.player.select();
 	      this.addSprite(_constantsGameConstantsJs.LAYER_GROUND, this.player);
@@ -856,8 +855,25 @@
 	    value: function positionFree(coords) {
 	      var countPlayer = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 	
-	      var found = this.spriteAt(coords, countPlayer);
+	      var inLegalMapArea = coords[0] >= 0 && coords[1] >= 0;
+	      var found = inLegalMapArea && this.spriteAt(coords, countPlayer);
 	      return found === undefined;
+	    }
+	  }, {
+	    key: 'findCollision',
+	    value: function findCollision(spriteToCheck) {
+	      var _this5 = this;
+	
+	      var found = [_constantsGameConstantsJs.LAYER_GROUND].map(function (layerIdx) {
+	        var layer = _this5.layers[layerIdx];
+	
+	        var foundSprite = layer.find(function (sprite) {
+	          return sprite != spriteToCheck && (0, _Utils.intersects)(sprite.boundingBox, spriteToCheck.boundingBox);
+	        });
+	
+	        return foundSprite;
+	      });
+	      return found[0];
 	    }
 	  }, {
 	    key: 'canAfford',
@@ -1111,17 +1127,17 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var _Unit2 = __webpack_require__(11);
+	var _KeyboardControlledUnit = __webpack_require__(11);
 	
-	var _Unit3 = _interopRequireDefault(_Unit2);
+	var _KeyboardControlledUnit2 = _interopRequireDefault(_KeyboardControlledUnit);
 	
-	var _decoreBlood = __webpack_require__(14);
+	var _decoreBlood = __webpack_require__(15);
 	
 	var _decoreBlood2 = _interopRequireDefault(_decoreBlood);
 	
 	var _constantsGameConstantsJs = __webpack_require__(9);
 	
-	var _Utils = __webpack_require__(15);
+	var _Utils = __webpack_require__(13);
 	
 	var _imagesPerson1Png = __webpack_require__(17);
 	
@@ -1131,7 +1147,7 @@
 	var PLAYER_TYPE_WOMAN_1 = 1;
 	var PLAYER_TYPE_WOMAN_2 = 2;
 	
-	var CHOSEN_APPEARANCE = PLAYER_TYPE_WOMAN_1;
+	var CHOSEN_APPEARANCE = PLAYER_TYPE_WOMAN_2;
 	
 	var Player = (function (_Unit) {
 	  _inherits(Player, _Unit);
@@ -1150,12 +1166,9 @@
 	    this.width = _constantsGameConstantsJs.GRID_SIZE * 0.9;
 	    this.height = _constantsGameConstantsJs.GRID_SIZE * 0.9;
 	    this.moveCost = 10000;
-	    this.movingTo = [this.pos.x, this.pos.y];
 	    this.world = game.world;
 	
-	    this.unselect();
-	
-	    this.speed = .15;
+	    this.speed = .125;
 	
 	    this.image = (0, _Utils.loadImage)(_imagesPerson1Png2['default']);
 	  }
@@ -1175,88 +1188,101 @@
 	  }, {
 	    key: 'moveRight',
 	    value: function moveRight(startMovement) {
-	      this.movingLeft = false;
 	      this.movingRight = startMovement;
 	    }
 	  }, {
 	    key: 'moveLeft',
 	    value: function moveLeft(startMovement) {
-	      this.movingRight = false;
 	      this.movingLeft = startMovement;
 	    }
 	  }, {
 	    key: 'moveUp',
 	    value: function moveUp(startMovement) {
-	      this.movingDown = false;
 	      this.movingUp = startMovement;
 	    }
 	  }, {
 	    key: 'moveDown',
 	    value: function moveDown(startMovement) {
-	      this.movingUp = false;
 	      this.movingDown = startMovement;
+	    }
+	  }, {
+	    key: 'ageTick',
+	    value: function ageTick() {
+	      this.animAge = (this.animAge + 1) % 15;
 	    }
 	  }, {
 	    key: 'tick',
 	    value: function tick() {
 	      _get(Object.getPrototypeOf(Player.prototype), 'tick', this).call(this);
 	
-	      if (this.isMoving) {
-	        this.animAge = (this.animAge + 1) % 15;
-	      } else if (this.movingLeft) {
-	        this.moveTo([this.gridPos[0] - 1, this.gridPos[1]]);
-	      } else if (this.movingRight) {
-	        this.moveTo([this.gridPos[0] + 1, this.gridPos[1]]);
-	      } else if (this.movingUp) {
-	        this.moveTo([this.gridPos[0], this.gridPos[1] - 1]);
-	      } else if (this.movingDown) {
-	        this.moveTo([this.gridPos[0], this.gridPos[1] + 1]);
+	      this.dx = this.movingLeft ? -this.speed : this.movingRight ? this.speed : 0;
+	      this.dy = this.movingUp ? -this.speed : this.movingDown ? this.speed : 0;
+	
+	      this.pos.x += this.dx;
+	
+	      var collision = this.game.findCollision(this);
+	      if (collision !== undefined) {
+	        if (this.movingLeft) {
+	          var stepBack = collision.boundingBox.right - this.boundingBox.left;
+	          this.pos.x += stepBack;
+	        } else if (this.movingRight) {
+	          var stepBack = this.boundingBox.right - collision.boundingBox.left;
+	          this.pos.x -= stepBack;
+	        }
 	      }
+	      if (this.pos.x < 0) {
+	        this.pos.x = 0;
+	      }
+	
+	      this.pos.y += this.dy;
+	
+	      var collision = this.game.findCollision(this);
+	      if (collision !== undefined) {
+	        if (this.movingUp) {
+	          var stepBack = collision.boundingBox.bottom - this.boundingBox.top;
+	          this.pos.y += stepBack;
+	        } else if (this.movingDown) {
+	          var stepBack = this.boundingBox.bottom - collision.boundingBox.top;
+	          this.pos.y -= stepBack;
+	        }
+	      }
+	
+	      if (this.pos.y < 0) {
+	        this.pos.y = 0;
+	      }
+	
+	      if (this.dx != 0 || this.dy != 0) {
+	        this.ageTick();
+	        this.updateDirection();
+	      }
+	
+	      this.gridPos = [Math.ceil(this.pos.x), Math.ceil(this.pos.y)];
 	    }
 	  }, {
 	    key: 'draw',
 	    value: function draw(screen, viewport) {
+	      _get(Object.getPrototypeOf(Player.prototype), 'draw', this).apply(this, arguments);
 	      screen.fillStyle = this.color;
-	      // this.drawMoveQueue(screen);
 	
 	      var animFrame = parseInt(this.animAge / 5);
-	      var directionRow = 0;
 	      var playerType = CHOSEN_APPEARANCE;
 	
-	      if (this.dy < 0) {
-	        directionRow = 3;
-	      } else if (this.dx < 0) {
-	        directionRow = 1;
-	      } else if (this.dx > 0) {
-	        directionRow = 2;
-	      }
-	
-	      screen.drawImage(this.image, playerType * (3 * 32) + animFrame * 32, directionRow * 32, 32, 32, _constantsGameConstantsJs.GRID_SIZE / 2 - this.width / 2, _constantsGameConstantsJs.GRID_SIZE / 2 - this.height / 2, this.width, this.height);
+	      screen.drawImage(this.image, playerType * (3 * 32) + animFrame * 32, this.directionRow * 32, 32, 32, _constantsGameConstantsJs.GRID_SIZE / 2 - this.width / 2, _constantsGameConstantsJs.GRID_SIZE / 2 - this.height / 2, this.width, this.height);
 	
 	      if (this.selected) {
 	        this.drawHp(screen);
 	      }
 	    }
 	  }, {
-	    key: 'drawMoveQueue',
-	    value: function drawMoveQueue(screen) {
-	      var prevPos = this.pos;
-	      for (var i = 0; i < this.moveQueue.length; i++) {
-	        var pos = this.moveQueue[i];
-	        screen.fillStyle = "rgba(0,5,0,0.5";
-	        screen.beginPath();
-	        screen.arc(0, 0, 3, 0, Math.PI * 2);
-	        screen.closePath();
-	        screen.fill();
-	
-	        screen.strokeStyle = "rgba(0,50,0,0.7)";
-	        screen.beginPath();
-	        screen.moveTo(0, 0);
-	        screen.lineTo(0, 0);
-	        screen.closePath();
-	        screen.stroke();
-	
-	        prevPos = pos;
+	    key: 'updateDirection',
+	    value: function updateDirection() {
+	      this.directionRow = 0;
+	      if (this.dy < 0) {
+	        this.directionRow = 3;
+	      } else if (this.dx < 0) {
+	        this.directionRow = 1;
+	      } else if (this.dx > 0) {
+	        this.directionRow = 2;
 	      }
 	    }
 	  }, {
@@ -1268,7 +1294,7 @@
 	  }]);
 	
 	  return Player;
-	})(_Unit3['default']);
+	})(_KeyboardControlledUnit2['default']);
 	
 	exports['default'] = Player;
 	module.exports = exports['default'];
@@ -1289,8 +1315,6 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
@@ -1299,7 +1323,7 @@
 	
 	var _Sprite3 = _interopRequireDefault(_Sprite2);
 	
-	var _AStar = __webpack_require__(13);
+	var _AStar = __webpack_require__(14);
 	
 	var _AStar2 = _interopRequireDefault(_AStar);
 	
@@ -1318,7 +1342,7 @@
 	    this.hp = hp;
 	    this.initialHp = hp;
 	    this.gridPos = coords;
-	    this.attackRange = 1;
+	    this.attackRange = 1.4;
 	    this.attackDamage = attackDamage;
 	    this.gatheringSpeed = 0.25;
 	    this.dead = false;
@@ -1326,34 +1350,6 @@
 	  }
 	
 	  _createClass(Unit, [{
-	    key: 'moveTo',
-	    value: function moveTo(targetPosition) {
-	      this.targetOfAttack = undefined;
-	
-	      var newMoveQueue = [];
-	      if (this.nextGridPosition) {
-	        newMoveQueue.push([this.nextGridPosition[0], this.nextGridPosition[1]]);
-	      }
-	      var startPoint = this.nextGridPosition || this.gridPos;
-	      this.moveQueue = newMoveQueue.concat([].concat(_toConsumableArray(this.calculatePath(startPoint, targetPosition))));
-	    }
-	  }, {
-	    key: 'calculatePath',
-	    value: function calculatePath(start, end) {
-	      if (start == undefined || end == undefined) {
-	        return [];
-	      }
-	      var calculatedPath = [];
-	      var path = _AStar2['default'].findPath(this.world, start, end);
-	
-	      for (var pos = 0; pos < path.length; pos++) {
-	        var coords = path[pos];
-	        calculatedPath.push(coords);
-	      }
-	
-	      return calculatedPath;
-	    }
-	  }, {
 	    key: 'tick',
 	    value: function tick() {
 	      this.firedThisRound = false;
@@ -1362,14 +1358,11 @@
 	      }
 	
 	      if (this.targetOfAttack && this.inAttackRange(this.targetOfAttack)) {
-	        this.moveQueue = [];
 	        if (this.targetOfAttack.fireAt) {
 	          this.fireAt(this.targetOfAttack);
 	        } else if (this.targetOfAttack.gather) {
 	          this.gatherFrom(this.targetOfAttack);
 	        }
-	      } else {
-	        this.moveTowardsTarget();
 	      }
 	    }
 	  }, {
@@ -1444,55 +1437,14 @@
 	      screen.translate(dx, dy);
 	    }
 	  }, {
-	    key: 'moveTowardsTarget',
-	    value: function moveTowardsTarget() {
-	      if (this.nextGridPosition && !this.game.positionFree(this.nextGridPosition)) {
-	        this.moveQueue = [];
-	      }
-	
-	      if (this.nextGridPosition === undefined) {
-	        return;
-	      }
-	
-	      if (this.atPosition(this.nextGridPosition)) {
-	        this.gridPos = [this.nextGridPosition[0], this.nextGridPosition[1]];
-	        this.moveQueue.shift();
-	      } else {
-	        var distX = this.nextGridPosition[0] - this.pos.x;
-	        var distY = this.nextGridPosition[1] - this.pos.y;
-	        var dist = Math.sqrt(distX * distX + distY * distY);
-	
-	        if (dist > 0) {
-	          var sinA = distY / dist;
-	          var cosA = distX / dist;
-	
-	          this.dx = cosA * Math.min(this.speed, dist);
-	          this.dy = sinA * Math.min(this.speed, dist);
-	
-	          this.pos.x += this.dx;
-	          this.pos.y += this.dy;
-	        }
-	      }
-	
-	      if (this.nextGridPosition && !this.game.positionFree(this.nextGridPosition)) {
-	        this.moveQueue = [];
-	      }
-	    }
-	  }, {
-	    key: 'atPosition',
-	    value: function atPosition(pos) {
-	      return pos == undefined || this.pos.x == pos[0] && this.pos.y == pos[1];
-	    }
-	  }, {
 	    key: 'attackTarget',
 	    value: function attackTarget(unit) {
-	      this.moveTo(unit.gridPos);
 	      this.targetOfAttack = unit;
 	    }
 	  }, {
 	    key: 'isMoving',
 	    get: function get() {
-	      return this.nextGridPosition !== undefined;
+	      return true;
 	    }
 	  }, {
 	    key: 'gridPos',
@@ -1501,21 +1453,6 @@
 	    },
 	    get: function get() {
 	      return this._gridPos;
-	    }
-	  }, {
-	    key: 'targetX',
-	    get: function get() {
-	      if (this.nextGridPosition) return this.nextGridPosition[0];else return this.gridPos[0];
-	    }
-	  }, {
-	    key: 'targetY',
-	    get: function get() {
-	      if (this.nextGridPosition) return this.nextGridPosition[1];else return this.gridPos[1];
-	    }
-	  }, {
-	    key: 'nextGridPosition',
-	    get: function get() {
-	      return this.moveQueue[0] || undefined;
 	    }
 	  }]);
 	
@@ -1529,19 +1466,21 @@
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var _constantsGameConstantsJs = __webpack_require__(9);
+	
+	var _Utils = __webpack_require__(13);
 	
 	var Sprite = (function () {
 	  function Sprite(game) {
@@ -1566,6 +1505,7 @@
 	    this.color = "red";
 	
 	    this.width = _constantsGameConstantsJs.GRID_SIZE;
+	    this.height = _constantsGameConstantsJs.GRID_SIZE;
 	    this.selected = false;
 	
 	    this.speed = 0.2 + Math.random();
@@ -1579,37 +1519,36 @@
 	  }
 	
 	  _createClass(Sprite, [{
-	    key: "select",
+	    key: 'select',
 	    value: function select() {
 	      this.selected = true;
 	    }
 	  }, {
-	    key: "unselect",
+	    key: 'unselect',
 	    value: function unselect() {
 	      this.selected = false;
 	    }
 	  }, {
-	    key: "tick",
+	    key: 'tick',
 	    value: function tick() {}
 	  }, {
-	    key: "drawSprite",
+	    key: 'drawSprite',
 	    value: function drawSprite(screen, viewPort) {
 	      if (viewPort.inView(this.pos)) {
-	        var dx = this.grid2draw(this.pos.x);
-	        var dy = this.grid2draw(this.pos.y);
 	
-	        screen.translate(dx, dy);
+	        screen.save();
+	        screen.translate.apply(screen, _toConsumableArray(this.drawCoords));
 	        if (this.beingPlaced) {
 	          screen.globalAlpha = 0.5;
 	          this.drawGridCell(screen);
 	        }
 	        this.draw(screen);
 	        screen.globalAlpha = 1;
-	        screen.translate(-dx, -dy);
+	        screen.restore();
 	      }
 	    }
 	  }, {
-	    key: "draw",
+	    key: 'draw',
 	    value: function draw(screen) {
 	      if (this.image) {
 	        screen.drawImage.apply(screen, _toConsumableArray(this.image));
@@ -1622,55 +1561,102 @@
 	      }
 	    }
 	  }, {
-	    key: "grid2draw",
+	    key: 'grid2draw',
 	    value: function grid2draw(val) {
 	      return val * _constantsGameConstantsJs.GRID_SIZE;
 	    }
 	  }, {
-	    key: "setPosition",
+	    key: 'setPosition',
 	    value: function setPosition(x, y) {
 	      this.pos.x = x;
 	      this.pos.y = y;
 	    }
 	  }, {
-	    key: "drawGridCell",
+	    key: 'drawGridCell',
 	    value: function drawGridCell(screen) {
 	      screen.fillStyle = this.isPlaceable ? "rgba(0,255,0,0.9" : "red";
 	      screen.fillRect(0, 0, _constantsGameConstantsJs.GRID_SIZE, _constantsGameConstantsJs.GRID_SIZE);
 	    }
 	  }, {
-	    key: "targetX",
+	    key: 'targetX',
 	    get: function get() {
 	      return this.gridPos[0];
 	    }
 	  }, {
-	    key: "targetY",
+	    key: 'targetY',
 	    get: function get() {
 	      return this.gridPos[1];
 	    }
 	  }, {
-	    key: "gridPos",
+	    key: 'gridPos',
 	    get: function get() {
 	      return [this.pos.x, this.pos.y];
 	    }
 	  }, {
-	    key: "isPlaceable",
+	    key: 'drawCoords',
+	    get: function get() {
+	      return [this.grid2draw(this.pos.x), this.grid2draw(this.pos.y)];
+	    }
+	  }, {
+	    key: 'boundingBox',
+	    get: function get() {
+	      return {
+	        left: this.pos.x,
+	        right: this.pos.x + 1,
+	        top: this.pos.y,
+	        bottom: this.pos.y + 1
+	      };
+	    }
+	  }, {
+	    key: 'isPlaceable',
 	    get: function get() {
 	      var positionFree = this.game.positionFree([this.pos.x, this.pos.y], true);
 	      var affordable = this.game.canAfford(this.cost);
 	      var isInRange = this.game.isWithinBuildRange([this.pos.x, this.pos.y]);
-	      return positionFree && affordable && isInRange;
+	      var collidesWithPlayer = (0, _Utils.intersects)(this.game.player.boundingBox, this.boundingBox);
+	      return positionFree && affordable && isInRange && !collidesWithPlayer;
 	    }
 	  }]);
 	
 	  return Sprite;
 	})();
 	
-	exports["default"] = Sprite;
-	module.exports = exports["default"];
+	exports['default'] = Sprite;
+	module.exports = exports['default'];
 
 /***/ },
 /* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _constantsGameConstants = __webpack_require__(9);
+	
+	var imageCache = {};
+	
+	module.exports = {
+	
+	  loadImage: function loadImage(img) {
+	    if (imageCache[img] === undefined) {
+	      var imgElm = document.createElement("img");
+	      imgElm.setAttribute('src', img);
+	      imageCache[img] = imgElm;
+	    }
+	    return imageCache[img];
+	  },
+	
+	  toGridPos: function toGridPos(x, y, viewPort) {
+	    return [Math.floor(x / _constantsGameConstants.GRID_SIZE) + viewPort.minX, Math.floor(y / _constantsGameConstants.GRID_SIZE) + viewPort.minY];
+	  },
+	
+	  intersects: function intersects(r1, r2) {
+	    return !(r2.left >= r1.right || r2.right <= r1.left || r2.top >= r1.bottom || r2.bottom <= r1.top);
+	  }
+	
+	};
+
+/***/ },
+/* 14 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1908,7 +1894,7 @@
 	};
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1929,7 +1915,7 @@
 	
 	var _constantsGameConstantsJs = __webpack_require__(9);
 	
-	var _Utils = __webpack_require__(15);
+	var _Utils = __webpack_require__(13);
 	
 	var _Sprite2 = __webpack_require__(12);
 	
@@ -1978,33 +1964,6 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _constantsGameConstants = __webpack_require__(9);
-	
-	var imageCache = {};
-	
-	module.exports = {
-	
-	  loadImage: function loadImage(img) {
-	    if (imageCache[img] === undefined) {
-	      var imgElm = document.createElement("img");
-	      imgElm.setAttribute('src', img);
-	      imageCache[img] = imgElm;
-	    }
-	    return imageCache[img];
-	  },
-	
-	  toGridPos: function toGridPos(x, y, viewPort) {
-	    return [Math.floor(x / _constantsGameConstants.GRID_SIZE) + viewPort.minX, Math.floor(y / _constantsGameConstants.GRID_SIZE) + viewPort.minY];
-	  }
-	
-	};
-
-/***/ },
 /* 16 */
 /***/ function(module, exports) {
 
@@ -2038,7 +1997,7 @@
 	
 	var _constantsGameConstantsJs = __webpack_require__(9);
 	
-	var _Utils = __webpack_require__(15);
+	var _Utils = __webpack_require__(13);
 	
 	var _Sprite2 = __webpack_require__(12);
 	
@@ -2128,7 +2087,7 @@
 	
 	var _constantsGameConstantsJs = __webpack_require__(9);
 	
-	var _Utils = __webpack_require__(15);
+	var _Utils = __webpack_require__(13);
 	
 	var _Sprite2 = __webpack_require__(12);
 	
@@ -2216,7 +2175,7 @@
 	
 	var _constantsGameConstantsJs = __webpack_require__(9);
 	
-	var _Utils = __webpack_require__(15);
+	var _Utils = __webpack_require__(13);
 	
 	var _Sprite2 = __webpack_require__(12);
 	
@@ -2295,7 +2254,7 @@
 	
 	var _imagesGroundPng2 = _interopRequireDefault(_imagesGroundPng);
 	
-	var _Utils = __webpack_require__(15);
+	var _Utils = __webpack_require__(13);
 	
 	var Grass2 = (function (_Sprite) {
 	  _inherits(Grass2, _Sprite);
@@ -2344,7 +2303,7 @@
 	
 	var _constantsGameConstantsJs = __webpack_require__(9);
 	
-	var _Utils = __webpack_require__(15);
+	var _Utils = __webpack_require__(13);
 	
 	var _Sprite2 = __webpack_require__(12);
 	
@@ -2425,7 +2384,7 @@
 	
 	var _constantsGameConstantsJs = __webpack_require__(9);
 	
-	var _Utils = __webpack_require__(15);
+	var _Utils = __webpack_require__(13);
 	
 	var _Sprite2 = __webpack_require__(12);
 	
@@ -2601,7 +2560,7 @@
 	
 	var _constantsGameConstantsJs = __webpack_require__(9);
 	
-	var _Utils = __webpack_require__(15);
+	var _Utils = __webpack_require__(13);
 	
 	var _imagesIcon_woodPng = __webpack_require__(31);
 	
@@ -2758,7 +2717,7 @@
 	
 	var _constantsGameConstants = __webpack_require__(9);
 	
-	var _Utils = __webpack_require__(15);
+	var _Utils = __webpack_require__(13);
 	
 	var hotspot = { x: 3, y: 3 };
 	
