@@ -26,6 +26,8 @@ export default class Player extends Unit {
     this.moveCost = 10000;
     this.world = game.world;
 
+    this.updateDirection();
+    
     this.speed = .125;
 
     this.image = loadImage(Image);
