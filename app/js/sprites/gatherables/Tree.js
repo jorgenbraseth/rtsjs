@@ -1,4 +1,4 @@
-import { GRID_SIZE, LAYER_FLOOR } from '../../constants/GameConstants.js'
+import { GRID_SIZE, LAYERS } from '../../constants/GameConstants.js'
 import { loadImage } from '../../Utils'
 
 import Sprite from './../Sprite'
@@ -49,6 +49,6 @@ export default class Tree extends Sprite {
   deplete() {
     this.game.removeSprite(this);
     this.depleted = true;
-    this.game.addSprite(LAYER_FLOOR, new TreeStump(this.game, [this.pos.x,this.pos.y]))
+    this.game.addSprite(LAYERS.LAYER_FLOOR, new TreeStump(this.game, [this.pos.x,this.pos.y]))
   }
 }

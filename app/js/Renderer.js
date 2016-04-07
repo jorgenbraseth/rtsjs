@@ -1,4 +1,4 @@
-import { LAYER_GROUND, LAYER_GROUND_PLACEMENT, LAYER_FLOOR, LAYER_MAP, LAYER_AIR, GRID_SIZE } from './constants/GameConstants.js'
+import { LAYERS, GRID_SIZE } from './constants/GameConstants.js'
 
 
 export default class Renderer {
@@ -16,11 +16,11 @@ export default class Renderer {
   render(layers,viewPort){
     this.clearScreen();
     this.screen.translate(-viewPort.minX*GRID_SIZE,-viewPort.minY*GRID_SIZE);
-    this.drawLayer(layers[LAYER_MAP], viewPort);
-    this.drawLayer(layers[LAYER_FLOOR], viewPort);
-    this.drawLayer(layers[LAYER_GROUND], viewPort);
-    this.drawLayer(layers[LAYER_GROUND_PLACEMENT], viewPort);
-    this.drawLayer(layers[LAYER_AIR], viewPort);
+    this.drawLayer(layers[LAYERS.LAYER_MAP], viewPort);
+    this.drawLayer(layers[LAYERS.LAYER_FLOOR], viewPort);
+    this.drawLayer(layers[LAYERS.LAYER_GROUND], viewPort);
+    this.drawLayer(layers[LAYERS.LAYER_GROUND_PLACEMENT], viewPort);
+    this.drawLayer(layers[LAYERS.LAYER_AIR], viewPort);
     this.screen.translate(viewPort.minX*GRID_SIZE,viewPort.minY*GRID_SIZE);
 
   }
@@ -69,6 +69,8 @@ export default class Renderer {
     // console.log(visibleSpritesFromLayer);
 
   }
+
+
 
   renderUi(component){
     component.draw(this.screen);

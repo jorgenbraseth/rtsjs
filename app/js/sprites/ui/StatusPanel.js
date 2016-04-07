@@ -1,3 +1,5 @@
+import Sprite from "../Sprite"
+
 import {GRID_SIZE} from '../../constants/GameConstants.js'
 import {loadImage} from '../../Utils'
 
@@ -6,8 +8,9 @@ import ICON_STONE from '../../../images/icon_stone.png'
 import ICON_FOOD from '../../../images/icon_food.png'
 import ICON_COIN from '../../../images/icon_coin.png'
 
-export default class StatusPanel {
+export default class StatusPanel extends Sprite {
   constructor(unit, game) {
+    super(game);
 
     this.game = game;
     this.unit = unit;

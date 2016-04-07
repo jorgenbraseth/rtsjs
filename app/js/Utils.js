@@ -22,6 +22,13 @@ module.exports = {
     r2.right <= r1.left ||
     r2.top >= r1.bottom ||
     r2.bottom <= r1.top);
+  },
+
+  containsPoint: function(rect, x,y){
+    return x >= rect.left &&
+      x <= rect.right &&
+      y >= rect.top &&
+      y <= rect.bottom;
   }
 
 };

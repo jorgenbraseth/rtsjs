@@ -26,7 +26,7 @@ import { toGridPos, intersects } from './Utils'
 
 import { GENERATED, MAP_TEST } from './Maps'
 
-import { LAYER_GROUND, LAYER_GROUND_PLACEMENT, LAYER_FLOOR, LAYER_MAP, LAYER_AIR, GRID_SIZE, KEY_BINDS } from './constants/GameConstants.js'
+import { LAYERS, GRID_SIZE, KEY_BINDS } from './constants/GameConstants.js'
 
 export default class Game {
 
@@ -37,6 +37,12 @@ export default class Game {
     this.shiftHeld = false;
     this.tickCallBacks = [];
     canvas.onblur = () => {canvas.focus()};
+
+    this.layers = {};
+
+    for(var layer in LAYERS){
+      this.layers[LAYERS[layer]] = [];
+    }
 
     this.viewPort = {
       width: 30,
@@ -54,6 +60,7 @@ export default class Game {
     canvas.onmousemove = this.onMouseMove.bind(this);
 
     this.quickBar = new QuickBar(this, [canvas.width/2 - GRID_SIZE*5, canvas.height - GRID_SIZE*1.5]);
+    // this.addSprite(LAYERS.UI, this.quickBar);
     this.quickBar.setSlot(0,House);
     this.quickBar.setSlot(1,UnitTypes.House2);
 
@@ -91,7 +98,7 @@ export default class Game {
 
     this.cursor.setPosition(...this.mousePixelPos);
 
-    this.layers[LAYER_GROUND_PLACEMENT].forEach(spriteToBePlaced => {
+    this.layers[LAYERS.LAYER_GROUND_PLACEMENT].forEach(spriteToBePlaced => {
       spriteToBePlaced.setPosition(...this.mouseGridPos);
     });
   }
@@ -147,7 +154,7 @@ export default class Game {
 
     sprite.beingPlaced = true;
     this.setMode('PLACE',sprite);
-    this.addSprite(LAYER_GROUND_PLACEMENT, sprite);
+    this.addSprite(LAYERS.LAYER_GROUND_PLACEMENT, sprite);
     this.placingUnit = sprite;
   }
 
@@ -179,13 +186,7 @@ export default class Game {
     this.cameraPanY = 0;
     this.cameraPanX = 0;
 
-    this.layers = {};
-    this.layers[LAYER_MAP] = [];
-    this.layers[LAYER_FLOOR] = [];
-    this.layers[LAYER_GROUND] = [];
-    this.layers[LAYER_GROUND] = [];
-    this.layers[LAYER_GROUND_PLACEMENT] = [];
-    this.layers[LAYER_AIR] = [];
+
 
     // this.loadMap(GENERATED(100,70,0.2));
     this.loadMap(MAP_TEST);
@@ -193,19 +194,19 @@ export default class Game {
     this._player = new Player(this,[0,0]);
     this.statusPanel = new StatusPanel(this.player,this);
     this.player.select();
-    this.addSprite(LAYER_GROUND, this.player);
+    this.addSprite(LAYERS.LAYER_GROUND, this.player);
 
     this.initKeyboardPlayerMovement();
 
     for (var x = 0; x < this.world.length; x++) {
       for (var y = 0; y < this.world[x].length; y++) {
         if(this.world[x][y] === 0){
-          this.addSprite(LAYER_GROUND, new Rock(this, [x,y]));
+          this.addSprite(LAYERS.LAYER_GROUND, new Rock(this, [x,y]));
         }
         if(this.world[x][y] === 2){
-          this.addSprite(LAYER_GROUND, new Tree(this, [x,y]));
+          this.addSprite(LAYERS.LAYER_GROUND, new Tree(this, [x,y]));
         }
-        this.addSprite(LAYER_MAP, new Grass2(this, [x,y]));
+        this.addSprite(LAYERS.LAYER_MAP, new Grass2(this, [x,y]));
       }
     }
 
@@ -225,10 +226,10 @@ export default class Game {
     this.moveCam();
 
     this.updateMapCosts();
-    this.tickLayer(LAYER_MAP);
-    this.tickLayer(LAYER_FLOOR);
-    this.tickLayer(LAYER_GROUND);
-    this.tickLayer(LAYER_AIR);
+    this.tickLayer(LAYERS.LAYER_MAP);
+    this.tickLayer(LAYERS.LAYER_FLOOR);
+    this.tickLayer(LAYERS.LAYER_GROUND);
+    this.tickLayer(LAYERS.LAYER_AIR);
 
     this.tickCallBacks.forEach(cb=>cb());
   }
@@ -261,14 +262,14 @@ export default class Game {
     var y = coords[1];
 
     var found = undefined;
-    for (var i = this.layers[LAYER_AIR].length -1; i >= 0; i--) {
-      var sprite = this.layers[LAYER_AIR][i];
+    for (var i = this.layers[LAYERS.LAYER_AIR].length -1; i >= 0; i--) {
+      var sprite = this.layers[LAYERS.LAYER_AIR][i];
       if(sprite.pos.x == x && sprite.pos.y == y){
         found = sprite;
       }
     }
-    for (var i = this.layers[LAYER_GROUND].length -1; i >= 0; i--) {
-      var sprite = this.layers[LAYER_GROUND][i];
+    for (var i = this.layers[LAYERS.LAYER_GROUND].length -1; i >= 0; i--) {
+      var sprite = this.layers[LAYERS.LAYER_GROUND][i];
       if(sprite.pos.x == x && sprite.pos.y == y){
         found = sprite;
       }
@@ -301,8 +302,6 @@ export default class Game {
     if(clickedSprite){
       this.select(clickedSprite, this.shiftHeld);
     }else{
-      // this.addSprite(LAYER_FLOOR, new TreeStump(this, position));
-      // this.addSprite(LAYER_MAP, new Blood(this, position));
       this.clearSelection();
     }
   }
@@ -311,8 +310,6 @@ export default class Game {
     var playerResources = this.player.resources;
     var cost = unit.cost;
 
-    console.log(cost);
-    console.log(playerResources);
     this.removeSprite(unit);
     this.enableDefaultMode();
 
@@ -321,7 +318,7 @@ export default class Game {
     }
     unit.beingPlaced = false;
     unit.setPosition(...coords);
-    this.addSprite(LAYER_GROUND, unit);
+    this.addSprite(LAYERS.LAYER_GROUND, unit);
   }
 
   gridRightClicked(coords){
@@ -336,18 +333,16 @@ export default class Game {
         }else if(clickedSprite.gather){
           this.player.attackTarget(clickedSprite);
         }
-      }else{
-        this.player.moveTo(coords);
       }
     }
   }
 
   removeSprite(sprite){
-    this.removeSpriteFromLayer(this.layers[LAYER_AIR],sprite);
-    this.removeSpriteFromLayer(this.layers[LAYER_GROUND],sprite);
-    this.removeSpriteFromLayer(this.layers[LAYER_GROUND_PLACEMENT],sprite);
-    this.removeSpriteFromLayer(this.layers[LAYER_FLOOR],sprite);
-    this.removeSpriteFromLayer(this.layers[LAYER_MAP],sprite);
+    this.removeSpriteFromLayer(this.layers[LAYERS.LAYER_AIR],sprite);
+    this.removeSpriteFromLayer(this.layers[LAYERS.LAYER_GROUND],sprite);
+    this.removeSpriteFromLayer(this.layers[LAYERS.LAYER_GROUND_PLACEMENT],sprite);
+    this.removeSpriteFromLayer(this.layers[LAYERS.LAYER_FLOOR],sprite);
+    this.removeSpriteFromLayer(this.layers[LAYERS.LAYER_MAP],sprite);
   }
 
   positionFree(coords, countPlayer=false){
@@ -357,7 +352,7 @@ export default class Game {
   }
 
   findCollision(spriteToCheck){
-    var found = [LAYER_GROUND].map((layerIdx)=>{
+    var found = [LAYERS.LAYER_GROUND].map((layerIdx)=>{
       var layer = this.layers[layerIdx];
 
       var foundSprite = layer.find((sprite)=>{
@@ -406,7 +401,7 @@ export default class Game {
       }
     }
 
-    var sprites = this.layers[LAYER_GROUND];
+    var sprites = this.layers[LAYERS.LAYER_GROUND];
     for (var i = 0; i < sprites.length; i++) {
       var sprite = sprites[i];
       this.world[sprite.targetX][sprite.targetY] = sprite.moveCost;
@@ -429,6 +424,8 @@ export default class Game {
     this.renderer.render(this.layers, this.viewPort);
     this.renderer.renderUi(this.statusPanel);
     this.renderer.renderUi(this.quickBar);
+
+    // this.renderer.renderUi(this.selectedSprites);
 
     //Cursor last
     this.renderer.renderUi(this.cursor);
