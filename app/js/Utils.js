@@ -25,10 +25,10 @@ module.exports = {
   },
 
   containsPoint: function(rect, x,y){
-    return x >= rect.left &&
-      x <= rect.right &&
-      y >= rect.top &&
-      y <= rect.bottom;
+    return x >= rect.left*GRID_SIZE &&
+      x <= rect.right*GRID_SIZE &&
+      y >= rect.top*GRID_SIZE &&
+      y <= rect.bottom*GRID_SIZE;
   }
 
 };

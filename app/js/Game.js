@@ -22,7 +22,7 @@ const UnitTypes = {
   Rock: Rock
 };
 
-import { toGridPos, intersects } from './Utils'
+import { toGridPos, intersects, containsPoint } from './Utils'
 
 import { GENERATED, MAP_TEST } from './Maps'
 
@@ -33,6 +33,17 @@ export default class Game {
   constructor(canvas){
 
     this.canvas = canvas;
+
+    this.viewPort = {
+      width: 30,
+      height: 20,
+      minX: 0,
+      minY: 0,
+      inView: function(pos) {
+        return pos.x >= this.minX && pos.y >= this.minY && pos.x < (this.minX+this.width) && pos.y < (this.minY+this.height);
+      }
+    };
+
     this.userInput = new UserInput(canvas);
     this.shiftHeld = false;
     this.tickCallBacks = [];
@@ -44,15 +55,7 @@ export default class Game {
       this.layers[LAYERS[layer]] = [];
     }
 
-    this.viewPort = {
-      width: 30,
-      height: 20,
-      minX: 0,
-      minY: 0,
-      inView: function(pos) {
-        return pos.x >= this.minX && pos.y >= this.minY && pos.x < (this.minX+this.width) && pos.y < (this.minY+this.height);
-      }
-    };
+
 
     this.renderer = new Renderer(canvas, this.viewPort);
 
@@ -65,11 +68,7 @@ export default class Game {
     this.quickBar.setSlot(1,UnitTypes.House2);
 
 
-    this.userInput.onLeftClick(
-      function(x,y){
-        this.gridLeftClicked(toGridPos(x,y,this.viewPort))
-      }.bind(this)
-    );
+    this.userInput.onLeftClick(this.leftClicked.bind(this));
 
     this.userInput.onRightClick(
       function(x,y){
@@ -291,19 +290,23 @@ export default class Game {
     this.selectedSprites = [];
   }
 
-  gridLeftClicked(coords){
-    var clickedSprite = this.spriteAt(coords);
+  leftClicked(x,y){
+    const coordsShiftedForViewPort = [x+this.viewPort.minX*GRID_SIZE,y+this.viewPort.minY*GRID_SIZE];
 
-    if(this.actionMode === 'PLACE' && this.placingUnit.isPlaceable){
-      this.build(coords,this.placingUnit);
-      this.placingUnit=undefined;
-    }
+    const layersDescending = Object.keys(this.layers).sort();
 
-    if(clickedSprite){
-      this.select(clickedSprite, this.shiftHeld);
-    }else{
-      this.clearSelection();
+    for (var layerIdx = layersDescending.length-1; layerIdx > 0; layerIdx--) {
+      var zIndex = layersDescending[layerIdx];
+
+      const clicked = this.layers[zIndex].find((sprite)=>{return containsPoint(sprite.boundingBox,...coordsShiftedForViewPort)});
+      if(clicked !== undefined){
+        console.log("found " + clicked.constructor.name);
+        return clicked;
+      }
     }
+    console.log("Nothing!");
+
+    return undefined
   }
 
   build(coords, unit){
