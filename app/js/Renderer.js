@@ -16,11 +16,12 @@ export default class Renderer {
   render(layers,viewPort){
     this.clearScreen();
     this.screen.translate(-viewPort.minX*GRID_SIZE,-viewPort.minY*GRID_SIZE);
-    this.drawLayer(layers[LAYERS.LAYER_MAP], viewPort);
-    this.drawLayer(layers[LAYERS.LAYER_FLOOR], viewPort);
-    this.drawLayer(layers[LAYERS.LAYER_GROUND], viewPort);
-    this.drawLayer(layers[LAYERS.LAYER_GROUND_PLACEMENT], viewPort);
-    this.drawLayer(layers[LAYERS.LAYER_AIR], viewPort);
+    this.drawGridLayer(layers[LAYERS.LAYER_MAP], viewPort);
+    this.drawGridLayer(layers[LAYERS.LAYER_FLOOR], viewPort);
+    this.drawGridLayer(layers[LAYERS.LAYER_GROUND], viewPort);
+    this.drawGridLayer(layers[LAYERS.LAYER_GROUND_PLACEMENT], viewPort);
+    this.drawGridLayer(layers[LAYERS.LAYER_AIR], viewPort);
+    this.drawPixelLayer(layers[LAYERS.UI]);
     this.screen.translate(viewPort.minX*GRID_SIZE,viewPort.minY*GRID_SIZE);
 
   }
@@ -29,7 +30,13 @@ export default class Renderer {
     this.screen.clearRect(0,0,this.canvas.width, this.canvas.height);
   }
 
-  drawLayer(layer,viewPort){
+  drawPixelLayer(layer){
+    for (var spriteIdx = 0; spriteIdx < layer.length; spriteIdx++) {
+      var sprite = layer[spriteIdx];
+      sprite.drawSprite(this.screen);
+    }
+  }
+  drawGridLayer(layer, viewPort){
     var visibleMap = this.viewPortItemsForLayer(layer,viewPort);
 
     for (var y = 0; y < visibleMap.length; y++) {

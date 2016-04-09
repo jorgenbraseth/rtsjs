@@ -27,7 +27,7 @@ export default class Player extends Unit {
     this.world = game.world;
 
     this.updateDirection();
-    
+
     this.speed = .125;
 
     this.image = loadImage(Image);
@@ -74,11 +74,11 @@ export default class Player extends Unit {
     var collision = this.game.findCollision(this);
     if(collision!==undefined){
       if(this.movingLeft){
-        const stepBack = collision.boundingBox.right-this.boundingBox.left;
-        this.pos.x += stepBack;
+        const stepBackInGridUnits = collision.boundingBox.right-this.boundingBox.left;
+        this.pos.x += stepBackInGridUnits/GRID_SIZE;
       }else if(this.movingRight){
-        const stepBack = this.boundingBox.right-collision.boundingBox.left;
-        this.pos.x -= stepBack;
+        const stepBackInGridUnits = this.boundingBox.right-collision.boundingBox.left;
+        this.pos.x -= stepBackInGridUnits/GRID_SIZE;
       }
     }
     if(this.pos.x <0){
@@ -90,11 +90,11 @@ export default class Player extends Unit {
     var collision = this.game.findCollision(this);
     if(collision!==undefined){
       if(this.movingUp){
-        const stepBack = collision.boundingBox.bottom-this.boundingBox.top;
-        this.pos.y += stepBack;
+        const stepBackInGridUnits = collision.boundingBox.bottom-this.boundingBox.top;
+        this.pos.y += stepBackInGridUnits/GRID_SIZE;
       }else if(this.movingDown){
-        const stepBack = this.boundingBox.bottom-collision.boundingBox.top;
-        this.pos.y -= stepBack;
+        const stepBackInGridUnits = this.boundingBox.bottom-collision.boundingBox.top;
+        this.pos.y -= stepBackInGridUnits/GRID_SIZE;
       }
     }
 

@@ -26,6 +26,7 @@ export default class Sprite {
     this.width = GRID_SIZE;
     this.height = GRID_SIZE;
     this.selected = false;
+    this.alwaysDraw = false;
 
     this.speed = 0.2 + Math.random();
 
@@ -50,6 +51,7 @@ export default class Sprite {
 
   select(){
     this.selected = true;
+    console.log("Selected " + this.constructor.name);
   }
 
   unselect(){
@@ -65,7 +67,7 @@ export default class Sprite {
   }
 
   drawSprite(screen, viewPort){
-    if(viewPort.inView(this.pos)){
+    if(viewPort ===undefined || viewPort.inView(this.pos)){
 
       screen.save();
       screen.translate(...this.drawCoords);
@@ -81,10 +83,10 @@ export default class Sprite {
 
   get boundingBox() {
     return {
-      left: this.pos.x,
-      right: this.pos.x + 1,
-      top: this.pos.y,
-      bottom: this.pos.y + 1
+      left: this.drawCoords[0],
+      right: this.drawCoords[0] + this.width,
+      top: this.drawCoords[1],
+      bottom: this.drawCoords[1] + this.height
     }
   }
 

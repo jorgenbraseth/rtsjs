@@ -11,7 +11,7 @@ import ICON_COIN from '../../../images/icon_coin.png'
 export default class StatusPanel extends Sprite {
   constructor(unit, game) {
     super(game);
-
+    this.alwaysDraw = true;
     this.game = game;
     this.unit = unit;
     this.iconWood = loadImage(ICON_WOOD);

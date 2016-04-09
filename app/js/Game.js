@@ -63,10 +63,9 @@ export default class Game {
     canvas.onmousemove = this.onMouseMove.bind(this);
 
     this.quickBar = new QuickBar(this, [canvas.width/2 - GRID_SIZE*5, canvas.height - GRID_SIZE*1.5]);
-    // this.addSprite(LAYERS.UI, this.quickBar);
+    this.addSprite(LAYERS.UI, this.quickBar);
     this.quickBar.setSlot(0,House);
     this.quickBar.setSlot(1,UnitTypes.House2);
-
 
     this.userInput.onLeftClick(this.leftClicked.bind(this));
 
@@ -192,7 +191,6 @@ export default class Game {
 
     this._player = new Player(this,[0,0]);
     this.statusPanel = new StatusPanel(this.player,this);
-    this.player.select();
     this.addSprite(LAYERS.LAYER_GROUND, this.player);
 
     this.initKeyboardPlayerMovement();
@@ -224,7 +222,6 @@ export default class Game {
   tick(){
     this.moveCam();
 
-    this.updateMapCosts();
     this.tickLayer(LAYERS.LAYER_MAP);
     this.tickLayer(LAYERS.LAYER_FLOOR);
     this.tickLayer(LAYERS.LAYER_GROUND);
@@ -292,24 +289,33 @@ export default class Game {
 
   leftClicked(x,y){
     const coordsShiftedForViewPort = [x+this.viewPort.minX*GRID_SIZE,y+this.viewPort.minY*GRID_SIZE];
+    const clickedSprite = this.findSpriteAtPos(...coordsShiftedForViewPort);
 
-    const layersDescending = Object.keys(this.layers).sort();
-
-    for (var layerIdx = layersDescending.length-1; layerIdx > 0; layerIdx--) {
-      var zIndex = layersDescending[layerIdx];
-
-      const clicked = this.layers[zIndex].find((sprite)=>{return containsPoint(sprite.boundingBox,...coordsShiftedForViewPort)});
-      if(clicked !== undefined){
-        console.log("found " + clicked.constructor.name);
-        return clicked;
-      }
+    if(this.actionMode === 'PLACE' && this.placingUnit.isPlaceable){
+      this.build(toGridPos(x,y,this.viewPort),this.placingUnit);
+      this.placingUnit=undefined;
+    }else if (clickedSprite!=undefined){
+      this.select(clickedSprite);
     }
-    console.log("Nothing!");
 
     return undefined
   }
 
+  findSpriteAtPos(x,y) {
+    const layersToCheck = [LAYERS.LAYER_GROUND, LAYERS.LAYER_AIR, LAYERS.UI];
+
+    for (var l = 0; l < layersToCheck.length; l++) {
+      var layer = layersToCheck[l];
+      const clicked = this.layers[layer].find((sprite)=>{return containsPoint(sprite.boundingBox,x,y)});
+      if(clicked !== undefined){
+        return clicked;
+      }
+    }
+  }
+
   build(coords, unit){
+    console.log(coords);
+    console.log(unit);
     var playerResources = this.player.resources;
     var cost = unit.cost;
 
@@ -397,20 +403,6 @@ export default class Game {
     }
   }
 
-  updateMapCosts(){
-    for (var x = 0; x < this.world.length; x++) {
-      for (var y = 0; y < this.world[x].length; y++) {
-        this.world[x][y] = 1;
-      }
-    }
-
-    var sprites = this.layers[LAYERS.LAYER_GROUND];
-    for (var i = 0; i < sprites.length; i++) {
-      var sprite = sprites[i];
-      this.world[sprite.targetX][sprite.targetY] = sprite.moveCost;
-    }
-  }
-
   tickLayer(layer){
     var sprites = this.layers[layer];
     for (var i = 0; i < sprites.length; i++) {
@@ -440,4 +432,6 @@ export default class Game {
     }.bind(this),1000/60);
 
   }
+
+
 }

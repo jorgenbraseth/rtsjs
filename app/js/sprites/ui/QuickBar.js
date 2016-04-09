@@ -1,13 +1,17 @@
+import Sprite from '../Sprite'
 import { GRID_SIZE } from '../../constants/GameConstants'
 
 const padding = 0.07*GRID_SIZE;
 const iconSize = GRID_SIZE-padding*2;
 
 
-export default class QuickBar {
+export default class QuickBar extends Sprite{
   constructor(game, position = [0,0]){
+    super(game,position);
     this.game = game;
     this.position = position;
+    this.alwaysDraw = true;
+
     this.slots = [
       [],
       [],
@@ -25,15 +29,36 @@ export default class QuickBar {
     this.slots[slotNum] = [new unitType(), unitType];
   }
 
+  set width(w){}
+  set height(h){}
+  get width() {
+    return GRID_SIZE*this.slots.length;
+  }
+
+  get boundingBox() {
+    return {
+      left: this.pos.x,
+      right: this.pos.x + this.width,
+      top: this.pos.y,
+      bottom: this.pos.y + this.height
+    }
+  }
+
+  get height() {
+    return GRID_SIZE;
+  }
+
   getSlot(slotNum){
 
   }
+
+
 
   draw(screen){
     screen.translate(...this.position);
 
     screen.fillStyle = 'rgba(0,0,0,0.3)';
-    screen.fillRect(0,0,GRID_SIZE*this.slots.length, GRID_SIZE);
+    screen.fillRect(0,0,this.width, this.height);
 
     for (var slotPos = 0; slotPos < this.slots.length; slotPos++) {
       screen.translate(slotPos*GRID_SIZE,0);
