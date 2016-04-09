@@ -45,4 +45,9 @@ export default class InfoWindow extends Sprite {
       bottom: this.pos.y + this.height
     }
   }
+
+  click(x,y){
+    console.log("Clicked info windo!");
+
+  }
 }

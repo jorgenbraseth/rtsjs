@@ -212,7 +212,7 @@ export default class Game {
 
   }
 
-  select(sprite, addToSelection) {
+  selectSprite(sprite, addToSelection) {
     if(!addToSelection){
       this.clearSelection();
     }

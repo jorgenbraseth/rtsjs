@@ -9,7 +9,7 @@ export default class Unit extends Sprite {
     this.hp = hp;
     this.initialHp = hp;
     this.gridPos = coords;
-    this.attackRange = 1.4;
+    this.attackRange = 1.5;
     this.attackDamage = attackDamage;
     this.gatheringSpeed = 0.25;
     this.dead = false;

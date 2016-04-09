@@ -2,9 +2,6 @@ import { GRID_SIZE } from '../constants/GameConstants.js'
 import { intersects } from '../Utils'
 
 export default class Sprite {
-  image: undefined;
-  game: undefined;
-  beingPlaced: undefined;
 
   constructor(game, coords=[0,0]){
     this.game = game;
@@ -103,7 +100,7 @@ export default class Sprite {
   }
 
   click(){
-    this.game.select(this);
+    this.game.selectSprite(this);
   }
 
   draw(screen){
