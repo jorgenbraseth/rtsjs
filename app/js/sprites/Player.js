@@ -63,6 +63,11 @@ export default class Player extends Unit {
   tick() {
     super.tick();
 
+    if(this.targetOfAttack && !this.inAttackRange(this.targetOfAttack)){
+      this.targetOfAttack = undefined;
+
+    }
+
     if(this.isMoving){
       this.animAge = (this.animAge+1)%15;
     }else if(this.movingLeft){
