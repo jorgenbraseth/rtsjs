@@ -19,10 +19,29 @@ export default class House extends Sprite {
       wood: 5
     };
 
+    this.produceFoodEveryNTick = 50;
+    this.resourceType = "food";
+
     this.image = [loadImage(Image),463,118,64,73,0,GRID_SIZE-this.height,this.width,this.height]
   }
 
   draw(screen){
     super.draw(screen);
+  }
+
+  tick(){
+    if(!this.beingPlaced){
+      this.age++;
+
+      if(this.age % 20 == 0){
+        this.resourceAmount += 1;
+      }
+    }
+  }
+
+  gather(gatherAmount, gatherer){
+    gatherer.resources[this.resourceType] = gatherer.resources[this.resourceType] || 0;
+    gatherer.resources[this.resourceType] += this.resourceAmount;
+    this.resourceAmount = 0;
   }
 }

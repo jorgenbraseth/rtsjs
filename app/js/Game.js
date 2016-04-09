@@ -4,7 +4,7 @@ import Player from './sprites/KeyboardPlayer'
 import Rock from './sprites/gatherables/Rock'
 import Tree from './sprites/gatherables/Tree'
 import Grass2 from './sprites/terrain/Grass2'
-import House from './sprites/buildings/House'
+import House from './sprites/gatherables/House'
 import House2 from './sprites/buildings/House2'
 
 import Renderer from './Renderer'

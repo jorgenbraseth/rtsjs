@@ -22,6 +22,7 @@ export default class Sprite {
     this.beingPlaced = false;
 
     this.color = "red";
+    this.age = 0;
 
     this.width = GRID_SIZE;
     this.height = GRID_SIZE;
