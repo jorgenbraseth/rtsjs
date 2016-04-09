@@ -177,6 +177,7 @@ export default class Game {
     });
 
     this.world = transposedMap;
+    this.worldSize = [transposedMap.length,transposedMap[0].length];
   }
 
   init(){
@@ -220,7 +221,8 @@ export default class Game {
   }
 
   tick(){
-    this.moveCam();
+    this.focusCamOnPlayer();
+    // this.moveCam();
 
     this.tickLayer(LAYERS.LAYER_MAP);
     this.tickLayer(LAYERS.LAYER_FLOOR);
@@ -232,6 +234,16 @@ export default class Game {
 
   onTick(callback){
     this.tickCallBacks.push(callback);
+  }
+
+  focusCamOnPlayer(){
+
+    var halfHeight = this.viewPort.height/2;
+
+    this.viewPort.minY = Math.min(Math.max(0,Math.floor(this.player.gridPos[1]-halfHeight)),this.worldSize[1]-this.viewPort.height);
+
+    var halfWidth = this.viewPort.width/2;
+    this.viewPort.minX = Math.min(Math.max(0,Math.floor(this.player.gridPos[0]-halfWidth)),this.worldSize[0]-this.viewPort.width);
   }
 
   moveCam(){

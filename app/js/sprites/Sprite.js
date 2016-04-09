@@ -38,13 +38,6 @@ export default class Sprite {
     this.moveCost = 0;
   }
 
-  get targetX() {
-      return this.gridPos[0]
-  }
-  get targetY() {
-      return this.gridPos[1]
-  }
-
   get gridPos(){
     return [this.pos.x,this.pos.y]
   }

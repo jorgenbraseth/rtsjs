@@ -83,6 +83,8 @@ export default class Player extends Unit {
     }
     if(this.pos.x <0){
       this.pos.x = 0;
+    }else if(this.pos.x > this.game.worldSize[0]-1){
+      this.pos.x = this.game.worldSize[0]-1;
     }
 
     this.pos.y += this.dy;
@@ -100,6 +102,8 @@ export default class Player extends Unit {
 
     if(this.pos.y <0){
       this.pos.y = 0;
+    }else if(this.pos.y > this.game.worldSize[1]-1){
+      this.pos.y = this.game.worldSize[1]-1;
     }
 
     if(this.dx!=0 || this.dy !=0){
