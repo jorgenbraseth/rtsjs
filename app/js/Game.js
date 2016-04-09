@@ -224,10 +224,9 @@ export default class Game {
     this.focusCamOnPlayer();
     // this.moveCam();
 
-    this.tickLayer(LAYERS.LAYER_MAP);
-    this.tickLayer(LAYERS.LAYER_FLOOR);
-    this.tickLayer(LAYERS.LAYER_GROUND);
-    this.tickLayer(LAYERS.LAYER_AIR);
+    for(var layer in LAYERS){
+      this.tickLayer(LAYERS[layer]);
+    }
 
     this.tickCallBacks.forEach(cb=>cb());
   }
