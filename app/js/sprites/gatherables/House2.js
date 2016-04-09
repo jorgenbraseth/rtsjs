@@ -4,27 +4,27 @@ import Sprite from './../Sprite'
 
 import Image from '../../../images/buildings.png'
 
-export default class House extends Sprite {
+export default class House2 extends Sprite {
   constructor(game, coords=[0,0]){
     super(game, coords);
-
     this.moveCost = 0;
-    this.width = GRID_SIZE;
 
+    this.width = GRID_SIZE;
     this.height = (73/64)*GRID_SIZE;
+
+    this.image = [loadImage(Image),531,120,62,73,0,GRID_SIZE-this.height,this.width,this.height];
+
     this.cost = {
-      wood: 5
+      stone: 10,
+      food: 5
     };
 
-    this.image = [loadImage(Image),463,118,64,73,0,GRID_SIZE-this.height,this.width,this.height];
-    
-    
     this.startingResources = 0;
     this.resourceAmount = this.startingResources;
-    this.produceFoodEveryNTick = 200;
-    this.resourceType = "food";
+    this.resourceType = "gold";
+    this.maxResourceAmount = 5;
 
-    this.maxResourceAmount = 10;
+    this.produceFoodEveryNTick = 1000;
   }
 
   draw(screen){
@@ -36,6 +36,7 @@ export default class House extends Sprite {
   }
 
   drawInventoryIndicator(screen){
+
     const indicatorPos = [this.width*0.05, 0];
 
     screen.save();
@@ -56,7 +57,6 @@ export default class House extends Sprite {
     }
 
     screen.restore();
-
   }
 
   tick(){
@@ -74,5 +74,7 @@ export default class House extends Sprite {
     gatherer.resources[this.resourceType] += this.resourceAmount;
     this.resourceAmount = 0;
     gatherer.targetOfAttack = undefined;
+
+    console.log(gatherer.resources);
   }
 }

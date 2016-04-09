@@ -35,7 +35,7 @@ export default class StatusPanel extends Sprite {
     this.drawWood(screen);
     this.drawStone(screen);
     this.drawFood(screen);
-    this.drawCoin(screen);
+    this.drawGold(screen);
 
     screen.translate(-posX, -posY);
   }
@@ -67,9 +67,9 @@ export default class StatusPanel extends Sprite {
     screen.fillText(amount, 84, 50);
   };
 
-  drawCoin(screen) {
+  drawGold(screen) {
     screen.drawImage(this.iconCoin, 0, 0, 29, 33, 103, 13, 17, 20);
-    var amount = this.unit.resources.coin || 0;
+    var amount = this.unit.resources.gold || 0;
     screen.fillStyle = "white";
     screen.font = "12px arial";
     screen.textAlign = "center";
