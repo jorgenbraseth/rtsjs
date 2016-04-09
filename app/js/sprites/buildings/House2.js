@@ -4,7 +4,7 @@ import Sprite from './../Sprite'
 
 import Image from '../../../images/buildings.png'
 
-export default class House extends Sprite {
+export default class House2 extends Sprite {
   constructor(game, coords=[0,0]){
     super(game, coords);
 
@@ -26,9 +26,5 @@ export default class House extends Sprite {
 
   draw(screen){
     super.draw(screen);
-  }
-  select(){
-    super.select();
-    console.log(this.constructor.name + " selected");
   }
 }

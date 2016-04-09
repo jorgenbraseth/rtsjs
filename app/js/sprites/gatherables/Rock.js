@@ -15,12 +15,6 @@ export default class Rock extends Sprite {
     this.image = [loadImage(Image),0,0,85,85,0,0,this.width,this.width]
   }
 
-  select(){
-    super.select();
-    console.log(this.constructor.name + " selected");
-  }
-
-
   gather(gatherAmount, gatherer){
     var amountBeforeGather = parseInt(this.resourceAmount);
     this.resourceAmount -= gatherAmount/3;

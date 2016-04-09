@@ -98,6 +98,10 @@ export default class Sprite {
     return positionFree && affordable && isInRange && !collidesWithPlayer;
   }
 
+  click(){
+    this.game.select(this);
+  }
+
   draw(screen){
     if(this.image) {
       screen.drawImage(...this.image);

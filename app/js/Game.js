@@ -295,14 +295,14 @@ export default class Game {
       this.build(toGridPos(x,y,this.viewPort),this.placingUnit);
       this.placingUnit=undefined;
     }else if (clickedSprite!=undefined){
-      this.select(clickedSprite);
+      clickedSprite.click(x,y);
     }
 
     return undefined
   }
 
   findSpriteAtPos(x,y) {
-    const layersToCheck = [LAYERS.LAYER_GROUND, LAYERS.LAYER_AIR, LAYERS.UI];
+    const layersToCheck = [LAYERS.UI, LAYERS.LAYER_AIR, LAYERS.LAYER_GROUND];
 
     for (var l = 0; l < layersToCheck.length; l++) {
       var layer = layersToCheck[l];
@@ -314,8 +314,6 @@ export default class Game {
   }
 
   build(coords, unit){
-    console.log(coords);
-    console.log(unit);
     var playerResources = this.player.resources;
     var cost = unit.cost;
 

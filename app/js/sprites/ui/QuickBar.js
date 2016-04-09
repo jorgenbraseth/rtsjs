@@ -53,6 +53,16 @@ export default class QuickBar extends Sprite{
   }
 
 
+  click(x,y){
+    const localCoords = [x-this.boundingBox.left,y-this.boundingBox.top];
+    const widthPerSlot = this.width / this.slots.length;
+    const clickedSlotNum = Math.floor(localCoords[0]/widthPerSlot);
+
+    var clickedSlot = this.slots[clickedSlotNum];
+    if(clickedSlot[1]){
+      this.game.enablePlacementMode(clickedSlot[1].name);
+    }
+  }
 
   draw(screen){
     screen.translate(...this.position);

@@ -25,8 +25,4 @@ export default class House extends Sprite {
   draw(screen){
     super.draw(screen);
   }
-  select(){
-    super.select();
-    console.log(this.constructor.name + " selected");
-  }
 }
