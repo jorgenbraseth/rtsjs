@@ -217,6 +217,9 @@ export default class Game {
       this.clearSelection();
     }
     sprite.select();
+    if(sprite.infoWindow){
+      this.addSprite(LAYERS.UI,sprite.infoWindow)
+    }
     this.selectedSprites.push(sprite);
   }
 
@@ -293,6 +296,9 @@ export default class Game {
       for (var i = 0; i < this.selectedSprites.length; i++) {
         var sprite = this.selectedSprites[i];
         sprite.unselect();
+        if(sprite.infoWindow){
+          this.removeSpriteFromLayer(this.layers[LAYERS.UI],sprite.infoWindow);
+        }
       }
     }
     this.selectedSprites = [];
@@ -307,6 +313,8 @@ export default class Game {
       this.placingUnit=undefined;
     }else if (clickedSprite!=undefined){
       clickedSprite.click(x,y);
+    }else{
+      this.clearSelection();
     }
 
     return undefined
@@ -344,7 +352,6 @@ export default class Game {
     if(this.actionMode!=='DEFAULT'){
       this.enableDefaultMode();
     }else{
-
       if(clickedSprite){
         if(clickedSprite.fireAt){
           this.player.attackTarget(clickedSprite);
@@ -356,11 +363,9 @@ export default class Game {
   }
 
   removeSprite(sprite){
-    this.removeSpriteFromLayer(this.layers[LAYERS.LAYER_AIR],sprite);
-    this.removeSpriteFromLayer(this.layers[LAYERS.LAYER_GROUND],sprite);
-    this.removeSpriteFromLayer(this.layers[LAYERS.LAYER_GROUND_PLACEMENT],sprite);
-    this.removeSpriteFromLayer(this.layers[LAYERS.LAYER_FLOOR],sprite);
-    this.removeSpriteFromLayer(this.layers[LAYERS.LAYER_MAP],sprite);
+    for(var layer in LAYERS){
+      this.removeSpriteFromLayer(this.layers[LAYERS[layer]],sprite);
+    }
   }
 
   positionFree(coords, countPlayer=false){
@@ -428,8 +433,6 @@ export default class Game {
     this.renderer.render(this.layers, this.viewPort);
     this.renderer.renderUi(this.statusPanel);
     this.renderer.renderUi(this.quickBar);
-
-    // this.renderer.renderUi(this.selectedSprites);
 
     //Cursor last
     this.renderer.renderUi(this.cursor);

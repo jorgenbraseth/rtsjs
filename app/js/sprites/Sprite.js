@@ -64,10 +64,18 @@ export default class Sprite {
 
       screen.save();
       screen.translate(...this.drawCoords);
+
+
+
       if(this.beingPlaced){
         screen.globalAlpha = 0.5;
         this.drawGridCell(screen);
       }
+
+      if(this.selected){
+        screen.strokeRect(0,0,this.width,this.height);
+      }
+
       this.draw(screen);
       screen.globalAlpha = 1;
       screen.restore();

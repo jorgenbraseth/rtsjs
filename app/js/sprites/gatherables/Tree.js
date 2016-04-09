@@ -3,6 +3,7 @@ import { loadImage } from '../../Utils'
 
 import Sprite from './../Sprite'
 import TreeStump from './../decore/TreeStump'
+import InfoWindow from './../ui/InfoWindow'
 
 import Image from '../../../images/trees2.png'
 
@@ -26,6 +27,9 @@ export default class Tree extends Sprite {
     this.width = GRID_SIZE;
     this.color = "black";
     this.depleted = false;
+    this.resourceType = "wood";
+
+    this.infoWindow = new InfoWindow(this, this.game);
 
     this.variant = VARIANTS[parseInt(Math.random()*VARIANTS.length)];
     this.image = [loadImage(Image), this.variant.x,this.variant.y,this.variant.w,this.variant.h,this.variant.cX,this.variant.cY,40,65];
@@ -37,8 +41,8 @@ export default class Tree extends Sprite {
     this.resourceAmount -= gatherAmount;
 
     var amountAfterGather = parseInt(this.resourceAmount);
-    gatherer.resources.wood = gatherer.resources.wood || 0;
-    gatherer.resources.wood += (amountBeforeGather-amountAfterGather);
+    gatherer.resources[this.resourceType] = gatherer.resources[this.resourceType] || 0;
+    gatherer.resources[this.resourceType] += (amountBeforeGather-amountAfterGather);
 
     if(this.resourceAmount <= 0){
       this.deplete();

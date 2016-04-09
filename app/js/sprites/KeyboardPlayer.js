@@ -10,7 +10,7 @@ const PLAYER_TYPE_WOMAN_2 = 2;
 
 
 
-const CHOSEN_APPEARANCE = PLAYER_TYPE_WOMAN_2;
+const CHOSEN_APPEARANCE = PLAYER_TYPE_MAN;
 
 export default class Player extends Unit {
 
