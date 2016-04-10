@@ -52,7 +52,7 @@ export default class Renderer {
   }
 
   viewPortItemsForLayer(layer,viewPort){
-    var visibleSpritesFromLayer = layer.filter((sprite) => {return viewPort.inView(sprite.pos)});
+    var visibleSpritesFromLayer = layer.filter((sprite) => {return viewPort.inView(sprite.gridInfo.pos)});
 
     var visibleMap = [];
     for (var y = 0; y < viewPort.height; y++) {

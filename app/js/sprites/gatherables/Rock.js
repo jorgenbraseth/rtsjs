@@ -43,6 +43,6 @@ export default class Rock extends Sprite {
   deplete() {
     this.game.removeSprite(this);
     this.depleted = true;
-    this.game.addSprite(LAYERS.LAYER_FLOOR, new Rubble(this.game, [this.pos.x,this.pos.y]))
+    this.game.addSprite(LAYERS.LAYER_FLOOR, new Rubble(this.game, this.gridInfo.pos))
   }
 }

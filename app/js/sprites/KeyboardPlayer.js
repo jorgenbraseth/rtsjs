@@ -9,7 +9,6 @@ const PLAYER_TYPE_WOMAN_1 = 1;
 const PLAYER_TYPE_WOMAN_2 = 2;
 
 
-
 const CHOSEN_APPEARANCE = PLAYER_TYPE_MAN;
 
 export default class Player extends Unit {
@@ -135,20 +134,20 @@ export default class Player extends Unit {
 
   }
 
-  updateDirection(){
-      this.directionRow = 0;
-      if (this.dy < 0) {
-        this.directionRow = 3;
-      } else if (this.dx < 0) {
-        this.directionRow = 1;
-      } else if (this.dx > 0) {
-              this.directionRow = 2;
-          }
-      }
+  updateDirection() {
+    this.directionRow = 0;
+    if (this.dy < 0) {
+      this.directionRow = 3;
+    } else if (this.dx < 0) {
+      this.directionRow = 1;
+    } else if (this.dx > 0) {
+      this.directionRow = 2;
+    }
+  }
 
   die() {
     super.die();
-    this.game.addSprite(LAYER_FLOOR, new Blood(this.game, [this.pos.x, this.pos.y]));
+    this.game.addSprite(LAYER_FLOOR, new Blood(this.game, this.gridInfo.pos));
   }
 
 }

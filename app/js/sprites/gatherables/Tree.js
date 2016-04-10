@@ -53,6 +53,6 @@ export default class Tree extends Sprite {
   deplete() {
     this.game.removeSprite(this);
     this.depleted = true;
-    this.game.addSprite(LAYERS.LAYER_FLOOR, new TreeStump(this.game, [this.pos.x,this.pos.y]))
+    this.game.addSprite(LAYERS.LAYER_FLOOR, new TreeStump(this.game, this.gridInfo.pos))
   }
 }

@@ -36,9 +36,9 @@ export default class Unit extends Sprite {
   }
 
   inAttackRange(unit){
-    var posOfTarget = unit.pos;
-    var dx = Math.abs(this.pos.x - posOfTarget.x);
-    var dy = Math.abs(this.pos.y - posOfTarget.y);
+    var posOfTarget = unit.gridInfo.pos;
+    var dx = Math.abs(this.gridInfo.pos[0] - posOfTarget[0]);
+    var dy = Math.abs(this.gridInfo.pos[1] - posOfTarget[1]);
 
     var rangeToTarget = Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
     return rangeToTarget <= this.attackRange;
@@ -74,8 +74,8 @@ export default class Unit extends Sprite {
   draw(screen, viewport){
     if(this.firedThisRound && this.targetOfAttack){
       screen.beginPath();
-      screen.moveTo(this.pos.centerPixelX(),this.pos.centerPixelY());
-      screen.lineTo(this.targetOfAttack.pos.centerPixelX(),this.targetOfAttack.pos.centerPixelY());
+      screen.moveTo(this.drawInfo.centerPixelX(),this.drawInfo.centerPixelY());
+      screen.lineTo(this.targetOfAttack.drawInfo.centerPixelX(),this.targetOfAttack.drawInfo.centerPixelY());
       screen.closePath();
       screen.stroke();
     }

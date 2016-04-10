@@ -63,6 +63,12 @@ export default class Sprite {
         left: coords[0],
         bottom: coords[1] + this.width,
         right: coords[0] + this.height
+      },
+      centerPixelX: function () {
+        return coords[0] + this.width / 2;
+      },
+      centerPixelY: function () {
+        return coords[1] + this.height / 2;
       }
     }
   }
@@ -73,9 +79,6 @@ export default class Sprite {
 
   select() {
     this.selected = true;
-
-    console.log(this.drawInfo);
-    console.log(this.gridInfo);
   }
 
   unselect() {
@@ -91,10 +94,10 @@ export default class Sprite {
   }
 
   drawSprite(screen, viewPort) {
-    if (viewPort === undefined || viewPort.inView(this.pos)) {
+    if (viewPort === undefined || viewPort.inView(this.gridInfo.pos)) {
 
       screen.save();
-      screen.translate(...this.drawCoords);
+      screen.translate(...this.drawInfo.pos);
 
 
       if (this.beingPlaced) {

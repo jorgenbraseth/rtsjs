@@ -40,7 +40,7 @@ export default class Game {
       minX: 0,
       minY: 0,
       inView: function(pos) {
-        return pos.x >= this.minX && pos.y >= this.minY && pos.x < (this.minX+this.width) && pos.y < (this.minY+this.height);
+        return pos[0] >= this.minX && pos[1] >= this.minY && pos[0] < (this.minX+this.width) && pos[1] < (this.minY+this.height);
       }
     };
 
