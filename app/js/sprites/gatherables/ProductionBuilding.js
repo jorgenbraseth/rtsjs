@@ -54,8 +54,6 @@ export default class ProductionBuilding extends Sprite {
 
   tick(){
     if(!this.beingPlaced){
-
-
       if(this.resourceAmount < this.maxResourceAmount){
         this.productionProgress++;
       }
