@@ -192,7 +192,7 @@ export default class Game {
 
     this._player = new Player(this,[0.2,0.6]);
     this.statusPanel = new StatusPanel(this.player,this);
-    this.addSprite(LAYERS.LAYER_GROUND_PLAYER, this.player);
+    this.addSprite(LAYERS.LAYER_GROUND, this.player);
 
     this.initKeyboardPlayerMovement();
 
