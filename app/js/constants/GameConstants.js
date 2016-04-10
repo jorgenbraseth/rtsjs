@@ -3,6 +3,7 @@ module.exports = {
     LAYER_MAP: 0,
     LAYER_FLOOR: 10,
     LAYER_GROUND: 20,
+    LAYER_GROUND_PLAYER: 21,
     LAYER_GROUND_PLACEMENT: 29,
     LAYER_AIR: 30,
     UI: 90

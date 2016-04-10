@@ -18,6 +18,10 @@ export default class House extends ProductionBuilding {
       wood: 5
     };
 
-    this.image = [loadImage(Image),463,118,64,73,(GRID_SIZE/2)-(this.drawWidth/2),GRID_SIZE-this.drawHeight,this.drawWidth,this.drawHeight];
+    this.image = [
+      loadImage(Image),
+      463,118,64,73,
+      (GRID_SIZE/2)-(this.drawWidth/2),GRID_SIZE-this.drawHeight,this.drawWidth,this.drawHeight
+    ];
   }
 }

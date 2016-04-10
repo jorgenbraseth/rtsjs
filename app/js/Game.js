@@ -190,9 +190,9 @@ export default class Game {
     // this.loadMap(GENERATED(100,70,0.2));
     this.loadMap(MAP_TEST);
 
-    this._player = new Player(this,[0,0]);
+    this._player = new Player(this,[0.2,0.6]);
     this.statusPanel = new StatusPanel(this.player,this);
-    this.addSprite(LAYERS.LAYER_GROUND, this.player);
+    this.addSprite(LAYERS.LAYER_GROUND_PLAYER, this.player);
 
     this.initKeyboardPlayerMovement();
 

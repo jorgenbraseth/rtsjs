@@ -19,6 +19,7 @@ export default class Renderer {
     this.drawGridLayer(layers[LAYERS.LAYER_MAP], viewPort);
     this.drawGridLayer(layers[LAYERS.LAYER_FLOOR], viewPort);
     this.drawGridLayer(layers[LAYERS.LAYER_GROUND], viewPort);
+    this.drawGridLayer(layers[LAYERS.LAYER_GROUND_PLAYER], viewPort);
     this.drawGridLayer(layers[LAYERS.LAYER_GROUND_PLACEMENT], viewPort);
     this.drawGridLayer(layers[LAYERS.LAYER_AIR], viewPort);
     this.drawPixelLayer(layers[LAYERS.UI]);

@@ -20,8 +20,8 @@ export default class Player extends Unit {
       wood: 0, stone: 0, food: 0, gold: 0
     };
     this.animAge = 0;
-    this.width = GRID_SIZE;
-    this.height = GRID_SIZE;
+    this.width = GRID_SIZE*0.4;
+    this.height = GRID_SIZE*0.4;
     this.drawWidth = GRID_SIZE * 0.9;
     this.drawHeight = GRID_SIZE * 0.9;
     this.moveCost = 10000;
@@ -125,7 +125,7 @@ export default class Player extends Unit {
     screen.drawImage(
       this.image,
       playerType * (3 * 32) + animFrame * 32, this.directionRow * 32, 32, 32,
-      (GRID_SIZE/2)-(this.drawWidth/2),GRID_SIZE-this.drawHeight,this.drawWidth,this.drawHeight
+      (this.height/2)-(this.drawWidth/2),this.height-this.drawHeight,this.drawWidth,this.drawHeight
     );
 
     if (this.selected) {

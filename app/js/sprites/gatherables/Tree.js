@@ -35,7 +35,11 @@ export default class Tree extends Sprite {
     this.drawWidth = 40;
 
     this.variant = VARIANTS[parseInt(Math.random()*VARIANTS.length)];
-    this.image = [loadImage(Image), this.variant.x,this.variant.y,this.variant.w,this.variant.h,(GRID_SIZE/2)-(this.drawWidth/2),GRID_SIZE-this.drawHeight,this.drawWidth,this.drawHeight];
+    this.image = [
+      loadImage(Image),
+      this.variant.x,this.variant.y,this.variant.w,this.variant.h,
+      (GRID_SIZE/2)-(this.drawWidth/2),GRID_SIZE-this.drawHeight,this.drawWidth,this.drawHeight
+    ];
 
   }
 
