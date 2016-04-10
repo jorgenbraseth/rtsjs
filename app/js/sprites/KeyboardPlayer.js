@@ -2,14 +2,25 @@ import Unit from './KeyboardControlledUnit'
 import Blood from './decore/Blood'
 import {GRID_SIZE, LAYER_FLOOR} from '../constants/GameConstants.js'
 import {loadImage, toGridPos} from '../Utils'
-import Image from '../../images/person1.png';
-
-const PLAYER_TYPE_MAN = 0;
-const PLAYER_TYPE_WOMAN_1 = 1;
-const PLAYER_TYPE_WOMAN_2 = 2;
+// import Image from '../../images/person1.png';
+import Image from '../../images/player_sprites.png';
 
 
-const CHOSEN_APPEARANCE = PLAYER_TYPE_MAN;
+
+const PLAYER_TYPES = {
+  OLD_MAN: [0,0],
+  YOUNG_MAN: [1,0],
+  PIRATE: [2,0],
+  RED_GIRL: [3,0],
+  WIZARD: [0,1],
+  SCIENTIST: [1,1],
+  BLUE_MAN: [2,1],
+  RED_GIRL2: [3,1]
+};
+
+const types = Object.keys(PLAYER_TYPES);
+const randomPick = Math.floor(Math.random()*types.length);
+const CHOSEN_APPEARANCE = PLAYER_TYPES[types[randomPick]];
 
 export default class Player extends Unit {
 
@@ -29,7 +40,7 @@ export default class Player extends Unit {
 
     this.updateDirection();
 
-    this.speed = .125;
+    this.speed = 1/12;
 
     this.image = loadImage(Image);
   }
@@ -120,11 +131,11 @@ export default class Player extends Unit {
     screen.fillStyle = this.color;
 
     var animFrame = parseInt(this.animAge / 5);
-    var playerType = CHOSEN_APPEARANCE;
 
     screen.drawImage(
       this.image,
-      playerType * (3 * 32) + animFrame * 32, this.directionRow * 32, 32, 32,
+      (CHOSEN_APPEARANCE[0]*(3*32)) + (animFrame * 32), (CHOSEN_APPEARANCE[1]*4*32)+this.directionRow * 32, 32, 32,
+      // 0,0,32,32,
       (this.width/2)-(this.drawWidth/2),this.height-this.drawHeight,this.drawWidth,this.drawHeight
     );
 
