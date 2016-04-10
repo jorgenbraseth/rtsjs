@@ -7,7 +7,7 @@ const iconSize = GRID_SIZE - padding * 2;
 
 import ICON_WOOD from '../../../images/icon_wood.png'
 import ICON_STONE from '../../../images/icon_stone.png'
-import ICON_FOOD from '../../../images/icon_food.png'
+import ICON_FOOD from '../../../images/icon_food2.png'
 import ICON_COIN from '../../../images/icon_coin.png'
 
 

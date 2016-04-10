@@ -5,7 +5,7 @@ import {loadImage} from '../../Utils'
 
 import ICON_WOOD from '../../../images/icon_wood.png'
 import ICON_STONE from '../../../images/icon_stone.png'
-import ICON_FOOD from '../../../images/icon_food.png'
+import ICON_FOOD from '../../../images/icon_food2.png'
 import ICON_COIN from '../../../images/icon_coin.png'
 
 export default class StatusPanel extends Sprite {
@@ -59,7 +59,8 @@ export default class StatusPanel extends Sprite {
   };
 
   drawFood(screen) {
-    screen.drawImage(this.iconFood, 0, 0, 39, 37, 73, 13, 18, 18);
+    // screen.drawImage(this.iconFood, 0, 0, 39, 37, 73, 13, 18, 18);
+    screen.drawImage(this.iconFood, 75, 13,18,18);
     var amount = this.unit.resources.food || 0;
     screen.fillStyle = "white";
     screen.font = "12px arial";
