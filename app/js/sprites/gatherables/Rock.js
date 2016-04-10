@@ -14,10 +14,10 @@ export default class Rock extends Sprite {
     this.moveCost = 10000;
 
     this.images = [
-      [loadImage(Image),126,0,42,42,0,0,this.width,this.width],
-      [loadImage(Image),84,0,42,42,0,0,this.width,this.width],
-      [loadImage(Image),42,0,42,42,0,0,this.width,this.width],
-      [loadImage(Image),0,0,42,42,0,0,this.width,this.width]
+      [loadImage(Image),126,0,42,42,0,0,this.width,this.height],
+      [loadImage(Image),84,0,42,42,0,0,this.width,this.height],
+      [loadImage(Image),42,0,42,42,0,0,this.width,this.height],
+      [loadImage(Image),0,0,42,42,0,0,this.width,this.height]
     ];
     this.image = this.images[3];
   }

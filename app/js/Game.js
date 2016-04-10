@@ -35,8 +35,8 @@ export default class Game {
     this.canvas = canvas;
 
     this.viewPort = {
-      width: 30,
-      height: 20,
+      width: 20,
+      height: 10,
       minX: 0,
       minY: 0,
       inView: function(pos) {

@@ -24,6 +24,8 @@ export default class Sprite {
 
     this.width = GRID_SIZE;
     this.height = GRID_SIZE;
+    this.drawWidth = GRID_SIZE;
+    this.drawHeight = GRID_SIZE;
     this.selected = false;
     this.alwaysDraw = false;
 
@@ -95,6 +97,10 @@ export default class Sprite {
 
   drawSprite(screen, viewPort) {
     if (viewPort === undefined || viewPort.inView(this.gridInfo.pos)) {
+
+      screen.fillStyle="rgba(250,250,250,0.7)";
+
+      screen.fillRect(this.gridInfo.pos[0]*GRID_SIZE, this.gridInfo.pos[1]*GRID_SIZE, GRID_SIZE, GRID_SIZE)
 
       screen.save();
       screen.translate(...this.drawInfo.pos);
