@@ -12,10 +12,6 @@ export default class Conveyor extends Sprite {
   }
 
   tick(){
-    var spriteAtMyPos = this.game.spriteAt([this.pos.x,this.pos.y]);
-    if(spriteAtMyPos){
-      console.log("Should push " + spriteAtMyPos.constructor.name + " at " + JSON.stringify(this.pos));
-    }
 
   }
 }
