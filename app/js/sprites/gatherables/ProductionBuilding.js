@@ -8,8 +8,9 @@ export default class ProductionBuilding extends Sprite {
     this.resourceAmount = this.startingResources;
     this.resourceType = producesType;
     this.maxResourceAmount = capacity;
+    this.productionProgress = 0;
 
-    this.produceFoodEveryNTick = productionSpeed;
+    this.progressNeededToProduce = productionSpeed;
   }
 
   draw(screen){
@@ -18,6 +19,11 @@ export default class ProductionBuilding extends Sprite {
     if(!this.beingPlaced){
       this.drawInventoryIndicator(screen);
     }
+
+  }
+
+  get progressPercent(){
+    return this.productionProgress/this.progressNeededToProduce;
   }
 
   drawInventoryIndicator(screen){
@@ -32,9 +38,11 @@ export default class ProductionBuilding extends Sprite {
     const indicatorHeight = 5;
 
     screen.fillStyle = 'rgba(0,0,0,0.3';
-    screen.fillRect(0,0,indicatorWidth,indicatorHeight);
+    screen.fillRect(0,0,indicatorWidth,indicatorHeight+1);
     screen.translate(1,1);
     screen.fillStyle = 'rgba(250,200,0,0.9)';
+    screen.fillRect(0,0,indicatorWidth * this.progressPercent, 1);
+    screen.translate(0,2);
 
     const widthPerBox = ((indicatorWidth-1)-this.maxResourceAmount)/this.maxResourceAmount;
     for (var res = 0; res < this.resourceAmount; res++) {
@@ -46,10 +54,15 @@ export default class ProductionBuilding extends Sprite {
 
   tick(){
     if(!this.beingPlaced){
-      this.age++;
 
-      if(this.resourceAmount < this.maxResourceAmount && this.age % this.produceFoodEveryNTick == 0){
-        this.resourceAmount += 1;
+
+      if(this.resourceAmount < this.maxResourceAmount){
+        this.productionProgress++;
+      }
+
+      if(this.productionProgress >= this.progressNeededToProduce){
+        this.resourceAmount++;
+        this.productionProgress -= this.progressNeededToProduce;
       }
     }
   }
