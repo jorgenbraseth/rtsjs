@@ -6,7 +6,6 @@ import {loadImage} from '../Utils'
 import Image from '../../images/player_sprites.png';
 
 
-
 const PLAYER_TYPES = {
   OLD_MAN: [0,0],
   YOUNG_MAN: [1,0],
@@ -33,8 +32,6 @@ export default class Player extends Unit {
     this.animAge = 0;
     this.width = 25;
     this.height = 13;
-    this.drawWidth = GRID_SIZE * 0.9;
-    this.drawHeight = GRID_SIZE * 0.9;
     this.moveCost = 10000;
     this.world = game.world;
 
@@ -42,7 +39,17 @@ export default class Player extends Unit {
 
     this.speed = 1/12;
 
-    this.image = loadImage(Image);
+    this.images = {
+      SOUTH: [loadImage(Image), (CHOSEN_APPEARANCE[0]*(3*32)), (CHOSEN_APPEARANCE[1]*4*32), 32, 32],
+      WEST: [loadImage(Image), (CHOSEN_APPEARANCE[0]*(3*32)), (CHOSEN_APPEARANCE[1]*4*32)+1 * 32, 32, 32],
+      EAST: [loadImage(Image), (CHOSEN_APPEARANCE[0]*(3*32)), (CHOSEN_APPEARANCE[1]*4*32)+2 * 32, 32, 32],
+      NORTH: [loadImage(Image), (CHOSEN_APPEARANCE[0]*(3*32)), (CHOSEN_APPEARANCE[1]*4*32)+3 * 32, 32, 32]
+    };
+
+    const drawHeight = GRID_SIZE*0.9;
+    const drawWidth = GRID_SIZE*0.9;
+
+    this.image = [...this.images["SOUTH"], (this.width/2)-(drawWidth/2),this.height-drawHeight,drawWidth,drawHeight]
   }
 
   select() {
@@ -96,6 +103,7 @@ export default class Player extends Unit {
     if(this.pos.x <0){
       this.pos.x = 0;
     }else if(this.pos.x > this.game.worldSize[0]-1){
+      console.log("Too far right!");
       this.pos.x = this.game.worldSize[0]-1;
     }
 
@@ -126,34 +134,36 @@ export default class Player extends Unit {
     this.gridPos = [this.pos.x,this.pos.y];
   }
 
+  get animFrame(){
+    return parseInt(this.animAge / 5)
+  }
+
   draw(screen, viewport) {
     super.draw(...arguments);
     screen.fillStyle = this.color;
 
-    var animFrame = parseInt(this.animAge / 5);
+    var drawWidth = GRID_SIZE*0.9;
+    var drawHeight = GRID_SIZE*0.9;
 
-    screen.drawImage(
-      this.image,
-      (CHOSEN_APPEARANCE[0]*(3*32)) + (animFrame * 32), (CHOSEN_APPEARANCE[1]*4*32)+this.directionRow * 32, 32, 32,
-      // 0,0,32,32,
-      (this.width/2)-(this.drawWidth/2),this.height-this.drawHeight,this.drawWidth,this.drawHeight
-    );
+    var currentImage = this.images[this.direction].concat([]);
+    currentImage[1]+=this.animFrame*32;
+
+    this.image = [...currentImage, (this.width/2)-(drawWidth/2),this.height-drawHeight,drawWidth,drawHeight];
+    screen.drawImage(...this.image);
 
     if (this.selected) {
       this.drawHp(screen);
     }
-
-
   }
 
   updateDirection() {
-    this.directionRow = 0;
+    this.direction = "SOUTH";
     if (this.dy < 0) {
-      this.directionRow = 3;
+      this.direction = "NORTH";
     } else if (this.dx < 0) {
-      this.directionRow = 1;
+      this.direction = "WEST";
     } else if (this.dx > 0) {
-      this.directionRow = 2;
+      this.direction = "EAST";
     }
   }
 

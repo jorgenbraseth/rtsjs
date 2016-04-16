@@ -1,8 +1,8 @@
 import Sprite from './../Sprite'
 
 export default class ProductionBuilding extends Sprite {
-  constructor(producesType, capacity, productionSpeed, game, coords=[0,0]){
-    super(game, coords);
+  constructor(producesType, capacity, productionSpeed, game, coords=[0,0], width, height){
+    super(game, coords, width, height);
 
     this.startingResources = 0;
     this.resourceAmount = this.startingResources;

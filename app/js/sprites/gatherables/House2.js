@@ -6,18 +6,16 @@ import Image from '../../../images/buildings.png'
 
 export default class House2 extends Producer {
   constructor(game, coords=[0,0]){
-    super("gold", 5, 1000, game, coords);
+    super("gold", 5, 1000, game, coords,GRID_SIZE,GRID_SIZE);
     this.moveCost = 0;
 
-    this.width = GRID_SIZE;
-    this.drawWidth = GRID_SIZE;
-
-    this.drawHeight = (73/64)*GRID_SIZE;
-    this.height = GRID_SIZE;
     this.image = [
       loadImage(Image),
       531,120,62,73,
-      (GRID_SIZE/2)-(this.drawWidth/2),GRID_SIZE-this.drawHeight,this.drawWidth,this.drawHeight
+      (GRID_SIZE/2)-(this.drawWidth/2),
+      GRID_SIZE-this.drawHeight,
+      GRID_SIZE,
+      (73/64)*GRID_SIZE
     ];
 
     this.cost = {

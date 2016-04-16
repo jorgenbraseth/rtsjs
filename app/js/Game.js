@@ -226,13 +226,7 @@ export default class Game {
   }
 
   focusCamOnPlayer(){
-
-    var halfHeight = this.viewPort.heightInGridUnits/2;
-
-    this.viewPort.minYInGridUnits = Math.min(Math.max(0,this.player.gridPos[1]-halfHeight),this.worldSize[1]-this.viewPort.heightInGridUnits);
-
-    var halfWidth = this.viewPort.widthInGridUnits/2;
-    this.viewPort.minXInGridUnits = Math.min(Math.max(0,this.player.gridPos[0]-halfWidth),this.worldSize[0]-this.viewPort.widthInGridUnits);
+    this.viewPort.focusOnGridPos(this.player.gridPos);
   }
 
   moveCam(){

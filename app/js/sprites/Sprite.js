@@ -3,29 +3,19 @@ import {intersects} from '../Utils'
 
 export default class Sprite {
 
-  constructor(game, coords = [0, 0]) {
+  constructor(game, coords = [0, 0], width=GRID_SIZE, height=GRID_SIZE) {
     this.game = game;
-    this.pos = {
-      x: coords[0],
-      y: coords[1],
-      centerPixelX: function () {
-        return this.grid2draw(this.x) + GRID_SIZE / 2;
-      },
-      centerPixelY: function () {
-        return this.grid2draw(this.x) + GRID_SIZE / 2;
-      }
-    };
 
+    this._x = coords[0];
+    this._y = coords[1];
 
     this.beingPlaced = false;
 
     this.color = "red";
     this.age = 0;
 
-    this.width = GRID_SIZE;
-    this.height = GRID_SIZE;
-    this.drawWidth = GRID_SIZE;
-    this.drawHeight = GRID_SIZE;
+    this.width = width;
+    this.height = height;
     this.selected = false;
     this.alwaysDraw = false;
 
@@ -34,9 +24,54 @@ export default class Sprite {
     this.dx = 1;
     this.dy = 1;
 
-    this.moveQueue = [];
-
     this.moveCost = 0;
+
+    this.pos = {
+      x: coords[0],
+      y: coords[1],
+      centerPixelX: function () {
+        return this.grid2draw(this.x) + this.width / 2;
+      },
+      centerPixelY: function () {
+        return this.grid2draw(this.x) + this.width / 2;
+      }
+    };
+  }
+
+  get drawWidth(){
+    if(this.image && this.image.length ==8){
+      return this.image[7];
+    }else if (this.image && this.image.length == 4) {
+      return this.image[3];
+    }else{
+      return this._width;
+    }
+  }
+
+  get drawHeight(){
+    if(this.image && this.image.length ==8){
+      return this.image[6];
+    }else if (this.image && this.image.length == 4) {
+      return this.image[2];
+    }else{
+      return this._height;
+    }
+  }
+
+  get physical() {
+    const coords = [this._x, this._y];
+    return {
+      top: this._y,
+      bottom: this._y+this._height,
+      left: this._x,
+      right: this._x+this._width,
+      width: this._width,
+      height: this._height,
+      center: {
+        x: this._x + this.width/2,
+        y: this._y + this.width/2
+      }
+    }
   }
 
   get gridInfo() {
@@ -55,7 +90,7 @@ export default class Sprite {
   }
 
   get drawInfo() {
-    const coords = this.drawCoords;
+    const coords = [this.pos.x * GRID_SIZE, this.pos.y * GRID_SIZE];
     return {
       pos: coords,
       width: this.width,
@@ -91,40 +126,39 @@ export default class Sprite {
 
   }
 
-  get drawCoords() {
-    return [this.grid2draw(this.pos.x), this.grid2draw(this.pos.y)];
-  }
+  drawSprite(screen) {
+    screen.save();
+    screen.fillStyle = "rgba(250,250,250,0.4)";
+    screen.translate(this.pos.x * GRID_SIZE, this.pos.y * GRID_SIZE);
+    screen.fillRect(0, 0, this.width, this.height);
+    screen.restore();
 
-  drawSprite(screen, viewPort) {
-    if (viewPort === undefined || viewPort.isRectVisible(this.boundingBox)) {
+    screen.save();
+    screen.translate(...this.drawInfo.pos);
 
-      screen.save();
-      screen.translate(...this.drawInfo.pos);
-
-
-      if (this.beingPlaced) {
-        screen.globalAlpha = 0.5;
-        this.drawGridCell(screen);
-      }
-
-      if (this.selected) {
-        screen.strokeSize = 1;
-        screen.strokeStyle = 'rgba(250,250,0,0.8) ';
-        screen.strokeRect(0, 0, this.width, this.height);
-      }
-
-      this.draw(screen);
-      screen.globalAlpha = 1;
-      screen.restore();
+    if (this.beingPlaced) {
+      screen.globalAlpha = 0.5;
+      this.drawGridCell(screen);
     }
+
+    if (this.selected) {
+      screen.strokeSize = 1;
+      screen.strokeStyle = 'rgba(250,250,0,0.8) ';
+      screen.strokeRect(0, 0, this.width, this.height);
+    }
+
+    this.draw(screen);
+    screen.globalAlpha = 1;
+    screen.restore();
   }
 
   get boundingBox() {
+    const drawCoords = [this.pos.x * GRID_SIZE, this.pos.y * GRID_SIZE];
     return {
-      left: this.drawCoords[0],
-      right: this.drawCoords[0] + this.width,
-      top: this.drawCoords[1],
-      bottom: this.drawCoords[1] + this.height
+      left: drawCoords[0],
+      right: drawCoords[0] + this.width,
+      top: drawCoords[1],
+      bottom: drawCoords[1] + this.height
     }
   }
 
@@ -146,14 +180,10 @@ export default class Sprite {
     } else {
       screen.fillStyle = this.color;
 
-      var centerX = GRID_SIZE / 2;
-      var centerY = GRID_SIZE / 2;
+      var centerX = this.drawWidth / 2;
+      var centerY = this.drawHeight / 2;
       screen.fillRect(centerX - this.width / 2, centerY - this.width / 2, this.width, this.width);
     }
-  }
-
-  grid2draw(val) {
-    return val * GRID_SIZE;
   }
 
   setPosition(x, y) {

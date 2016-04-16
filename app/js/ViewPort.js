@@ -63,13 +63,6 @@ export default class ViewPort {
   }
 
   isRectVisible(rect) {
-    const {x,y} = this.pos;
-    const viewPortBoundingBox = {
-      left: x*GRID_SIZE-GRID_SIZE,
-      top: y*GRID_SIZE-GRID_SIZE,
-      right: x*GRID_SIZE+(this.widthInGridUnits*GRID_SIZE)+GRID_SIZE,
-      bottom: y*GRID_SIZE+(this.heightInGridUnits*GRID_SIZE)+GRID_SIZE
-    };
     return intersects(rect, this.boxPx)
   }
 
@@ -90,11 +83,13 @@ export default class ViewPort {
   }
 
   focusOnGridPos(pos){
+    const focusX = pos[0];
+    const focusY = pos[1];
     var halfHeight = this.heightInGridUnits/2;
     var halfWidth = this.widthInGridUnits/2;
 
-    const newX = Math.min(Math.max(0,pos[0]*GRID_SIZE-halfWidth),this.game.worldSize[0]-this.widthInGridUnits);
-    const newY = Math.min(Math.max(0,pos[1]*GRID_SIZE-halfHeight),this.game.worldSize[1]-this.heightInGridUnits);
+    const newX = Math.min(Math.max(0,focusX-halfWidth),this.game.worldSize[0]-this.widthInGridUnits);
+    const newY = Math.min(Math.max(0,focusY-halfHeight),this.game.worldSize[1]-this.heightInGridUnits);
 
     this._pos = [newX,newY];
   }

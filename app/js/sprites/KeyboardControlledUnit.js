@@ -29,8 +29,10 @@ export default class Unit extends Sprite {
     if(this.targetOfAttack && this.inAttackRange(this.targetOfAttack)){
       if(this.targetOfAttack.fireAt){
         this.fireAt(this.targetOfAttack);
+        this.firedThisRound = true;
       }else if(this.targetOfAttack.gather){
         this.gatherFrom(this.targetOfAttack);
+        this.firedThisRound = true;
       }
     }
   }
@@ -74,7 +76,8 @@ export default class Unit extends Sprite {
   draw(screen, viewport){
     if(this.firedThisRound && this.targetOfAttack){
       screen.beginPath();
-      screen.moveTo(this.drawInfo.centerPixelX(),this.drawInfo.centerPixelY());
+
+      screen.moveTo(this.drawWidth/2,this.drawHeight/2);
       screen.lineTo(this.targetOfAttack.drawInfo.centerPixelX(),this.targetOfAttack.drawInfo.centerPixelY());
       screen.closePath();
       screen.stroke();
