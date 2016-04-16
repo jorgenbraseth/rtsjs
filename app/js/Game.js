@@ -35,16 +35,6 @@ export default class Game {
 
     this.canvas = canvas;
 
-    // this.viewPort = {
-    //   width: 30,
-    //   height: 20,
-    //   minX: 0,
-    //   minY: 0,
-    //   inView: function(pos) {
-    //     return pos[0] >= this.minX && pos[1] >= this.minY && pos[0] < (this.minX+this.width) && pos[1] < (this.minY+this.height);
-    //   }
-    // };
-
     this.viewPort = new ViewPort(this);
 
     this.userInput = new UserInput(canvas);
@@ -74,7 +64,7 @@ export default class Game {
 
     this.userInput.onRightClick(
       function(x,y){
-        this.gridRightClicked(this.viewPort(x,y))
+        this.gridRightClicked(this.viewPort.toGridPos(x,y))
       }.bind(this)
     );
 
@@ -433,7 +423,7 @@ export default class Game {
   }
 
   draw(){
-    this.renderer.render(this.layers, this.viewPort);
+    this.renderer.render(this.layers);
     this.renderer.renderUi(this.statusPanel);
     this.renderer.renderUi(this.quickBar);
 

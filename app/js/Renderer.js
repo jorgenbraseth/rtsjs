@@ -10,10 +10,13 @@ export default class Renderer {
     this.canvas.setAttribute("height", ""+GRID_SIZE*viewPort.height);
 
     this.canvas.style.cursor = "none";
+    
+    this.viewPort = viewPort;
 
   }
 
-  render(layers,viewPort){
+  render(layers){
+    const viewPort = this.viewPort;
     this.clearScreen();
     this.screen.save();
     this.screen.translate(-viewPort.minX*GRID_SIZE,-viewPort.minY*GRID_SIZE);
