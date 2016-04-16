@@ -1,5 +1,3 @@
-import {GRID_SIZE} from './constants/GameConstants'
-
 const imageCache = {}
 
 module.exports = {
@@ -11,11 +9,6 @@ module.exports = {
       imageCache[img] = imgElm;
     }
     return imageCache[img];
-  },
-
-  toGridPos: function (x, y, viewPort) {
-    
-    return [Math.floor(x / GRID_SIZE) + viewPort.minX, Math.floor(y / GRID_SIZE) + viewPort.minY];
   },
 
   intersects: function (r1, r2) {

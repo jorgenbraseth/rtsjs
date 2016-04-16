@@ -74,7 +74,7 @@ export default class Game {
 
     this.userInput.onRightClick(
       function(x,y){
-        this.gridRightClicked(toGridPos(x,y,this.viewPort))
+        this.gridRightClicked(this.viewPort(x,y))
       }.bind(this)
     );
 
@@ -312,7 +312,7 @@ export default class Game {
     const clickedSprite = this.findSpriteAtPos(...coordsShiftedForViewPort);
 
     if(this.actionMode === 'PLACE' && this.placingUnit.isPlaceable){
-      this.build(toGridPos(x,y,this.viewPort),this.placingUnit);
+      this.build(this.viewPort.toGridPos(x,y),this.placingUnit);
       this.placingUnit=undefined;
     }else if (clickedSprite!=undefined){
       clickedSprite.click(x,y);

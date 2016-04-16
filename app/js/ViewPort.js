@@ -56,6 +56,10 @@ export default class ViewPort {
     return [Math.floor(viewPortCoord[0] / GRID_SIZE) + this.pos[0], Math.floor(viewPortCoord[1] / GRID_SIZE) + this.pos[1]];
   }
 
+  toGridPos(x, y) {
+    return [Math.floor(x / GRID_SIZE) + this.minX, Math.floor(y / GRID_SIZE) + this.minY];
+  }
+
   get worldCoordPos(){
     return [this.pos[0]*GRID_SIZE,this.pos[1]*GRID_SIZE];
   }

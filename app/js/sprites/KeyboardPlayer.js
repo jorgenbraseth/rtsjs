@@ -1,7 +1,7 @@
 import Unit from './KeyboardControlledUnit'
 import Blood from './decore/Blood'
 import {GRID_SIZE, LAYER_FLOOR} from '../constants/GameConstants.js'
-import {loadImage, toGridPos} from '../Utils'
+import {loadImage} from '../Utils'
 // import Image from '../../images/person1.png';
 import Image from '../../images/player_sprites.png';
 
