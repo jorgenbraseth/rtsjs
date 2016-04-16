@@ -8,6 +8,7 @@ import House from './sprites/gatherables/House'
 import House2 from './sprites/gatherables/House2'
 
 import Renderer from './Renderer'
+import ViewPort from './ViewPort'
 
 import StatusPanel from './sprites/ui/StatusPanel'
 import Cursor from './sprites/ui/Cursor'
@@ -34,15 +35,17 @@ export default class Game {
 
     this.canvas = canvas;
 
-    this.viewPort = {
-      width: 20,
-      height: 10,
-      minX: 0,
-      minY: 0,
-      inView: function(pos) {
-        return pos[0] >= this.minX && pos[1] >= this.minY && pos[0] < (this.minX+this.width) && pos[1] < (this.minY+this.height);
-      }
-    };
+    // this.viewPort = {
+    //   width: 30,
+    //   height: 20,
+    //   minX: 0,
+    //   minY: 0,
+    //   inView: function(pos) {
+    //     return pos[0] >= this.minX && pos[1] >= this.minY && pos[0] < (this.minX+this.width) && pos[1] < (this.minY+this.height);
+    //   }
+    // };
+
+    this.viewPort = new ViewPort(this);
 
     this.userInput = new UserInput(canvas);
     this.shiftHeld = false;

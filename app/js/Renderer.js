@@ -15,6 +15,7 @@ export default class Renderer {
 
   render(layers,viewPort){
     this.clearScreen();
+    this.screen.save();
     this.screen.translate(-viewPort.minX*GRID_SIZE,-viewPort.minY*GRID_SIZE);
     this.drawGridLayer(layers[LAYERS.LAYER_MAP], viewPort);
     this.drawGridLayer(layers[LAYERS.LAYER_FLOOR], viewPort);
@@ -23,7 +24,7 @@ export default class Renderer {
     this.drawGridLayer(layers[LAYERS.LAYER_GROUND_PLACEMENT], viewPort);
     this.drawGridLayer(layers[LAYERS.LAYER_AIR], viewPort);
     this.drawPixelLayer(layers[LAYERS.UI]);
-    this.screen.translate(viewPort.minX*GRID_SIZE,viewPort.minY*GRID_SIZE);
+    this.screen.restore();
 
   }
 
@@ -39,43 +40,14 @@ export default class Renderer {
   }
   drawGridLayer(layer, viewPort){
     var visibleMap = this.viewPortItemsForLayer(layer,viewPort);
-
-    for (var y = 0; y < visibleMap.length; y++) {
-      var row = visibleMap[y];
-      for (var col = 0; col < row.length; col++) {
-        var spriteList = row[col];
-
-        for (var sprite = 0; sprite < spriteList.length; sprite++) {
-          spriteList[sprite].drawSprite(this.screen, viewPort);
-        }
-      }
-    }
+    visibleMap.forEach((s)=>s.drawSprite(this.screen, viewPort));
   }
 
   viewPortItemsForLayer(layer,viewPort){
-    var visibleSpritesFromLayer = layer.filter((sprite) => {return viewPort.inView(sprite.gridInfo.pos)});
-
-    var visibleMap = [];
-    for (var y = 0; y < viewPort.height; y++) {
-      var row = [];
-      for (var x = 0; x < viewPort.width; x++) {
-        row.push([]);
-      }
-      visibleMap.push(row);
-    }
-
-    for (var spriteIdx = 0; spriteIdx < visibleSpritesFromLayer.length; spriteIdx++) {
-      var sprite = visibleSpritesFromLayer[spriteIdx];
-      var spriteX = parseInt(sprite.pos.x) - viewPort.minX;
-      var spriteY = parseInt(sprite.pos.y) - viewPort.minY;
-
-      if(spriteY < visibleMap.length && spriteX < visibleMap[0].length)
-        visibleMap[spriteY][spriteX].push(sprite);
-    }
-
-    return visibleMap;
-    // console.log(visibleSpritesFromLayer);
-
+    const visibleSpritesFromLayer = layer
+      .filter((sprite) => {return viewPort.isRectVisible(sprite.boundingBox)})
+      .sort((s1,s2)=>{return s1.pos.y-s2.pos.y});
+    return visibleSpritesFromLayer;
   }
 
 
