@@ -6,11 +6,11 @@ export default class Renderer {
     this.canvas = canvas;
     this.screen = canvas.getContext('2d');
 
-    this.canvas.setAttribute("width", ""+GRID_SIZE*viewPort.width);
-    this.canvas.setAttribute("height", ""+GRID_SIZE*viewPort.height);
+    this.canvas.setAttribute("width", ""+GRID_SIZE*viewPort.widthInGridUnits);
+    this.canvas.setAttribute("height", ""+GRID_SIZE*viewPort.heightInGridUnits);
 
     this.canvas.style.cursor = "none";
-    
+
     this.viewPort = viewPort;
 
   }
@@ -19,7 +19,7 @@ export default class Renderer {
     const viewPort = this.viewPort;
     this.clearScreen();
     this.screen.save();
-    this.screen.translate(-viewPort.minX*GRID_SIZE,-viewPort.minY*GRID_SIZE);
+    this.screen.translate(-viewPort.minXPx,-viewPort.minYPx);
     this.drawGridLayer(layers[LAYERS.LAYER_MAP], viewPort);
     this.drawGridLayer(layers[LAYERS.LAYER_FLOOR], viewPort);
     this.drawGridLayer(layers[LAYERS.LAYER_GROUND], viewPort);
@@ -32,7 +32,7 @@ export default class Renderer {
   }
 
   clearScreen(){
-    this.screen.clearRect(0,0,this.canvas.width, this.canvas.height);
+    this.screen.clearRect(0,0,this.canvas.widthInGridUnits, this.canvas.heightInGridUnits);
   }
 
   drawPixelLayer(layer){
@@ -42,18 +42,11 @@ export default class Renderer {
     }
   }
   drawGridLayer(layer, viewPort){
-    var visibleMap = this.viewPortItemsForLayer(layer,viewPort);
-    visibleMap.forEach((s)=>s.drawSprite(this.screen, viewPort));
-  }
-
-  viewPortItemsForLayer(layer,viewPort){
-    const visibleSpritesFromLayer = layer
+    layer
       .filter((sprite) => {return viewPort.isRectVisible(sprite.boundingBox)})
-      .sort((s1,s2)=>{return s1.pos.y-s2.pos.y});
-    return visibleSpritesFromLayer;
+      .sort((s1,s2)=>{return s1.pos.y-s2.pos.y})
+      .forEach((s)=>s.drawSprite(this.screen, viewPort));
   }
-
-
 
   renderUi(component){
     component.draw(this.screen);

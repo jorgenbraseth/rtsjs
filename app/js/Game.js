@@ -48,8 +48,6 @@ export default class Game {
       this.layers[LAYERS[layer]] = [];
     }
 
-
-
     this.renderer = new Renderer(canvas, this.viewPort);
 
     this.cursor = new Cursor();
@@ -84,8 +82,8 @@ export default class Game {
     this.mousePixelPos = [e.layerX,e.layerY];
 
     this.mouseGridPos = this.mousePixelPos.map((coord) => { return parseInt(coord / GRID_SIZE) });
-    this.mouseGridPos[0] += this.viewPort.minX;
-    this.mouseGridPos[1] += this.viewPort.minY;
+    this.mouseGridPos[0] += this.viewPort.minXInGridUnits;
+    this.mouseGridPos[1] += this.viewPort.minYInGridUnits;
 
     this.cursor.setPosition(...this.mousePixelPos);
 
@@ -233,29 +231,29 @@ export default class Game {
 
   focusCamOnPlayer(){
 
-    var halfHeight = this.viewPort.height/2;
+    var halfHeight = this.viewPort.heightInGridUnits/2;
 
-    this.viewPort.minY = Math.min(Math.max(0,Math.floor(this.player.gridPos[1]-halfHeight)),this.worldSize[1]-this.viewPort.height);
+    this.viewPort.minYInGridUnits = Math.min(Math.max(0,Math.floor(this.player.gridPos[1]-halfHeight)),this.worldSize[1]-this.viewPort.heightInGridUnits);
 
-    var halfWidth = this.viewPort.width/2;
-    this.viewPort.minX = Math.min(Math.max(0,Math.floor(this.player.gridPos[0]-halfWidth)),this.worldSize[0]-this.viewPort.width);
+    var halfWidth = this.viewPort.widthInGridUnits/2;
+    this.viewPort.minXInGridUnits = Math.min(Math.max(0,Math.floor(this.player.gridPos[0]-halfWidth)),this.worldSize[0]-this.viewPort.widthInGridUnits);
   }
 
   moveCam(){
     if(
-      (this.viewPort.minY+this.viewPort.height+this.cameraPanY <= this.world[0].length)
+      (this.viewPort.minYInGridUnits+this.viewPort.heightInGridUnits+this.cameraPanY <= this.world[0].length)
       &&
-      (this.viewPort.minY+this.cameraPanY >= 0)
+      (this.viewPort.minYInGridUnits+this.cameraPanY >= 0)
     ){
-      this.viewPort.minY += this.cameraPanY;
+      this.viewPort.minYInGridUnits += this.cameraPanY;
     }
 
     if(
-      (this.viewPort.minX+this.viewPort.width+this.cameraPanX <= this.world.length)
+      (this.viewPort.minXInGridUnits+this.viewPort.widthInGridUnits+this.cameraPanX <= this.world.length)
       &&
-      (this.viewPort.minX+this.cameraPanX >= 0)
+      (this.viewPort.minXInGridUnits+this.cameraPanX >= 0)
     ){
-      this.viewPort.minX += this.cameraPanX;
+      this.viewPort.minXInGridUnits += this.cameraPanX;
     }
 
   }
@@ -298,7 +296,7 @@ export default class Game {
   }
 
   leftClicked(x,y){
-    const coordsShiftedForViewPort = [x+this.viewPort.minX*GRID_SIZE,y+this.viewPort.minY*GRID_SIZE];
+    const coordsShiftedForViewPort = [x+this.viewPort.minXInGridUnits*GRID_SIZE,y+this.viewPort.minYInGridUnits*GRID_SIZE];
     const clickedSprite = this.findSpriteAtPos(...coordsShiftedForViewPort);
 
     if(this.actionMode === 'PLACE' && this.placingUnit.isPlaceable){
