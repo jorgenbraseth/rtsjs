@@ -127,11 +127,7 @@ export default class Sprite {
   }
 
   drawSprite(screen) {
-    screen.save();
-    screen.fillStyle = "rgba(250,250,250,0.4)";
-    screen.translate(this.pos.x * GRID_SIZE, this.pos.y * GRID_SIZE);
-    screen.fillRect(0, 0, this.width, this.height);
-    screen.restore();
+    // this.drawPhysicalSize(screen);
 
     screen.save();
     screen.translate(...this.drawInfo.pos);
@@ -149,6 +145,14 @@ export default class Sprite {
 
     this.draw(screen);
     screen.globalAlpha = 1;
+    screen.restore();
+  }
+
+  drawPhysicalSize(screen){
+    screen.save();
+    screen.fillStyle = "rgba(250,250,250,0.4)";
+    screen.translate(this.pos.x * GRID_SIZE, this.pos.y * GRID_SIZE);
+    screen.fillRect(0, 0, this.width, this.height);
     screen.restore();
   }
 

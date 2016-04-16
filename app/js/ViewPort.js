@@ -73,6 +73,10 @@ export default class ViewPort {
   toGridCoord(viewPortCoord) {
     return [Math.floor(viewPortCoord[0] / GRID_SIZE + this.pos[0]), Math.floor(viewPortCoord[1] / GRID_SIZE + this.pos[1])];
   }
+  
+  globalToViewPort(globalX,globalY){
+    return [globalX-this.boxPx.left,globalY-this.boxPx.top]
+  }
 
   toGridPos(x, y) {
     return this.toGridCoord([x, y]);

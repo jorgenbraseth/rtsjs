@@ -74,13 +74,15 @@ export default class Unit extends Sprite {
   }
 
   draw(screen, viewport){
-    if(this.firedThisRound && this.targetOfAttack){
+    if(this.firedThisRound && this.targetOfAttack && this.drawLineToAttackTarget){
+      screen.save();
+      screen.translate(-this.drawInfo.centerPixelX(),-this.drawInfo.centerPixelY());
       screen.beginPath();
-
-      screen.moveTo(this.drawWidth/2,this.drawHeight/2);
+      screen.moveTo(this.drawInfo.centerPixelX(),this.drawInfo.centerPixelY());
       screen.lineTo(this.targetOfAttack.drawInfo.centerPixelX(),this.targetOfAttack.drawInfo.centerPixelY());
       screen.closePath();
       screen.stroke();
+      screen.restore();
     }
   }
 
