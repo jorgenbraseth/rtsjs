@@ -70,7 +70,7 @@ export default class ViewPort {
       right: x*GRID_SIZE+(this.widthInGridUnits*GRID_SIZE)+GRID_SIZE,
       bottom: y*GRID_SIZE+(this.heightInGridUnits*GRID_SIZE)+GRID_SIZE
     };
-    return intersects(rect, viewPortBoundingBox)
+    return intersects(rect, this.boxPx)
   }
 
   toWorldCoord(viewPortCoord) {
@@ -78,11 +78,11 @@ export default class ViewPort {
   }
 
   toGridCoord(viewPortCoord) {
-    return [Math.floor(viewPortCoord[0] / GRID_SIZE) + this.pos[0], Math.floor(viewPortCoord[1] / GRID_SIZE) + this.pos[1]];
+    return [Math.floor(viewPortCoord[0] / GRID_SIZE + this.pos[0]), Math.floor(viewPortCoord[1] / GRID_SIZE + this.pos[1])];
   }
 
   toGridPos(x, y) {
-    return [Math.floor(x / GRID_SIZE) + this.minXInGridUnits, Math.floor(y / GRID_SIZE) + this.minYInGridUnits];
+    return this.toGridCoord([x, y]);
   }
 
   get worldCoordPos(){

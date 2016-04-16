@@ -71,7 +71,6 @@ export default class Game {
 
     this.bindCameraControls();
 
-
     this.userInput.onKey(KEY_BINDS.SHIFT, () => {this.shiftHeld = true});
     this.userInput.onKeyUp(KEY_BINDS.SHIFT, () => {this.shiftHeld = false});
 
@@ -80,10 +79,7 @@ export default class Game {
 
   onMouseMove(e){
     this.mousePixelPos = [e.layerX,e.layerY];
-
-    this.mouseGridPos = this.mousePixelPos.map((coord) => { return parseInt(coord / GRID_SIZE) });
-    this.mouseGridPos[0] += this.viewPort.minXInGridUnits;
-    this.mouseGridPos[1] += this.viewPort.minYInGridUnits;
+    this.mouseGridPos = this.viewPort.toGridPos(...this.mousePixelPos);
 
     this.cursor.setPosition(...this.mousePixelPos);
 
@@ -233,10 +229,10 @@ export default class Game {
 
     var halfHeight = this.viewPort.heightInGridUnits/2;
 
-    this.viewPort.minYInGridUnits = Math.min(Math.max(0,Math.floor(this.player.gridPos[1]-halfHeight)),this.worldSize[1]-this.viewPort.heightInGridUnits);
+    this.viewPort.minYInGridUnits = Math.min(Math.max(0,this.player.gridPos[1]-halfHeight),this.worldSize[1]-this.viewPort.heightInGridUnits);
 
     var halfWidth = this.viewPort.widthInGridUnits/2;
-    this.viewPort.minXInGridUnits = Math.min(Math.max(0,Math.floor(this.player.gridPos[0]-halfWidth)),this.worldSize[0]-this.viewPort.widthInGridUnits);
+    this.viewPort.minXInGridUnits = Math.min(Math.max(0,this.player.gridPos[0]-halfWidth),this.worldSize[0]-this.viewPort.widthInGridUnits);
   }
 
   moveCam(){
