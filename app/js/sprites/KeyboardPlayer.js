@@ -154,7 +154,7 @@ export default class Player extends Unit {
     var currentImage = this.images[this.direction].concat([]);
     currentImage[1]+=this.animFrame*32;
 
-    this.image = [...currentImage, (this.width/2)-(drawWidth/2),this.height-drawHeight,drawWidth,drawHeight];
+    this.image = [...currentImage, (this.pixels.width/2)-(drawWidth/2),this.pixels.height-drawHeight,drawWidth,drawHeight];
     screen.drawImage(...this.image);
 
     if (this.selected) {
