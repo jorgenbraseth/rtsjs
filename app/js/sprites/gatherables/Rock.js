@@ -7,17 +7,18 @@ import Image from '../../../images/rock_sprite.png'
 
 export default class Rock extends Sprite {
   constructor(game, coords=[0,0]){
-    super(game, coords);
+    super(game, coords,1,1);
 
+    this.color = "rgba(100,100,100,0.5)";
     this.startingResources = 15;
     this.resourceAmount = this.startingResources;
     this.moveCost = 10000;
 
     this.images = [
-      [loadImage(Image),126,0,42,42,0,0,this.width,this.height],
-      [loadImage(Image),84,0,42,42,0,0,this.width,this.height],
-      [loadImage(Image),42,0,42,42,0,0,this.width,this.height],
-      [loadImage(Image),0,0,42,42,0,0,this.width,this.height]
+      [loadImage(Image),126,0,42,42,0,0,this.pixels.width,this.pixels.height],
+      [loadImage(Image),84,0,42,42,0,0,this.pixels.width,this.pixels.height],
+      [loadImage(Image),42,0,42,42,0,0,this.pixels.width,this.pixels.height],
+      [loadImage(Image),0,0,42,42,0,0,this.pixels.width,this.pixels.height]
     ];
     this.image = this.images[3];
   }

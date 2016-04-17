@@ -4,13 +4,10 @@ import {loadImage} from '../../Utils'
 
 export default class InfoWindow extends Sprite {
   constructor(unit, game) {
-    super(game);
+    super(game, undefined, 195/GRID_SIZE, 95/GRID_SIZE);
     this.alwaysDraw = true;
     this.game = game;
     this.unit = unit;
-
-    this.width = 195;
-    this.height = 95;
   }
 
   draw(screen) {

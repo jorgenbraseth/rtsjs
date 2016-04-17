@@ -24,14 +24,14 @@ const CHOSEN_APPEARANCE = PLAYER_TYPES[types[randomPick]];
 export default class Player extends Unit {
 
   constructor(game, coords = [0, 0]) {
-    super(game, coords, 100, 1);
+    super(game, coords, 100, 1, 25/GRID_SIZE, 13/GRID_SIZE);
 
     this.resources = {
       wood: 0, stone: 0, food: 0, gold: 0
     };
+
+    this.color="yellow";
     this.animAge = 0;
-    this.width = 25;
-    this.height = 13;
     this.moveCost = 10000;
     this.world = game.world;
 
@@ -83,48 +83,15 @@ export default class Player extends Unit {
   }
 
   tick() {
+    console.log(JSON.stringify(this.pixels));
     super.tick();
 
     this.dx = this.movingLeft ? -this.speed : this.movingRight ? this.speed : 0;
     this.dy = this.movingUp ? -this.speed : this.movingDown ? this.speed : 0;
 
-    this.pos.x += this.dx;
+    this.moveHorizontally(this.dx);
 
-    var collision = this.game.findCollision(this);
-    if(collision!==undefined){
-      if(this.movingLeft){
-        const stepBackInGridUnits = collision.boundingBox.right-this.boundingBox.left;
-        this.pos.x += stepBackInGridUnits/GRID_SIZE;
-      }else if(this.movingRight){
-        const stepBackInGridUnits = this.boundingBox.right-collision.boundingBox.left;
-        this.pos.x -= stepBackInGridUnits/GRID_SIZE;
-      }
-    }
-    if(this.pos.x <0){
-      this.pos.x = 0;
-    }else if(this.pos.x > this.game.worldSize[0]-1){
-      console.log("Too far right!");
-      this.pos.x = this.game.worldSize[0]-1;
-    }
-
-    this.pos.y += this.dy;
-
-    var collision = this.game.findCollision(this);
-    if(collision!==undefined){
-      if(this.movingUp){
-        const stepBackInGridUnits = collision.boundingBox.bottom-this.boundingBox.top;
-        this.pos.y += stepBackInGridUnits/GRID_SIZE;
-      }else if(this.movingDown){
-        const stepBackInGridUnits = this.boundingBox.bottom-collision.boundingBox.top;
-        this.pos.y -= stepBackInGridUnits/GRID_SIZE;
-      }
-    }
-
-    if(this.pos.y <0){
-      this.pos.y = 0;
-    }else if(this.pos.y > this.game.worldSize[1]-1){
-      this.pos.y = this.game.worldSize[1]-1;
-    }
+    this.moveVertically(this.dy);
 
     if(this.dx!=0 || this.dy !=0){
       this.ageTick();
@@ -133,6 +100,48 @@ export default class Player extends Unit {
 
     this.gridPos = [this.pos.x,this.pos.y];
   }
+
+  moveVertically(dy){
+      this._y += dy;
+
+      var collision = this.game.findCollision(this);
+      if(collision!==undefined){
+        if(this.movingUp){
+          const stepBackInGridUnits = collision.boundingBox.bottom-this.boundingBox.top;
+          this._y += stepBackInGridUnits/GRID_SIZE;
+        }else if(this.movingDown){
+          const stepBackInGridUnits = this.boundingBox.bottom-collision.boundingBox.top;
+          this._y -= stepBackInGridUnits/GRID_SIZE;
+        }
+      }
+
+      if(this._y <0){
+        this._y = 0;
+      }else if(this._y > this.game.worldSize[1]-1){
+              this._y = this.game.worldSize[1]-1;
+          }
+      }
+
+  moveHorizontally(dx){
+      this._x += dx;
+
+      var collision = this.game.findCollision(this);
+      if(collision!==undefined){
+        if(this.movingLeft){
+          const stepBackInGridUnits = collision.boundingBox.right-this.boundingBox.left;
+          this._x += stepBackInGridUnits/GRID_SIZE;
+        }else if(this.movingRight){
+          const stepBackInGridUnits = this.boundingBox.right-collision.boundingBox.left;
+          this._x -= stepBackInGridUnits/GRID_SIZE;
+        }
+      }
+      if(this._x <0){
+        this._x = 0;
+      }else if(this._x > this.game.worldSize[0]-1){
+        console.log("Too far right!");
+              this._x = this.game.worldSize[0]-1;
+          }
+      }
 
   get animFrame(){
     return parseInt(this.animAge / 5)

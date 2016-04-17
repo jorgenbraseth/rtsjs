@@ -5,8 +5,8 @@ import Image from '../../../images/ground.png'
 import { loadImage } from '../../Utils'
 export default class Grass2 extends Sprite {
   constructor(game,coords=[0,0]){
-    super(game, coords, GRID_SIZE, GRID_SIZE);
-
-    this.image = [loadImage(Image),0,51,24,24,0,0,this.width,this.width];
+    super(game, coords, 1, 1);
+    this.color = "cyan";
+    this.image = [loadImage(Image),0,51,24,24,0,0,this.pixels.width,this.pixels.height];
   }
 }

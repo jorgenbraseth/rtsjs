@@ -3,19 +3,19 @@ import {intersects} from '../Utils'
 
 export default class Sprite {
 
-  constructor(game, coords = [0, 0], width=GRID_SIZE, height=GRID_SIZE) {
+  constructor(game, coords = [0, 0], width=1, height=1) {
     this.game = game;
 
     this._x = coords[0];
     this._y = coords[1];
+    this._width = width;
+    this._height = height;
 
     this.beingPlaced = false;
 
     this.color = "red";
     this.age = 0;
 
-    this.width = width;
-    this.height = height;
     this.selected = false;
     this.alwaysDraw = false;
 
@@ -26,16 +26,20 @@ export default class Sprite {
 
     this.moveCost = 0;
 
-    this.pos = {
-      x: coords[0],
-      y: coords[1],
-      centerPixelX: function () {
-        return this.grid2draw(this.x) + this.width / 2;
-      },
-      centerPixelY: function () {
-        return this.grid2draw(this.x) + this.width / 2;
-      }
+  }
+
+  get pos(){
+    return {
+      x: this._x,
+      y: this._y
     };
+  }
+  get width(){
+    return this._width;
+  }
+
+  get height(){
+    return this._height;
   }
 
   get drawWidth(){
@@ -58,18 +62,30 @@ export default class Sprite {
     }
   }
 
-  get physical() {
-    const coords = [this._x, this._y];
+  get pixels(){
     return {
-      top: this._y,
-      bottom: this._y+this._height,
-      left: this._x,
-      right: this._x+this._width,
+      pos: this.grid.pos.map((p) => {return p*GRID_SIZE}),
+      width: this.grid.width * GRID_SIZE,
+      height: this.grid.height * GRID_SIZE,
+      boundingBox: {
+        top: this.grid.boundingBox.top * GRID_SIZE,
+        bottom: this.grid.boundingBox.bottom * GRID_SIZE,
+        left: this.grid.boundingBox.left * GRID_SIZE,
+        right: this.grid.boundingBox.right * GRID_SIZE
+      }
+    }
+  }
+
+  get grid(){
+    return {
+      pos: [this._x,this._y],
       width: this._width,
       height: this._height,
-      center: {
-        x: this._x + this.width/2,
-        y: this._y + this.width/2
+      boundingBox: {
+        top: this._y,
+        bottom: this._y+this._height,
+        left: this._x,
+        right: this._x+this._width
       }
     }
   }
@@ -127,7 +143,7 @@ export default class Sprite {
   }
 
   drawSprite(screen) {
-    // this.drawPhysicalSize(screen);
+    this.drawPhysicalSize(screen);
 
     screen.save();
     screen.translate(...this.drawInfo.pos);
@@ -150,9 +166,9 @@ export default class Sprite {
 
   drawPhysicalSize(screen){
     screen.save();
-    screen.fillStyle = "rgba(250,250,250,0.4)";
-    screen.translate(this.pos.x * GRID_SIZE, this.pos.y * GRID_SIZE);
-    screen.fillRect(0, 0, this.width, this.height);
+    screen.fillStyle = this.color;
+    screen.translate(this.pixels.boundingBox.left, this.pixels.boundingBox.top );
+    screen.fillRect(0, 0, this.pixels.width, this.pixels.height);
     screen.restore();
   }
 

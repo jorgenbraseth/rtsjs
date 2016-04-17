@@ -4,8 +4,8 @@ import { GRID_SIZE } from '../constants/GameConstants.js'
 
 export default class Unit extends Sprite {
 
-  constructor(game, coords=[0,0], hp, attackDamage=0){
-    super(game,coords);
+  constructor(game, coords=[0,0], hp, attackDamage=0, width, height){
+    super(game,coords, width, height);
     this.hp = hp;
     this.initialHp = hp;
     this.gridPos = coords;

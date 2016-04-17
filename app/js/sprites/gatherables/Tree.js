@@ -25,7 +25,7 @@ export default class Tree extends Sprite {
     this.resourceAmount = this.startingResources;
     this.moveCost = 10000;
 
-    this.color = "black";
+    this.color = "rgba(0,150,0,0.5)";
     this.depleted = false;
     this.resourceType = "wood";
 
