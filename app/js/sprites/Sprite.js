@@ -209,4 +209,18 @@ export default class Sprite {
     screen.fillStyle = this.isPlaceable ? "rgba(0,255,0,0.9" : "red";
     screen.fillRect(0, 0, GRID_SIZE, GRID_SIZE);
   }
+  
+  get name(){
+    return this.constructor.name
+  }
+
+  get details(){
+    return {
+      name: this.name,
+      input: undefined,
+      output: undefined,
+      progress: undefined,
+      inventory: undefined
+    }
+  }
 }

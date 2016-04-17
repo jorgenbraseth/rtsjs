@@ -70,4 +70,14 @@ export default class ProductionBuilding extends Sprite {
     this.resourceAmount = 0;
     gatherer.targetOfAttack = undefined;
   }
+
+  get details(){
+    return { ...super.details,
+      output: {
+        type: this.resourceType,
+        amount: this.resourceAmount
+      },
+      progress: this.progressPercent
+    }
+  }
 }

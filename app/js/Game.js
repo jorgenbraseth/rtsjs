@@ -10,6 +10,7 @@ import House2 from './sprites/gatherables/House2'
 import Renderer from './Renderer'
 import ViewPort from './ViewPort'
 
+import InfoWindow from './sprites/ui/InfoWindow';
 import StatusPanel from './sprites/ui/StatusPanel'
 import Cursor from './sprites/ui/Cursor'
 import QuickBar from './sprites/ui/QuickBar'
@@ -57,6 +58,9 @@ export default class Game {
     this.addSprite(LAYERS.UI, this.quickBar);
     this.quickBar.setSlot(0,House);
     this.quickBar.setSlot(1,UnitTypes.House2);
+
+    this.infoWindow = new InfoWindow(undefined, this);
+    this.addSprite(LAYERS.UI,this.infoWindow);
 
     this.userInput.onLeftClick(this.leftClicked.bind(this));
 
@@ -172,10 +176,8 @@ export default class Game {
     this.cameraPanY = 0;
     this.cameraPanX = 0;
 
-
-
-    // this.loadMap(GENERATED(31,21,0.2));
-    this.loadMap(MAP_TEST);
+    this.loadMap(GENERATED(31,21,0.2));
+    // this.loadMap(MAP_TEST);
 
     this._player = new Player(this,[0.2,0.6]);
     this.statusPanel = new StatusPanel(this.player,this);
@@ -204,9 +206,8 @@ export default class Game {
       this.clearSelection();
     }
     sprite.select();
-    if(sprite.infoWindow){
-      this.addSprite(LAYERS.UI,sprite.infoWindow)
-    }
+    console.log(sprite.details);
+    this.infoWindow.info = sprite.details;
     this.selectedSprites.push(sprite);
   }
 

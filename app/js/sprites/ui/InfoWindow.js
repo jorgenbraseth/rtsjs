@@ -13,19 +13,20 @@ export default class InfoWindow extends Sprite {
   }
 
   draw(screen) {
+    if (this._info !== undefined) {
+      screen.fillStyle = "rgba(0,0,0,0.9)";
+      screen.fillRect(0, 0, this.pixels.width, this.pixels.height);
 
-    screen.fillStyle = "rgba(0,0,0,0.9)";
-    screen.fillRect(0, 0, this.pixels.width, this.pixels.height);
+      screen.fillStyle = "white";
+      screen.textAlign = "left";
 
-    screen.fillStyle = "white";
-    screen.textAlign = "left";
-
-    var textline = 1;
-    screen.fontSize = 12;
-    screen.fillText(this.unit.constructor.name,10,(textline*12)+10);
-    textline++;
-    textline++;
-    screen.fillText(Math.ceil(this.unit.resourceAmount),10,textline*12+10);
+      var textline = 1;
+      screen.fontSize = 12;
+      screen.fillText(this._info.name, 10, (textline * 12) + 10);
+      textline++;
+      textline++;
+      // screen.fillText(Math.ceil(this.unit.resourceAmount),10,textline*12+10);
+    }
   }
 
   get boundingBox() {
@@ -40,5 +41,10 @@ export default class InfoWindow extends Sprite {
   click(x,y){
     console.log("Clicked info windo!");
 
+  }
+
+  set info(info){
+    console.log(info);
+    this._info = info;
   }
 }
