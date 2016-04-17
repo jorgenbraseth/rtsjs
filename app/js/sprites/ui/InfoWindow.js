@@ -14,14 +14,16 @@ export default class InfoWindow extends Sprite {
 
   draw(screen) {
     if (this._info !== undefined) {
-      screen.fillStyle = "rgba(0,0,0,0.9)";
+      screen.fillStyle = "rgba(250,250,0,0.1)";
       screen.fillRect(0, 0, this.pixels.width, this.pixels.height);
+      screen.strokeStyle = "rgba(250,250,0,0.9)";
+      screen.strokeRect(0, 0, this.pixels.width, this.pixels.height);
 
       screen.fillStyle = "white";
       screen.textAlign = "left";
 
       var textline = 1;
-      screen.fontSize = 12;
+      screen.fontSize = 18;
       screen.fillText(this._info.name, 10, (textline * 12) + 10);
       textline++;
       textline++;

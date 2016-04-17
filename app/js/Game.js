@@ -176,8 +176,8 @@ export default class Game {
     this.cameraPanY = 0;
     this.cameraPanX = 0;
 
-    this.loadMap(GENERATED(31,21,0.2));
-    // this.loadMap(MAP_TEST);
+    // this.loadMap(GENERATED(31,21,0.2));
+    this.loadMap(MAP_TEST);
 
     this._player = new Player(this,[0.2,0.6]);
     this.statusPanel = new StatusPanel(this.player,this);
@@ -284,6 +284,7 @@ export default class Game {
       }
     }
     this.selectedSprites = [];
+    this.infoWindow.info = undefined;
   }
 
   leftClicked(x,y){
