@@ -201,7 +201,7 @@ export default class Game {
 
   }
 
-  selectSprite(sprite, addToSelection) {
+  selectSprite(sprite, addToSelection=false) {
     if(!addToSelection){
       this.clearSelection();
     }
@@ -336,6 +336,7 @@ export default class Game {
       this.enableDefaultMode();
     }else{
       if(clickedSprite){
+        this.selectSprite(clickedSprite);
         if(clickedSprite.fireAt){
           this.player.attackTarget(clickedSprite);
         }else if(clickedSprite.gather){
@@ -346,6 +347,9 @@ export default class Game {
   }
 
   removeSprite(sprite){
+    if(sprite.selected){
+      this.clearSelection();
+    }
     for(var layer in LAYERS){
       this.removeSpriteFromLayer(this.layers[LAYERS[layer]],sprite);
     }

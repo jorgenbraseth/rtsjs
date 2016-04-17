@@ -25,6 +25,9 @@ export default class Tree extends Sprite {
     this.resourceAmount = this.startingResources;
     this.moveCost = 10000;
 
+    this.gatherHealth = 4;
+    this.gatherProgress = 0;
+
     this.color = "rgba(0,150,0,0.5)";
     this.depleted = false;
     this.resourceType = "wood";
@@ -41,12 +44,16 @@ export default class Tree extends Sprite {
   }
 
   gather(gatherAmount, gatherer){
-    var amountBeforeGather = parseInt(this.resourceAmount);
-    this.resourceAmount -= gatherAmount;
+    this.gatherProgress += gatherAmount;
+    var gathered = 0;
+    if(this.gatherProgress > this.gatherHealth){
+      this.gatherProgress -= this.gatherHealth;
+      gathered = 1;
+    }
+    this.resourceAmount -= gathered;
 
-    var amountAfterGather = parseInt(this.resourceAmount);
     gatherer.resources[this.resourceType] = gatherer.resources[this.resourceType] || 0;
-    gatherer.resources[this.resourceType] += (amountBeforeGather-amountAfterGather);
+    gatherer.resources[this.resourceType] += gathered;
 
     if(this.resourceAmount <= 0){
       this.deplete();
@@ -65,7 +72,8 @@ export default class Tree extends Sprite {
       output: {
         type: this.resourceType,
         amount: this.resourceAmount
-      }
+      },
+      progress: 1-this.gatherProgress/this.gatherHealth
     }
   }
 }
