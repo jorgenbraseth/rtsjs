@@ -37,7 +37,7 @@ export default class Player extends Unit {
     this.updateDirection();
 
     this.gatheringSpeed = .125;
-    this.speed = 1/6;
+    this.speed = 1/8;
 
     this.images = {
       SOUTH: [loadImage(Image), (CHOSEN_APPEARANCE[0]*(3*32)), (CHOSEN_APPEARANCE[1]*4*32), 32, 32],

@@ -4,7 +4,7 @@ import Producer from './ProductionBuilding'
 
 import Image from '../../../images/buildings.png'
 
-const drawHeight = (73/64)*GRID_SIZE;
+const drawHeight = (78/64)*GRID_SIZE;
 const drawWidth = GRID_SIZE;
 
 export default class House2 extends Producer {
@@ -13,7 +13,7 @@ export default class House2 extends Producer {
 
     this.image = [
       loadImage(Image),
-      531,120,62,73,
+      272,115,64,78,
       (GRID_SIZE/2)-(drawWidth/2),
       GRID_SIZE-drawHeight,
       drawWidth,
@@ -24,5 +24,9 @@ export default class House2 extends Producer {
       stone: 10,
       food: 5
     };
+  }
+
+  get name(){
+    return "Office";
   }
 }

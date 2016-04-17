@@ -21,4 +21,9 @@ export default class House extends ProductionBuilding {
       (GRID_SIZE/2)-(drawWidth/2),GRID_SIZE-drawHeight,drawWidth,drawHeight
     ];
   }
+
+
+  get name(){
+      return "Butcher";
+  }
 }
