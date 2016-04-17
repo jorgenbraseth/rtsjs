@@ -1,4 +1,3 @@
-import { GRID_SIZE } from '../../constants/GameConstants.js'
 import { loadImage } from '../../Utils'
 
 import Sprite from './../Sprite'
@@ -11,9 +10,7 @@ export default class Rubble extends Sprite {
     super(game, coords);
     this.moveCost = 0;
     this.color = "black";
-
     this.image = loadImage(Image);
-
   }
 
   draw(screen, viewport){

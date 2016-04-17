@@ -100,46 +100,45 @@ export default class Player extends Unit {
   }
 
   moveVertically(dy){
-      this._y += dy;
+    this._y += dy;
 
-      var collision = this.game.findCollision(this);
-      if(collision!==undefined){
-        if(this.movingUp){
-          const stepBackInGridUnits = collision.boundingBox.bottom-this.pixels.boundingBox.top;
-          this._y += stepBackInGridUnits/GRID_SIZE;
-        }else if(this.movingDown){
-          const stepBackInGridUnits = this.boundingBox.bottom-collision.pixels.boundingBox.top;
-          this._y -= stepBackInGridUnits/GRID_SIZE;
-        }
+    var collidingSprite = this.game.findCollision(this);
+    if(collidingSprite!==undefined){
+      if(this.movingUp){
+        const stepBackInGridUnits = collidingSprite.pixels.boundingBox.bottom-this.pixels.boundingBox.top;
+        this._y += stepBackInGridUnits/GRID_SIZE;
+      }else if(this.movingDown){
+        const stepBackInGridUnits = this.pixels.boundingBox.bottom-collidingSprite.pixels.boundingBox.top;
+        this._y -= stepBackInGridUnits/GRID_SIZE;
       }
+    }
 
-      if(this._y <0){
-        this._y = 0;
-      }else if(this._y > this.game.worldSize[1]-1){
-              this._y = this.game.worldSize[1]-1;
-          }
-      }
+    if(this._y <0){
+      this._y = 0;
+    }else if(this.grid.boundingBox.bottom > this.game.worldSize[1]){
+      this._y = this.game.worldSize[1]-this.grid.height;
+    }
+  }
 
   moveHorizontally(dx){
-      this._x += dx;
+    this._x += dx;
 
-      var collision = this.game.findCollision(this);
-      if(collision!==undefined){
-        if(this.movingLeft){
-          const stepBackInGridUnits = collision.boundingBox.right-this.pixels.boundingBox.left;
-          this._x += stepBackInGridUnits/GRID_SIZE;
-        }else if(this.movingRight){
-          const stepBackInGridUnits = this.boundingBox.right-collision.pixels.boundingBox.left;
-          this._x -= stepBackInGridUnits/GRID_SIZE;
-        }
+    var collision = this.game.findCollision(this);
+    if(collision!==undefined){
+      if(this.movingLeft){
+        const stepBackInGridUnits = collision.boundingBox.right-this.pixels.boundingBox.left;
+        this._x += stepBackInGridUnits/GRID_SIZE;
+      }else if(this.movingRight){
+        const stepBackInGridUnits = this.boundingBox.right-collision.pixels.boundingBox.left;
+        this._x -= stepBackInGridUnits/GRID_SIZE;
       }
-      if(this._x <0){
-        this._x = 0;
-      }else if(this._x > this.game.worldSize[0]-1){
-        console.log("Too far right!");
-              this._x = this.game.worldSize[0]-1;
-          }
-      }
+    }
+    if(this._x <0){
+      this._x = 0;
+    }else if(this.grid.boundingBox.right > this.game.worldSize[0]){
+      this._x = this.game.worldSize[0]-this.grid.width;
+    }
+  }
 
   get animFrame(){
     return parseInt(this.animAge / 5)
