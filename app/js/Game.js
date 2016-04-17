@@ -207,7 +207,7 @@ export default class Game {
     }
     sprite.select();
     console.log(sprite.details);
-    this.infoWindow.info = sprite.details;
+    this.infoWindow.sprite = sprite;
     this.selectedSprites.push(sprite);
   }
 
@@ -284,7 +284,7 @@ export default class Game {
       }
     }
     this.selectedSprites = [];
-    this.infoWindow.info = undefined;
+    this.infoWindow.sprite = undefined;
   }
 
   leftClicked(x,y){

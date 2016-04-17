@@ -13,6 +13,7 @@ export default class Rock extends Sprite {
     this.startingResources = 15;
     this.resourceAmount = this.startingResources;
     this.moveCost = 10000;
+    this.resourceType = "stone";
 
     this.images = [
       [loadImage(Image),126,0,42,42,0,0,this.pixels.width,this.pixels.height],
@@ -28,8 +29,9 @@ export default class Rock extends Sprite {
     this.resourceAmount -= gatherAmount/3;
 
     var amountAfterGather = parseInt(this.resourceAmount);
-    gatherer.resources.stone = gatherer.resources.stone || 0;
-    gatherer.resources.stone += (amountBeforeGather-amountAfterGather);
+    gatherer.resources[this.resourceType] = gatherer.resources[this.resourceType] || 0;
+    gatherer.resources[this.resourceType] += (amountBeforeGather-amountAfterGather);
+    gatherer.resources[this.resourceType] += (amountBeforeGather-amountAfterGather);
 
     if(this.resourceAmount <= 0){
       this.deplete();
@@ -45,5 +47,14 @@ export default class Rock extends Sprite {
     this.game.removeSprite(this);
     this.depleted = true;
     this.game.addSprite(LAYERS.LAYER_FLOOR, new Rubble(this.game, this.gridInfo.pos))
+  }
+
+  get details(){
+    return {...super.details,
+      output: {
+        type: this.resourceType,
+        amount: this.resourceAmount
+      }
+    }
   }
 }

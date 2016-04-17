@@ -59,4 +59,13 @@ export default class Tree extends Sprite {
     this.depleted = true;
     this.game.addSprite(LAYERS.LAYER_FLOOR, new TreeStump(this.game, this.gridInfo.pos))
   }
+
+  get details(){
+    return {...super.details,
+      output: {
+        type: this.resourceType,
+        amount: this.resourceAmount
+      }
+    }
+  }
 }
