@@ -174,8 +174,8 @@ export default class Game {
 
 
 
-    // this.loadMap(GENERATED(100,70,0.2));
-    this.loadMap(MAP_TEST);
+    this.loadMap(GENERATED(31,21,0.2));
+    // this.loadMap(MAP_TEST);
 
     this._player = new Player(this,[0.2,0.6]);
     this.statusPanel = new StatusPanel(this.player,this);

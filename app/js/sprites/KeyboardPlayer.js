@@ -83,14 +83,12 @@ export default class Player extends Unit {
   }
 
   tick() {
-    console.log(JSON.stringify(this.pixels));
     super.tick();
 
     this.dx = this.movingLeft ? -this.speed : this.movingRight ? this.speed : 0;
     this.dy = this.movingUp ? -this.speed : this.movingDown ? this.speed : 0;
 
     this.moveHorizontally(this.dx);
-
     this.moveVertically(this.dy);
 
     if(this.dx!=0 || this.dy !=0){
@@ -107,10 +105,10 @@ export default class Player extends Unit {
       var collision = this.game.findCollision(this);
       if(collision!==undefined){
         if(this.movingUp){
-          const stepBackInGridUnits = collision.boundingBox.bottom-this.boundingBox.top;
+          const stepBackInGridUnits = collision.boundingBox.bottom-this.pixels.boundingBox.top;
           this._y += stepBackInGridUnits/GRID_SIZE;
         }else if(this.movingDown){
-          const stepBackInGridUnits = this.boundingBox.bottom-collision.boundingBox.top;
+          const stepBackInGridUnits = this.boundingBox.bottom-collision.pixels.boundingBox.top;
           this._y -= stepBackInGridUnits/GRID_SIZE;
         }
       }
@@ -128,10 +126,10 @@ export default class Player extends Unit {
       var collision = this.game.findCollision(this);
       if(collision!==undefined){
         if(this.movingLeft){
-          const stepBackInGridUnits = collision.boundingBox.right-this.boundingBox.left;
+          const stepBackInGridUnits = collision.boundingBox.right-this.pixels.boundingBox.left;
           this._x += stepBackInGridUnits/GRID_SIZE;
         }else if(this.movingRight){
-          const stepBackInGridUnits = this.boundingBox.right-collision.boundingBox.left;
+          const stepBackInGridUnits = this.boundingBox.right-collision.pixels.boundingBox.left;
           this._x -= stepBackInGridUnits/GRID_SIZE;
         }
       }

@@ -1,4 +1,3 @@
-import { GRID_SIZE } from '../../constants/GameConstants.js'
 import Sprite from './../Sprite'
 
 import Image from '../../../images/ground.png'

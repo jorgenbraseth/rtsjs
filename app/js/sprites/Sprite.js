@@ -173,20 +173,14 @@ export default class Sprite {
   }
 
   get boundingBox() {
-    const drawCoords = [this.pos.x * GRID_SIZE, this.pos.y * GRID_SIZE];
-    return {
-      left: drawCoords[0],
-      right: drawCoords[0] + this.width,
-      top: drawCoords[1],
-      bottom: drawCoords[1] + this.height
-    }
+    return this.pixels.boundingBox;
   }
 
   get isPlaceable() {
     var positionFree = this.game.positionFree([this.pos.x, this.pos.y], true);
     var affordable = this.game.canAfford(this.cost);
     var isInRange = this.game.isWithinBuildRange([this.pos.x, this.pos.y]);
-    var collidesWithPlayer = intersects(this.game.player.boundingBox, this.boundingBox);
+    var collidesWithPlayer = intersects(this.game.player.boundingBox, this.pixels.boundingBox);
     return positionFree && affordable && isInRange && !collidesWithPlayer;
   }
 

@@ -10,7 +10,6 @@ export default class Rubble extends Sprite {
   constructor(game, coords=[0,0]){
     super(game, coords);
     this.moveCost = 0;
-    this.width = GRID_SIZE;
     this.color = "black";
 
     this.image = loadImage(Image);
@@ -21,7 +20,6 @@ export default class Rubble extends Sprite {
     screen.drawImage(
       this.image,
       0,0
-
     )
   }
 
