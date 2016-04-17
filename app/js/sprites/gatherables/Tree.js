@@ -5,6 +5,7 @@ import Resource from './Resource'
 import TreeStump from './../decore/TreeStump'
 
 import Image from '../../../images/trees2.png'
+import GatheringSound from '../../../sound/woodchop.mp3'
 
 const VARIANTS = [
   {x: 385, y:14, w:86, h:143, cX:0, cY:GRID_SIZE-65},
@@ -30,6 +31,8 @@ export default class Tree extends Resource {
       this.variant.x,this.variant.y,this.variant.w,this.variant.h,
       (GRID_SIZE/2)-(40/2),GRID_SIZE-65,40,65
     ];
+
+    this.gatheringSound = new Audio(GatheringSound);
   }
 
   deplete() {

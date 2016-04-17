@@ -27,7 +27,7 @@ export default class Player extends Unit {
     super(game, coords, 100, 1, 25/GRID_SIZE, 13/GRID_SIZE);
 
     this.resources = {
-      wood: 130, stone: 130, food: 130, gold: 130
+      wood: 15, stone: 10, food: 5, gold: 0
     };
 
     this.dx = 0;

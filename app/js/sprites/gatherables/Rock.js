@@ -4,6 +4,7 @@ import Resource from './Resource'
 import Rubble from './../decore/Rubble'
 
 import Image from '../../../images/rock_sprite.png'
+import GatheringSound from '../../../sound/stonemining.mp3'
 
 export default class Rock extends Resource {
   constructor(game, coords=[0,0]){
@@ -18,6 +19,8 @@ export default class Rock extends Resource {
       0.0: [loadImage(Image), 126, 0, 42, 42, 0, 0, this.pixels.width, this.pixels.height]
     };
     this.image = this.images[1.0];
+
+    this.gatheringSound = new Audio(GatheringSound);
   }
 
   gather(gatherAmount, gatherer){

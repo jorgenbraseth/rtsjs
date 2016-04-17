@@ -12,6 +12,9 @@ export default class Resource extends Sprite {
   }
 
   gather(gatherAmount, gatherer){
+    if(this.gatheringSound){
+      this.gatheringSound.play();
+    }
     this.gatherProgress += gatherAmount;
     var gathered = 0;
     while(this.gatherProgress > this.gatherHealth){

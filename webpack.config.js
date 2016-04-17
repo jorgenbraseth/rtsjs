@@ -24,7 +24,7 @@ module.exports = {
         loader: 'babel-loader',
         exclude: /node_modules/
       },
-      { test: /\.(jpg|png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' }
+      { test: /\.(jpg|png|woff|woff2|eot|ttf|svg|mp3)$/, loader: 'url-loader?limit=100000' }
     ]
   },
 
