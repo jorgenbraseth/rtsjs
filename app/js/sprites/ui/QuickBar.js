@@ -16,8 +16,6 @@ export default class QuickBar extends Sprite {
     super(game, position);
     this.game = game;
     this.position = position;
-    this.alwaysDraw = true;
-
     this.icons = {};
     this.icons.wood = loadImage(ICON_WOOD);
     this.icons.stone = loadImage(ICON_STONE);
@@ -31,12 +29,6 @@ export default class QuickBar extends Sprite {
 
   setSlot(slotNum, unitType) {
     this.slots[slotNum] = [new unitType(), unitType];
-  }
-
-  set width(w) {
-  }
-
-  set height(h) {
   }
 
   get width() {

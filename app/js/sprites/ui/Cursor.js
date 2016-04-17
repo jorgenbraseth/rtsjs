@@ -10,7 +10,6 @@ const cursors = {};
 export default class StatusPanel {
 
   constructor(){
-    this.alwaysDraw = true;
     cursors.DEFAULT = [loadImage(CURSOR_PLAIN), 0, 0, 24, 24, -hotspot.x, -hotspot.y, 24, 24];
     cursors.ATTACK = [loadImage(CURSOR_PLAIN), 0, 0, 24, 24, -hotspot.x, -hotspot.y, 24, 24];
     cursors.MOVE = [loadImage(CURSOR_PLAIN), 0, 0, 24, 24, -hotspot.x, -hotspot.y, 24, 24];

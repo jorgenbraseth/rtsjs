@@ -5,21 +5,17 @@ import {loadImage} from '../../Utils'
 export default class InfoWindow extends Sprite {
   constructor(unit, game) {
     super(game, undefined, 195/GRID_SIZE, 95/GRID_SIZE);
-    this.alwaysDraw = true;
-    this.game = game;
     this.unit = unit;
+
+    var maxY = this.game.canvas.height;
+    this._x = 10/GRID_SIZE;
+    this._y = (maxY-10-this.pixels.height)/GRID_SIZE;
   }
 
   draw(screen) {
-    var maxX = this.game.canvas.width;
-    var maxY = this.game.canvas.height;
-
-    var posX = maxX - 10 - this.width;
-    var posY = 10;
-    screen.translate(posX, posY);
 
     screen.fillStyle = "rgba(0,0,0,0.9)";
-    screen.fillRect(0, 0, this.width, this.height);
+    screen.fillRect(0, 0, this.pixels.width, this.pixels.height);
 
     screen.fillStyle = "white";
     screen.textAlign = "left";
@@ -30,8 +26,6 @@ export default class InfoWindow extends Sprite {
     textline++;
     textline++;
     screen.fillText(Math.ceil(this.unit.resourceAmount),10,textline*12+10);
-
-    screen.translate(-posX, -posY);
   }
 
   get boundingBox() {
