@@ -1,7 +1,7 @@
 import Sprite from './../Sprite'
 
 export default class ProductionBuilding extends Sprite {
-  constructor(producesType, capacity, productionSpeed, game, coords=[0,0], width, height){
+  constructor(producesType, capacity, productionSpeed, resourcesNeeded=undefined, game, coords=[0,0], width, height){
     super(game, coords, width, height);
 
     this.startingResources = 0;
@@ -9,6 +9,11 @@ export default class ProductionBuilding extends Sprite {
     this.resourceType = producesType;
     this.maxResourceAmount = capacity;
     this.productionProgress = 0;
+    this.resourcesNeeded=resourcesNeeded;
+
+    this.inputSlots = {
+      food: 5
+    };
 
     this.progressNeededToProduce = productionSpeed;
   }
@@ -77,7 +82,8 @@ export default class ProductionBuilding extends Sprite {
         type: this.resourceType,
         amount: this.resourceAmount
       },
-      progress: this.progressPercent
+      progress: this.progressPercent,
+      input: this.resourcesNeeded ? this.resourcesNeeded.map((i)=>{return {...i, amount: this.inputSlots[i.type]}}):undefined
     }
   }
 }

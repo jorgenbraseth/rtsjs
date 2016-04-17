@@ -143,7 +143,7 @@ export default class Sprite {
   }
 
   drawSprite(screen) {
-    // this.drawPhysicalSize(screen);
+    this.drawPhysicalSize(screen);
 
     screen.save();
     screen.translate(...this.drawInfo.pos);
@@ -209,7 +209,7 @@ export default class Sprite {
     screen.fillStyle = this.isPlaceable ? "rgba(0,255,0,0.9" : "red";
     screen.fillRect(0, 0, GRID_SIZE, GRID_SIZE);
   }
-  
+
   get name(){
     return this.constructor.name
   }

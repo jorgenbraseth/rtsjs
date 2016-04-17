@@ -4,8 +4,8 @@ import Player from './sprites/KeyboardPlayer'
 import Rock from './sprites/gatherables/Rock'
 import Tree from './sprites/gatherables/Tree'
 import Grass2 from './sprites/terrain/Grass2'
-import House from './sprites/gatherables/House'
-import House2 from './sprites/gatherables/House2'
+import Butcher from './sprites/gatherables/Butcher'
+import Office from './sprites/gatherables/Office'
 
 import Renderer from './Renderer'
 import ViewPort from './ViewPort'
@@ -19,8 +19,8 @@ import QuickBar from './sprites/ui/QuickBar'
 
 
 const UnitTypes = {
-  House: House,
-  House2: House2,
+  Butcher: Butcher,
+  Office: Office,
   Rock: Rock
 };
 
@@ -56,11 +56,10 @@ export default class Game {
 
     this.quickBar = new QuickBar(this, [canvas.width/2 - GRID_SIZE*5, canvas.height - GRID_SIZE*1.5]);
     this.addSprite(LAYERS.UI, this.quickBar);
-    this.quickBar.setSlot(0,House);
-    this.quickBar.setSlot(1,UnitTypes.House2);
+    this.quickBar.setSlot(0,UnitTypes.Butcher);
+    this.quickBar.setSlot(1,UnitTypes.Office);
 
     this.infoWindow = new InfoWindow(undefined, this);
-    this.addSprite(LAYERS.UI,this.infoWindow);
 
     this.userInput.onLeftClick(this.leftClicked.bind(this));
 
@@ -70,8 +69,8 @@ export default class Game {
       }.bind(this)
     );
 
-    this.userInput.onKey(KEY_BINDS.QUICKSLOT_1, (()=>{this.enablePlacementMode("House")}).bind(this));
-    this.userInput.onKey(KEY_BINDS.QUICKSLOT_2, (()=>{this.enablePlacementMode("House2")}).bind(this));
+    this.userInput.onKey(KEY_BINDS.QUICKSLOT_1, (()=>{this.enablePlacementMode("Butcher")}).bind(this));
+    this.userInput.onKey(KEY_BINDS.QUICKSLOT_2, (()=>{this.enablePlacementMode("Office")}).bind(this));
 
     this.bindCameraControls();
 
@@ -207,6 +206,7 @@ export default class Game {
     }
     sprite.select();
     this.infoWindow.sprite = sprite;
+    this.addSprite(LAYERS.UI,this.infoWindow);
     this.selectedSprites.push(sprite);
   }
 
@@ -277,9 +277,7 @@ export default class Game {
       for (var i = 0; i < this.selectedSprites.length; i++) {
         var sprite = this.selectedSprites[i];
         sprite.unselect();
-        if(sprite.infoWindow){
-          this.removeSpriteFromLayer(this.layers[LAYERS.UI],sprite.infoWindow);
-        }
+        this.removeSpriteFromLayer(this.layers[LAYERS.UI],this.infoWindow);
       }
     }
     this.selectedSprites = [];

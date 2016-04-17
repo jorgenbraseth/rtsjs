@@ -16,12 +16,12 @@ export default class InfoWindow extends Sprite {
     if (this._sprite !== undefined) {
       screen.save();
       screen.fillStyle = "rgba(0,0,0,0.5)";
-      screen.fillRect(0, 0, this.pixels.width+10, this.pixels.height+10);
+      screen.fillRect(0, 0, this.pixels.width, this.pixels.height);
       screen.translate(5,5);
       screen.fillStyle = "rgba(250,250,0,0.1)";
-      screen.fillRect(0, 0, this.pixels.width, this.pixels.height);
+      screen.fillRect(0, 0, this.pixels.width-10, this.pixels.height-10);
       screen.strokeStyle = "rgba(250,250,0,0.9)";
-      screen.strokeRect(0, 0, this.pixels.width, this.pixels.height);
+      screen.strokeRect(0, 0, this.pixels.width-10, this.pixels.height-10);
 
       screen.fillStyle = "white";
       screen.textAlign = "left";
@@ -36,11 +36,24 @@ export default class InfoWindow extends Sprite {
         screen.translate(0,12);
         screen.save();
 
-        if(this.info.input){
+        const input = this.info.input;
+        if(input){
+          screen.fillStyle = "rgba(0,0,0,0.5)";
+          input.forEach((inp) => {
+            screen.save();
+            screen.drawImage(ICONS[inp.type],2,2,16,16);
+            screen.fillRect(0,0,20,20);
+            screen.translate(0,15);
+            screen.fillStyle = "white";
+            screen.fillText(inp.amount+"/"+inp.amountNeeded,1,12+5);
 
+            screen.restore();
+            screen.translate(25,0)
+          });
         }
 
-        if(this.info.progress){
+        if(this.info.progress !== undefined){
+          screen.fillStyle = "white";
           screen.fillRect(5,7,this.info.progress*25,8);
           screen.translate(35,0);
         }

@@ -7,9 +7,14 @@ import Image from '../../../images/buildings.png'
 const drawHeight = (78/64)*GRID_SIZE;
 const drawWidth = GRID_SIZE;
 
-export default class House2 extends Producer {
+const COST_OF_PRODUCTION = [{
+  type: "food",
+  amountNeeded: 4
+}];
+
+export default class Office extends Producer {
   constructor(game, coords=[0,0]){
-    super("gold", 5, 1000, game, coords,1,1);
+    super("gold", 5, 1000,COST_OF_PRODUCTION, game, coords,1,1);
 
     this.image = [
       loadImage(Image),

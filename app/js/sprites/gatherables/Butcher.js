@@ -4,9 +4,9 @@ import ProductionBuilding from './ProductionBuilding'
 
 import Image from '../../../images/buildings.png'
 
-export default class House extends ProductionBuilding {
+export default class Butcher extends ProductionBuilding {
   constructor(game, coords=[0,0]){
-    super("food", 10, 200, game, coords,1,1);
+    super("food", 10, 200, undefined, game, coords,1,1);
 
     this.cost = {
       wood: 5
@@ -21,7 +21,6 @@ export default class House extends ProductionBuilding {
       (GRID_SIZE/2)-(drawWidth/2),GRID_SIZE-drawHeight,drawWidth,drawHeight
     ];
   }
-
 
   get name(){
       return "Butcher";
