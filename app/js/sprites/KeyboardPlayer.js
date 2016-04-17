@@ -30,6 +30,8 @@ export default class Player extends Unit {
       wood: 500, stone: 500, food: 500, gold: 500
     };
 
+    this.dx = 0;
+    this.dy = 0;
     this.color="yellow";
     this.animAge = 0;
     this.world = game.world;
@@ -63,19 +65,32 @@ export default class Player extends Unit {
   }
 
   moveRight(startMovement) {
-    this.movingRight = startMovement;
+    this.movingRightMode = startMovement;
   }
 
   moveLeft(startMovement) {
-    this.movingLeft = startMovement;
+    this.movingLeftMode = startMovement;
   }
 
   moveUp(startMovement) {
-    this.movingUp = startMovement;
+    this.movingUpMode = startMovement;
   }
 
   moveDown(startMovement) {
-    this.movingDown = startMovement;
+    this.movingDownMode = startMovement;
+  }
+
+  get movingDown(){
+    return this.dy > 0;
+  }
+  get movingUp(){
+    return this.dy < 0;
+  }
+  get movingRight(){
+    return this.dx > 0;
+  }
+  get movingLeft(){
+    return this.dx < 0;
   }
 
   ageTick() {
@@ -85,8 +100,8 @@ export default class Player extends Unit {
   tick() {
     super.tick();
 
-    this.dx = this.movingLeft ? -this.speed : this.movingRight ? this.speed : 0;
-    this.dy = this.movingUp ? -this.speed : this.movingDown ? this.speed : 0;
+    this.dx = this.movingLeftMode ? -this.speed : this.movingRightMode ? this.speed : 0;
+    this.dy = this.movingUpMode ? -this.speed : this.movingDownMode ? this.speed : 0;
 
     this.moveHorizontally(this.dx);
     this.moveVertically(this.dy);
@@ -104,10 +119,10 @@ export default class Player extends Unit {
 
     var collidingSprite = this.game.findCollision(this);
     if(collidingSprite!==undefined){
-      if(this.movingUp){
+      if(dy<0){
         const stepBackInGridUnits = collidingSprite.pixels.boundingBox.bottom-this.pixels.boundingBox.top;
         this._y += stepBackInGridUnits/GRID_SIZE;
-      }else if(this.movingDown){
+      }else if(dy>0){
         const stepBackInGridUnits = this.pixels.boundingBox.bottom-collidingSprite.pixels.boundingBox.top;
         this._y -= stepBackInGridUnits/GRID_SIZE;
       }
@@ -125,10 +140,10 @@ export default class Player extends Unit {
 
     var collision = this.game.findCollision(this);
     if(collision!==undefined){
-      if(this.movingLeft){
+      if(dx<0){
         const stepBackInGridUnits = collision.boundingBox.right-this.pixels.boundingBox.left;
         this._x += stepBackInGridUnits/GRID_SIZE;
-      }else if(this.movingRight){
+      }else if(dx>0){
         const stepBackInGridUnits = this.boundingBox.right-collision.pixels.boundingBox.left;
         this._x -= stepBackInGridUnits/GRID_SIZE;
       }

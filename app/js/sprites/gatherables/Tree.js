@@ -34,7 +34,7 @@ export default class Tree extends Resource {
 
   deplete() {
     super.deplete();
-    this.game.addSprite(LAYERS.LAYER_FLOOR, new TreeStump(this.game, this.gridInfo.pos))
+    this.game.addSprite(LAYERS.LAYER_FLOOR_DECORE, new TreeStump(this.game, this.gridInfo.pos))
   }
 
 }

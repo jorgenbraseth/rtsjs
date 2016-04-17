@@ -22,7 +22,7 @@ export default class Rock extends Resource {
 
   gather(gatherAmount, gatherer){
     super.gather(...arguments);
-    
+
     var resourcePercentLeft = this.resourceAmount/this.startingResources;
     const currentLook = Object.keys(this.images).filter((k)=>{
       return resourcePercentLeft >= k}
@@ -32,8 +32,8 @@ export default class Rock extends Resource {
 
   deplete() {
     super.deplete();
-    this.game.addSprite(LAYERS.LAYER_FLOOR, new Rubble(this.game, this.gridInfo.pos))
+    this.game.addSprite(LAYERS.LAYER_FLOOR_DECORE, new Rubble(this.game, this.gridInfo.pos))
   }
 
-  
+
 }

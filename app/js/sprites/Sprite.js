@@ -1,4 +1,4 @@
-import {GRID_SIZE} from '../constants/GameConstants.js'
+import {GRID_SIZE,LAYERS} from '../constants/GameConstants.js'
 import {intersects} from '../Utils'
 
 export default class Sprite {
@@ -67,6 +67,7 @@ export default class Sprite {
       pos: this.grid.pos.map((p) => {return Math.round(p*GRID_SIZE)}),
       width: Math.round(this.grid.width * GRID_SIZE),
       height: Math.round(this.grid.height * GRID_SIZE),
+      center: this.grid.center.map((p) => {return Math.round(p*GRID_SIZE)}),
       boundingBox: {
         top: Math.round(this.grid.boundingBox.top * GRID_SIZE),
         bottom: Math.round(this.grid.boundingBox.bottom * GRID_SIZE),
@@ -81,6 +82,7 @@ export default class Sprite {
       pos: [this._x,this._y],
       width: this._width,
       height: this._height,
+      center: [this._x+this._width/2,this._y+this._height/2],
       boundingBox: {
         top: this._y,
         bottom: this._y+this._height,
@@ -143,7 +145,7 @@ export default class Sprite {
   }
 
   drawSprite(screen) {
-    this.drawPhysicalSize(screen);
+    // this.drawPhysicalSize(screen);
 
     screen.save();
     screen.translate(...this.drawInfo.pos);
@@ -222,5 +224,9 @@ export default class Sprite {
       progress: undefined,
       inventory: undefined
     }
+  }
+
+  get layer(){
+    return LAYERS.LAYER_GROUND;
   }
 }

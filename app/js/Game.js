@@ -6,6 +6,10 @@ import Tree from './sprites/gatherables/Tree'
 import Grass2 from './sprites/terrain/Grass2'
 import Butcher from './sprites/gatherables/Butcher'
 import Office from './sprites/gatherables/Office'
+import ConveyorEast from './sprites/ConveyorEast'
+import ConveyorSouth from './sprites/ConveyorSouth'
+import ConveyorNorth from './sprites/ConveyorNorth'
+import ConveyorWest from './sprites/ConveyorWest'
 
 import Renderer from './Renderer'
 import ViewPort from './ViewPort'
@@ -21,7 +25,11 @@ import QuickBar from './sprites/ui/QuickBar'
 const UnitTypes = {
   Butcher: Butcher,
   Office: Office,
-  Rock: Rock
+  Rock: Rock,
+  ConveyorEast: ConveyorEast,
+  ConveyorNorth: ConveyorNorth,
+  ConveyorSouth: ConveyorSouth,
+  ConveyorWest: ConveyorWest
 };
 
 import { toGridPos, intersects, containsPoint } from './Utils'
@@ -58,6 +66,10 @@ export default class Game {
     this.addSprite(LAYERS.UI, this.quickBar);
     this.quickBar.setSlot(0,UnitTypes.Butcher);
     this.quickBar.setSlot(1,UnitTypes.Office);
+    this.quickBar.setSlot(2,UnitTypes.ConveyorEast);
+    this.quickBar.setSlot(3,UnitTypes.ConveyorSouth);
+    this.quickBar.setSlot(4,UnitTypes.ConveyorNorth);
+    this.quickBar.setSlot(5,UnitTypes.ConveyorWest);
 
     this.infoWindow = new InfoWindow(undefined, this);
 
@@ -71,11 +83,17 @@ export default class Game {
 
     this.userInput.onKey(KEY_BINDS.QUICKSLOT_1, (()=>{this.enablePlacementMode("Butcher")}).bind(this));
     this.userInput.onKey(KEY_BINDS.QUICKSLOT_2, (()=>{this.enablePlacementMode("Office")}).bind(this));
+    this.userInput.onKey(KEY_BINDS.QUICKSLOT_3, (()=>{this.enablePlacementMode("ConveyorEast")}).bind(this));
+    this.userInput.onKey(KEY_BINDS.QUICKSLOT_4, (()=>{this.enablePlacementMode("ConveyorSouth")}).bind(this));
+    this.userInput.onKey(KEY_BINDS.QUICKSLOT_5, (()=>{this.enablePlacementMode("ConveyorNorth")}).bind(this));
+    this.userInput.onKey(KEY_BINDS.QUICKSLOT_6, (()=>{this.enablePlacementMode("ConveyorWest")}).bind(this));
 
     this.bindCameraControls();
 
     this.userInput.onKey(KEY_BINDS.SHIFT, () => {this.shiftHeld = true});
     this.userInput.onKeyUp(KEY_BINDS.SHIFT, () => {this.shiftHeld = false});
+
+    this.globalTime = 0;
 
     this.init();
   }
@@ -211,6 +229,7 @@ export default class Game {
   }
 
   tick(){
+    this.globalTime ++;
     this.focusCamOnPlayer();
     // this.moveCam();
 
@@ -248,28 +267,34 @@ export default class Game {
 
   }
 
-  spriteAt(coords, countPlayer=false){
+  spriteAt(coords, countPlayer=false, onlyCheckLayer=[LAYERS.LAYER_AIR,LAYERS.LAYER_GROUND,LAYERS.LAYER_FLOOR]){
     var x = coords[0];
     var y = coords[1];
 
     var found = undefined;
-    for (var i = this.layers[LAYERS.LAYER_AIR].length -1; i >= 0; i--) {
-      var sprite = this.layers[LAYERS.LAYER_AIR][i];
-      if(sprite.pos.x == x && sprite.pos.y == y){
-        found = sprite;
+    onlyCheckLayer.forEach((layer)=>{
+      for (var i = this.layers[layer].length -1; i >= 0; i--) {
+        var sprite = this.layers[layer][i];
+        if(sprite.pos.x == x && sprite.pos.y == y){
+          found = sprite;
+        }
       }
-    }
-    for (var i = this.layers[LAYERS.LAYER_GROUND].length -1; i >= 0; i--) {
-      var sprite = this.layers[LAYERS.LAYER_GROUND][i];
-      if(sprite.pos.x == x && sprite.pos.y == y){
-        found = sprite;
-      }
-    }
+    });
 
     if(found && !countPlayer && found.constructor.name === 'Player'){
       found = undefined;
     }
     return found;
+  }
+
+  spritesInRect(rect,layers=[LAYERS.LAYER_GROUND]){
+    var containedSprites = [];
+
+    containedSprites = containedSprites.concat(this.layers[layers[0]].filter((sprite)=>{
+      return containsPoint(rect, ...sprite.pixels.center);
+    }));
+
+    return containedSprites;
   }
 
   clearSelection(){
@@ -324,7 +349,7 @@ export default class Game {
     }
     unit.beingPlaced = false;
     unit.setPosition(...coords);
-    this.addSprite(LAYERS.LAYER_GROUND, unit);
+    this.addSprite(unit.layer, unit);
   }
 
   gridRightClicked(coords){
@@ -405,7 +430,9 @@ export default class Game {
     var sprites = this.layers[layer];
     for (var i = 0; i < sprites.length; i++) {
       var sprite = sprites[i];
-      sprite.tick(this.world);
+      if(!sprite.beingPlaced){
+        sprite.tick(this.world);
+      }
     }
   }
 
