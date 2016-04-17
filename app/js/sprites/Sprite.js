@@ -64,14 +64,14 @@ export default class Sprite {
 
   get pixels(){
     return {
-      pos: this.grid.pos.map((p) => {return p*GRID_SIZE}),
-      width: this.grid.width * GRID_SIZE,
-      height: this.grid.height * GRID_SIZE,
+      pos: this.grid.pos.map((p) => {return Math.round(p*GRID_SIZE)}),
+      width: Math.round(this.grid.width * GRID_SIZE),
+      height: Math.round(this.grid.height * GRID_SIZE),
       boundingBox: {
-        top: this.grid.boundingBox.top * GRID_SIZE,
-        bottom: this.grid.boundingBox.bottom * GRID_SIZE,
-        left: this.grid.boundingBox.left * GRID_SIZE,
-        right: this.grid.boundingBox.right * GRID_SIZE
+        top: Math.round(this.grid.boundingBox.top * GRID_SIZE),
+        bottom: Math.round(this.grid.boundingBox.bottom * GRID_SIZE),
+        left: Math.round(this.grid.boundingBox.left * GRID_SIZE),
+        right: Math.round(this.grid.boundingBox.right * GRID_SIZE)
       }
     }
   }
