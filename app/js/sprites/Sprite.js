@@ -156,7 +156,7 @@ export default class Sprite {
     if (this.selected) {
       screen.strokeSize = 1;
       screen.strokeStyle = 'rgba(250,250,0,0.8) ';
-      screen.strokeRect(0, 0, this.width, this.height);
+      screen.strokeRect(0, 0, this.pixels.width, this.pixels.height);
     }
 
     this.draw(screen);
