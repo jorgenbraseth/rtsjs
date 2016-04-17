@@ -27,7 +27,7 @@ export default class Player extends Unit {
     super(game, coords, 100, 1, 25/GRID_SIZE, 13/GRID_SIZE);
 
     this.resources = {
-      wood: 0, stone: 0, food: 0, gold: 0
+      wood: 500, stone: 500, food: 500, gold: 500
     };
 
     this.color="yellow";
@@ -36,7 +36,8 @@ export default class Player extends Unit {
 
     this.updateDirection();
 
-    this.speed = 1/12;
+    this.gatheringSpeed = .125;
+    this.speed = 1/6;
 
     this.images = {
       SOUTH: [loadImage(Image), (CHOSEN_APPEARANCE[0]*(3*32)), (CHOSEN_APPEARANCE[1]*4*32), 32, 32],

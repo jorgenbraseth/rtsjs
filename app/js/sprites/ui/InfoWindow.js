@@ -8,13 +8,16 @@ export default class InfoWindow extends Sprite {
     this.unit = unit;
 
     var maxY = this.game.canvas.height;
-    this._x = 10/GRID_SIZE;
-    this._y = (maxY-10-this.pixels.height)/GRID_SIZE;
+    this._x = (this.game.canvas.width/2-this.pixels.width/2)/GRID_SIZE;
+    this._y = 10/GRID_SIZE;
   }
 
   draw(screen) {
     if (this._sprite !== undefined) {
       screen.save();
+      screen.fillStyle = "rgba(0,0,0,0.5)";
+      screen.fillRect(0, 0, this.pixels.width+10, this.pixels.height+10);
+      screen.translate(5,5);
       screen.fillStyle = "rgba(250,250,0,0.1)";
       screen.fillRect(0, 0, this.pixels.width, this.pixels.height);
       screen.strokeStyle = "rgba(250,250,0,0.9)";

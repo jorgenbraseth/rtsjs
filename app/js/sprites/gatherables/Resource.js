@@ -3,7 +3,7 @@ export default class Tree extends Sprite {
 
   constructor(game, coords=[0,0], resourceType, startingResources, workNeededToGather){
     super(game,coords);
-    
+
     this.gatherProgress = 0;
     this.resourceType = resourceType;
     this.gatherHealth = workNeededToGather;
@@ -14,9 +14,9 @@ export default class Tree extends Sprite {
   gather(gatherAmount, gatherer){
     this.gatherProgress += gatherAmount;
     var gathered = 0;
-    if(this.gatherProgress > this.gatherHealth){
+    while(this.gatherProgress > this.gatherHealth){
       this.gatherProgress -= this.gatherHealth;
-      gathered = 1;
+      gathered += 1;
     }
     this.resourceAmount -= gathered;
 
@@ -32,7 +32,7 @@ export default class Tree extends Sprite {
   deplete() {
     this.game.removeSprite(this);
   }
-  
+
   get depleted(){
     this.resourceAmount = 0;
   }
