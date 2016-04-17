@@ -20,6 +20,7 @@ export default class Renderer {
     this.clearScreen();
     this.screen.save();
     this.screen.translate(-viewPort.minXPx,-viewPort.minYPx);
+
     this.drawGridLayer(layers[LAYERS.LAYER_MAP], viewPort);
     this.drawGridLayer(layers[LAYERS.LAYER_FLOOR], viewPort);
     this.drawGridLayer(layers[LAYERS.LAYER_GROUND], viewPort);
@@ -44,7 +45,7 @@ export default class Renderer {
   drawGridLayer(layer, viewPort){
     layer
       .filter((sprite) => {return viewPort.isRectVisible(sprite.boundingBox)})
-      .sort((s1,s2)=>{return s1.pos.y-s2.pos.y})
+      .sort((s1,s2)=>{return s1.pixels.boundingBox.bottom-s2.pixels.boundingBox.bottom})
       .forEach((s)=>s.drawSprite(this.screen, viewPort));
   }
 
