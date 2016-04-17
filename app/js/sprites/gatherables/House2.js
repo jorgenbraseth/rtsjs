@@ -10,7 +10,6 @@ const drawWidth = GRID_SIZE;
 export default class House2 extends Producer {
   constructor(game, coords=[0,0]){
     super("gold", 5, 1000, game, coords,1,1);
-    this.moveCost = 0;
 
     this.image = [
       loadImage(Image),

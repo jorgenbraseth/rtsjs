@@ -30,7 +30,6 @@ export default class Tree extends Resource {
       this.variant.x,this.variant.y,this.variant.w,this.variant.h,
       (GRID_SIZE/2)-(40/2),GRID_SIZE-65,40,65
     ];
-
   }
 
   deplete() {

@@ -13,7 +13,6 @@ export default class Unit extends Sprite {
     this.attackDamage = attackDamage;
     this.gatheringSpeed = 0.25;
     this.dead = false;
-    this.moveCost = 0;
   }
 
   get isMoving() {

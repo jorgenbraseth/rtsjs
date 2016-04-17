@@ -7,9 +7,6 @@ import Image from '../../../images/blood.png'
 export default class Blood extends Sprite {
   constructor(game, coords=[0,0]){
     super(game, coords);
-    this.moveCost = 0;
-    this.age = 0;
-
     this.image = loadImage(Image);
   }
 

@@ -10,7 +10,6 @@ export default class Rock extends Resource {
     super(game, coords, "stone", 200, 15);
 
     this.color = "rgba(100,100,100,0.5)";
-    this.moveCost = 10000;
 
     this.images = {
       1.0: [loadImage(Image), 0, 0, 42, 42, 0, 0, this.pixels.width, this.pixels.height],

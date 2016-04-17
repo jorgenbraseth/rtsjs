@@ -32,7 +32,6 @@ export default class Player extends Unit {
 
     this.color="yellow";
     this.animAge = 0;
-    this.moveCost = 10000;
     this.world = game.world;
 
     this.updateDirection();

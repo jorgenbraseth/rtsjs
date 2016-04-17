@@ -8,7 +8,6 @@ export default class Rubble extends Sprite {
 
   constructor(game, coords=[0,0]){
     super(game, coords);
-    this.moveCost = 0;
     this.color = "black";
     this.image = loadImage(Image);
   }

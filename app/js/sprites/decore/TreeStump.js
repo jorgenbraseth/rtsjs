@@ -9,7 +9,6 @@ export default class TreeStump extends Sprite {
 
   constructor(game, coords=[0,0]){
     super(game, coords, 1, 1);
-    this.moveCost = 0;
     this.color = "black";
     this.image = loadImage(Image);
 
