@@ -1,26 +1,15 @@
 import Sprite from '../Sprite'
 import {GRID_SIZE} from '../../constants/GameConstants'
-import {loadImage} from '../../Utils'
+import {loadImage, ICONS} from '../../Utils'
 
 const padding = 0.07 * GRID_SIZE;
 const iconSize = GRID_SIZE - padding * 2;
-
-import ICON_WOOD from '../../../images/icon_wood.png'
-import ICON_STONE from '../../../images/icon_stone.png'
-import ICON_FOOD from '../../../images/icon_food2.png'
-import ICON_COIN from '../../../images/icon_coin.png'
-
 
 export default class QuickBar extends Sprite {
   constructor(game, position = [0, 0]) {
     super(game, position);
     this.game = game;
     this.position = position;
-    this.icons = {};
-    this.icons.wood = loadImage(ICON_WOOD);
-    this.icons.stone = loadImage(ICON_STONE);
-    this.icons.food = loadImage(ICON_FOOD);
-    this.icons.gold = loadImage(ICON_COIN);
 
     this.slots = [
       [],[],[],[],[],[],[],[],[]
@@ -105,7 +94,7 @@ export default class QuickBar extends Sprite {
       for(var resourceType in slotCost){
         screen.save();
         screen.fillRect(0,0,35,14);
-        screen.drawImage(this.icons[resourceType],0,0,15,15);
+        screen.drawImage(ICONS[resourceType],0,0,15,15);
         screen.translate(17,0);
         screen.fillStyle = "white";
         screen.textAlign = "left";
