@@ -1,18 +1,22 @@
 import { LAYERS, GRID_SIZE } from './constants/GameConstants.js'
 
 
+const TOOLBAR_HEIGHT = 120;
+
 export default class Renderer {
   constructor(canvas, viewPort){
     this.canvas = canvas;
     this.screen = canvas.getContext('2d');
-
-    this.canvas.setAttribute("width", ""+GRID_SIZE*viewPort.widthInGridUnits);
-    this.canvas.setAttribute("height", ""+GRID_SIZE*viewPort.heightInGridUnits);
-
     this.canvas.style.cursor = "none";
 
-    this.viewPort = viewPort;
+    this.screenWidth = GRID_SIZE*viewPort.widthInGridUnits;
+    this.screenHeight = GRID_SIZE * viewPort.heightInGridUnits+TOOLBAR_HEIGHT;
+    this.viewPortHeight = GRID_SIZE * viewPort.heightInGridUnits;
 
+    this.canvas.setAttribute("width", ""+ this.screenWidth);
+    this.canvas.setAttribute("height", ""+this.screenHeight);
+
+    this.viewPort = viewPort;
   }
 
   render(layers){
@@ -27,13 +31,15 @@ export default class Renderer {
     this.drawGridLayer(layers[LAYERS.LAYER_GROUND_PLAYER], viewPort);
     this.drawGridLayer(layers[LAYERS.LAYER_GROUND_PLACEMENT], viewPort);
     this.drawGridLayer(layers[LAYERS.LAYER_AIR], viewPort);
-    this.drawPixelLayer(layers[LAYERS.UI]);
+
     this.screen.restore();
 
+    this.drawToolbar();
+    this.drawPixelLayer(layers[LAYERS.UI]);
   }
 
   clearScreen(){
-    this.screen.clearRect(0,0,this.canvas.widthInGridUnits, this.canvas.heightInGridUnits);
+    this.screen.clearRect(0,0,this.screenWidth, this.screenHeight);
   }
 
   drawPixelLayer(layer){
@@ -51,5 +57,13 @@ export default class Renderer {
 
   renderUi(component){
     component.draw(this.screen);
+  }
+
+  drawToolbar() {
+    this.screen.save();
+    this.screen.translate(0,this.viewPortHeight);
+    this.screen.fillStyle = "black";
+    this.screen.fillRect(0,0,this.screenWidth, TOOLBAR_HEIGHT);
+    this.screen.restore();
   }
 }
