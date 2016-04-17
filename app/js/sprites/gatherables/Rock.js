@@ -7,7 +7,7 @@ import Image from '../../../images/rock_sprite.png'
 
 export default class Rock extends Resource {
   constructor(game, coords=[0,0]){
-    super(game, coords, "stone", 200, 15);
+    super(game, coords, "stone", 50, 10);
 
     this.color = "rgba(100,100,100,0.5)";
 

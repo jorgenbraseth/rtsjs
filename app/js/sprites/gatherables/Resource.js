@@ -1,5 +1,5 @@
 import Sprite from './../Sprite'
-export default class Tree extends Sprite {
+export default class Resource extends Sprite {
 
   constructor(game, coords=[0,0], resourceType, startingResources, workNeededToGather){
     super(game,coords);

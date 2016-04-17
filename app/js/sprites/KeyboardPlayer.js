@@ -27,7 +27,7 @@ export default class Player extends Unit {
     super(game, coords, 100, 1, 25/GRID_SIZE, 13/GRID_SIZE);
 
     this.resources = {
-      wood: 500, stone: 500, food: 500, gold: 500
+      wood: 130, stone: 130, food: 130, gold: 130
     };
 
     this.dx = 0;
@@ -38,7 +38,7 @@ export default class Player extends Unit {
 
     this.updateDirection();
 
-    this.gatheringSpeed = .125;
+    this.gatheringSpeed = .25;
     this.speed = 1/8;
 
     this.images = {
