@@ -27,10 +27,15 @@ export default class ConveyorSouth extends Sprite {
     return LAYERS.LAYER_FLOOR;
   }
 
+  get areaOfInfluence(){
+    return {...this.pixels.boundingBox,
+      bottom: this.pixels.boundingBox.bottom+this.pixels.height/2+5
+    }
+  }
   tick(){
     this.image = this.images[Math.floor(this.game.globalTime/7)%3];
 
-    const onMySpot = this.game.spritesInRect(this.pixels.boundingBox);
+    const onMySpot = this.game.spritesInRect(this.areaOfInfluence);
     onMySpot.forEach((toMove)=>{
       if(toMove.moveVertically){
         toMove.moveVertically(this.pushSpeed);

@@ -27,10 +27,20 @@ export default class ConveyorWest extends Sprite {
     return LAYERS.LAYER_FLOOR;
   }
 
+  get areaOfInfluence(){
+    return {
+      left: this.pixels.boundingBox.left-this.pixels.width/2-5,
+      right: this.pixels.boundingBox.right,
+      bottom: this.pixels.boundingBox.bottom,
+      top: this.pixels.boundingBox.top
+    }
+  }
+
+
   tick(){
     this.image = this.images[Math.floor(this.game.globalTime/7)%3];
 
-    const onMySpot = this.game.spritesInRect(this.pixels.boundingBox);
+    const onMySpot = this.game.spritesInRect(this.areaOfInfluence);
     onMySpot.forEach((toMove)=>{
       if(toMove.moveHorizontally){
         toMove.moveHorizontally(-this.pushSpeed);

@@ -32,7 +32,7 @@ const UnitTypes = {
   ConveyorWest: ConveyorWest
 };
 
-import { toGridPos, intersects, containsPoint } from './Utils'
+import { toGridPos, intersects, containsPoint, containsRect } from './Utils'
 
 import { GENERATED, MAP_TEST } from './Maps'
 
@@ -291,7 +291,8 @@ export default class Game {
     var containedSprites = [];
 
     containedSprites = containedSprites.concat(this.layers[layers[0]].filter((sprite)=>{
-      return containsPoint(rect, ...sprite.pixels.center);
+      // return containsPoint(rect, ...sprite.pixels.center);
+      return containsRect(rect, sprite.pixels.boundingBox);
     }));
 
     return containedSprites;

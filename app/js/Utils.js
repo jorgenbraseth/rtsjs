@@ -32,6 +32,13 @@ module.exports = {
       y >= rect.top &&
       y <= rect.bottom;
   },
+  
+  containsRect: function (container, contained) {
+    return container.left <= contained.left &&
+        container.right >= contained.right &&
+        container.top <= contained.top &&
+        container.bottom >= contained.bottom;
+  },
 
   ICONS: {
     wood: loadImage(ICON_WOOD),
