@@ -1,9 +1,8 @@
 import { GRID_SIZE, LAYERS } from '../../constants/GameConstants.js'
 import { loadImage } from '../../Utils'
 
-import Sprite from './../Sprite'
+import Resource from './Resource'
 import TreeStump from './../decore/TreeStump'
-import InfoWindow from './../ui/InfoWindow'
 
 import Image from '../../../images/trees2.png'
 
@@ -17,22 +16,13 @@ const VARIANTS = [
   {x: 155, y:145, w:87, h:145, cX:0, cY:GRID_SIZE-65}
 ];
 
-export default class Tree extends Sprite {
+export default class Tree extends Resource {
 
   constructor(game, coords=[0,0]){
-    super(game, coords);
-    this.startingResources = 15;
-    this.resourceAmount = this.startingResources;
+    super(game, coords, "wood", 15, 3);
     this.moveCost = 10000;
 
-    this.gatherHealth = 3;
-    this.gatherProgress = 0;
-
     this.color = "rgba(0,150,0,0.5)";
-    this.depleted = false;
-    this.resourceType = "wood";
-
-    this.infoWindow = new InfoWindow(this, this.game);
 
     this.variant = VARIANTS[parseInt(Math.random()*VARIANTS.length)];
     this.image = [
@@ -43,37 +33,9 @@ export default class Tree extends Sprite {
 
   }
 
-  gather(gatherAmount, gatherer){
-    this.gatherProgress += gatherAmount;
-    var gathered = 0;
-    if(this.gatherProgress > this.gatherHealth){
-      this.gatherProgress -= this.gatherHealth;
-      gathered = 1;
-    }
-    this.resourceAmount -= gathered;
-
-    gatherer.resources[this.resourceType] = gatherer.resources[this.resourceType] || 0;
-    gatherer.resources[this.resourceType] += gathered;
-
-    if(this.resourceAmount <= 0){
-      this.deplete();
-      gatherer.killed(this);
-    }
-  }
-
   deplete() {
-    this.game.removeSprite(this);
-    this.depleted = true;
+    super.deplete();
     this.game.addSprite(LAYERS.LAYER_FLOOR, new TreeStump(this.game, this.gridInfo.pos))
   }
 
-  get details(){
-    return {...super.details,
-      output: {
-        type: this.resourceType,
-        amount: this.resourceAmount
-      },
-      progress: 1-this.gatherProgress/this.gatherHealth
-    }
-  }
 }
