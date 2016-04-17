@@ -25,7 +25,7 @@ export default class Tree extends Sprite {
     this.resourceAmount = this.startingResources;
     this.moveCost = 10000;
 
-    this.gatherHealth = 4;
+    this.gatherHealth = 3;
     this.gatherProgress = 0;
 
     this.color = "rgba(0,150,0,0.5)";

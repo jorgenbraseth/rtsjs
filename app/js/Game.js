@@ -206,7 +206,6 @@ export default class Game {
       this.clearSelection();
     }
     sprite.select();
-    console.log(sprite.details);
     this.infoWindow.sprite = sprite;
     this.selectedSprites.push(sprite);
   }

@@ -15,16 +15,16 @@ export default class Rock extends Sprite {
     this.moveCost = 10000;
     this.resourceType = "stone";
 
-    this.gatherHealth = 30;
+    this.gatherHealth = 15;
     this.gatherProgress = 0;
 
-    this.images = [
-      [loadImage(Image),126,0,42,42,0,0,this.pixels.width,this.pixels.height],
-      [loadImage(Image),84,0,42,42,0,0,this.pixels.width,this.pixels.height],
-      [loadImage(Image),42,0,42,42,0,0,this.pixels.width,this.pixels.height],
-      [loadImage(Image),0,0,42,42,0,0,this.pixels.width,this.pixels.height]
-    ];
-    this.image = this.images[3];
+    this.images = {
+      1.0: [loadImage(Image), 0, 0, 42, 42, 0, 0, this.pixels.width, this.pixels.height],
+      .66: [loadImage(Image), 42, 0, 42, 42, 0, 0, this.pixels.width, this.pixels.height],
+      .33: [loadImage(Image), 84, 0, 42, 42, 0, 0, this.pixels.width, this.pixels.height],
+      0.0: [loadImage(Image), 126, 0, 42, 42, 0, 0, this.pixels.width, this.pixels.height]
+    };
+    this.image = this.images[1.0];
   }
 
   gather(gatherAmount, gatherer){
@@ -44,23 +44,13 @@ export default class Rock extends Sprite {
       gatherer.killed(this);
     }
 
-    //
-    // var amountBeforeGather = parseInt(this.resourceAmount);
-    // this.resourceAmount -= gatherAmount/3;
-    //
-    // var amountAfterGather = parseInt(this.resourceAmount);
-    // gatherer.resources[this.resourceType] = gatherer.resources[this.resourceType] || 0;
-    // gatherer.resources[this.resourceType] += (amountBeforeGather-amountAfterGather);
-    // gatherer.resources[this.resourceType] += (amountBeforeGather-amountAfterGather);
-    //
-    // if(this.resourceAmount <= 0){
-    //   this.deplete();
-    //   gatherer.killed(this);
-    // }
-
-    var steps = Math.ceil(this.startingResources/this.images.length);
-    const currentLook = Math.floor(this.resourceAmount / steps);
-    this.image = this.images[currentLook]
+    if(gathered > 0){
+      var resourcePercentLeft = this.resourceAmount/this.startingResources;
+      const currentLook = Object.keys(this.images).filter((k)=>{
+        return resourcePercentLeft >= k}
+      ).sort().reverse()[0];
+      this.image = this.images[currentLook]
+    }
   }
 
   deplete() {
