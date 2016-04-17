@@ -6,7 +6,7 @@ import Image from '../../../images/buildings.png'
 
 export default class House extends ProductionBuilding {
   constructor(game, coords=[0,0]){
-    super("food", 10, 200, game, coords,GRID_SIZE,GRID_SIZE);
+    super("food", 10, 200, game, coords,1,1);
 
     this.moveCost = 0;
     this.cost = {

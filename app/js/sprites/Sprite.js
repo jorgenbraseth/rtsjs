@@ -143,7 +143,7 @@ export default class Sprite {
   }
 
   drawSprite(screen) {
-    this.drawPhysicalSize(screen);
+    // this.drawPhysicalSize(screen);
 
     screen.save();
     screen.translate(...this.drawInfo.pos);
@@ -201,8 +201,8 @@ export default class Sprite {
   }
 
   setPosition(x, y) {
-    this.pos.x = x;
-    this.pos.y = y;
+    this._x = x;
+    this._y = y;
   }
 
   drawGridCell(screen) {

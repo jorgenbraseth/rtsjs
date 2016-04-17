@@ -19,7 +19,6 @@ export default class ProductionBuilding extends Sprite {
     if(!this.beingPlaced){
       this.drawInventoryIndicator(screen);
     }
-
   }
 
   get progressPercent(){
@@ -28,13 +27,13 @@ export default class ProductionBuilding extends Sprite {
 
   drawInventoryIndicator(screen){
 
-    const indicatorPos = [this.width*0.05, 0];
+    const indicatorPos = [this.pixels.width*0.05, 0];
 
     screen.save();
     screen.translate(...indicatorPos);
 
 
-    const indicatorWidth = this.width * 0.9;
+    const indicatorWidth = this.pixels.width * 0.9;
     const indicatorHeight = 5;
 
     screen.fillStyle = 'rgba(0,0,0,0.3';
