@@ -12,6 +12,7 @@ import ConveyorNorth from './sprites/conveyors/ConveyorNorth'
 import ConveyorWest from './sprites/conveyors/ConveyorWest'
 import LoaderEast from './sprites/loaders/LoaderEast'
 import LoaderWest from './sprites/loaders/LoaderWest'
+import Skyscraper from './sprites/Skyscraper'
 
 import Renderer from './Renderer'
 import ViewPort from './ViewPort'
@@ -33,7 +34,8 @@ const UnitTypes = {
   ConveyorSouth: ConveyorSouth,
   ConveyorWest: ConveyorWest,
   LoaderEast: LoaderEast,
-  LoaderWest: LoaderWest
+  LoaderWest: LoaderWest,
+  Skyscraper: Skyscraper
 };
 
 import { toGridPos, intersects, containsPoint, containsRect, rectCrossesVerticalLine, rectCrossesHorizontalLine } from './Utils'
@@ -76,6 +78,7 @@ export default class Game {
     this.quickBar.setSlot(5,UnitTypes.ConveyorWest);
     this.quickBar.setSlot(6,UnitTypes.LoaderEast);
     this.quickBar.setSlot(7,UnitTypes.LoaderWest);
+    this.quickBar.setSlot(8,UnitTypes.Skyscraper);
 
     this.infoWindow = new InfoWindow(undefined, this);
 
@@ -95,6 +98,7 @@ export default class Game {
     this.userInput.onKey(KEY_BINDS.QUICKSLOT_6, (()=>{this.enablePlacementMode("ConveyorWest")}).bind(this));
     this.userInput.onKey(KEY_BINDS.QUICKSLOT_7, (()=>{this.enablePlacementMode("LoaderEast")}).bind(this));
     this.userInput.onKey(KEY_BINDS.QUICKSLOT_8, (()=>{this.enablePlacementMode("LoaderWest")}).bind(this));
+    this.userInput.onKey(KEY_BINDS.QUICKSLOT_9, (()=>{this.enablePlacementMode("Skyscraper")}).bind(this));
 
     this.bindCameraControls();
 

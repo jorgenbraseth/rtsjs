@@ -15,10 +15,10 @@ export default class ConveyorSouth extends Sprite {
       [loadImage(Image),64,96,32,32,0,0,this.pixels.width,this.pixels.height]
     ];
     this.image = this.images[0];
-    this.pushSpeed = .05;
+    this.pushSpeed = .03;
 
     this.cost = {
-      stone: 3,
+      stone: 3, wood: 5,
       gold: 1
     };
   }
