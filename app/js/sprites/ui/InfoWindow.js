@@ -8,8 +8,8 @@ export default class InfoWindow extends Sprite {
     this.unit = unit;
 
     var maxY = this.game.canvas.height;
-    this.x = (this.game.canvas.width/2-this.pixels.width/2)/GRID_SIZE;
-    this.y = 10/GRID_SIZE;
+    this.x = 10/GRID_SIZE;
+    this.y = (this.game.canvas.height - this.pixels.height - 10)/GRID_SIZE;
   }
 
   draw(screen) {

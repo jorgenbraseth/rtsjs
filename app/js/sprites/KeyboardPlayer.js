@@ -2,7 +2,6 @@ import Unit from './KeyboardControlledUnit'
 import Blood from './decore/Blood'
 import {GRID_SIZE, LAYER_FLOOR} from '../constants/GameConstants.js'
 import {loadImage} from '../Utils'
-// import Image from '../../images/person1.png';
 import Image from '../../images/player_sprites.png';
 
 
@@ -27,7 +26,7 @@ export default class Player extends Unit {
     super(game, coords, 100, 1, 25/GRID_SIZE, 13/GRID_SIZE);
 
     this.resources = {
-      wood: 9999, stone: 9999, food: 9999, gold: 9999
+      wood: 50, stone: 0, food: 0, gold: 0
     };
 
     this.dx = 0;
