@@ -66,11 +66,13 @@ export default class LoaderWest extends Sprite {
 
   giveResource(type, amount){
     if(type==="food"){
-      var food = new Food(this.game, [this.gridPos[0]-1, this.gridPos[1]]);
+      var food = new Food(this.game);
+      food.setPosition(this.gridPos[0]-food.grid.width, this.gridPos[1]);
 
       this.game.addSprite(food.layer,food);
     }else if(type==="gold"){
       var gold = new Gold(this.game, [this.gridPos[0]-1, this.gridPos[1]]);
+      gold.setPosition(this.gridPos[0]-gold.grid.width, this.gridPos[1]);
       this.game.addSprite(gold.layer,gold);
     }
 

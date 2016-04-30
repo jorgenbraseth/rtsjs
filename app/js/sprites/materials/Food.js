@@ -6,7 +6,7 @@ import {LAYERS,GRID_SIZE} from '../../constants/GameConstants.js'
 export default class Food extends Sprite {
 
   constructor(game, coords=[0,0]){
-    super(game, coords, 20/GRID_SIZE,20/GRID_SIZE);
+    super(game, coords, 18/GRID_SIZE,18/GRID_SIZE);
     this.color = "black";
 
     this.image = [ICONS.food,0,0,this.pixels.width,this.pixels.height];

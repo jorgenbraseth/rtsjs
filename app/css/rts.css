@@ -21,6 +21,8 @@ html, body {
 
 dt {
   font-weight:bold;
+  float: left;
+  margin-right:1em;
 }
 
 .help h1 {
