@@ -27,6 +27,7 @@ export default class Player extends Unit {
 
     this.resources = {
       wood: 50, stone: 0, food: 0, gold: 0
+      // wood: 666, stone: 666, food: 666, gold: 666
     };
 
     this.dx = 0;
