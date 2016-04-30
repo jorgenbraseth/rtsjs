@@ -6,10 +6,12 @@ import Tree from './sprites/gatherables/Tree'
 import Grass2 from './sprites/terrain/Grass2'
 import Butcher from './sprites/gatherables/Butcher'
 import Office from './sprites/gatherables/Office'
-import ConveyorEast from './sprites/ConveyorEast'
-import ConveyorSouth from './sprites/ConveyorSouth'
-import ConveyorNorth from './sprites/ConveyorNorth'
-import ConveyorWest from './sprites/ConveyorWest'
+import ConveyorEast from './sprites/conveyors/ConveyorEast'
+import ConveyorSouth from './sprites/conveyors/ConveyorSouth'
+import ConveyorNorth from './sprites/conveyors/ConveyorNorth'
+import ConveyorWest from './sprites/conveyors/ConveyorWest'
+import LoaderEast from './sprites/loaders/LoaderEast'
+import LoaderWest from './sprites/loaders/LoaderWest'
 
 import Renderer from './Renderer'
 import ViewPort from './ViewPort'
@@ -29,7 +31,9 @@ const UnitTypes = {
   ConveyorEast: ConveyorEast,
   ConveyorNorth: ConveyorNorth,
   ConveyorSouth: ConveyorSouth,
-  ConveyorWest: ConveyorWest
+  ConveyorWest: ConveyorWest,
+  LoaderEast: LoaderEast,
+  LoaderWest: LoaderWest
 };
 
 import { toGridPos, intersects, containsPoint, containsRect } from './Utils'
@@ -70,6 +74,8 @@ export default class Game {
     this.quickBar.setSlot(3,UnitTypes.ConveyorSouth);
     this.quickBar.setSlot(4,UnitTypes.ConveyorNorth);
     this.quickBar.setSlot(5,UnitTypes.ConveyorWest);
+    this.quickBar.setSlot(6,UnitTypes.LoaderEast);
+    this.quickBar.setSlot(7,UnitTypes.LoaderWest);
 
     this.infoWindow = new InfoWindow(undefined, this);
 
@@ -87,6 +93,8 @@ export default class Game {
     this.userInput.onKey(KEY_BINDS.QUICKSLOT_4, (()=>{this.enablePlacementMode("ConveyorSouth")}).bind(this));
     this.userInput.onKey(KEY_BINDS.QUICKSLOT_5, (()=>{this.enablePlacementMode("ConveyorNorth")}).bind(this));
     this.userInput.onKey(KEY_BINDS.QUICKSLOT_6, (()=>{this.enablePlacementMode("ConveyorWest")}).bind(this));
+    this.userInput.onKey(KEY_BINDS.QUICKSLOT_7, (()=>{this.enablePlacementMode("LoaderEast")}).bind(this));
+    this.userInput.onKey(KEY_BINDS.QUICKSLOT_8, (()=>{this.enablePlacementMode("LoaderWest")}).bind(this));
 
     this.bindCameraControls();
 
@@ -292,7 +300,8 @@ export default class Game {
 
     containedSprites = containedSprites.concat(this.layers[layers[0]].filter((sprite)=>{
       // return containsPoint(rect, ...sprite.pixels.center);
-      return containsRect(rect, sprite.pixels.boundingBox);
+      // return containsRect(rect, sprite.pixels.boundingBox);
+      return intersects(rect, sprite.pixels.boundingBox);
     }));
 
     return containedSprites;
@@ -363,6 +372,8 @@ export default class Game {
         if(clickedSprite.fireAt){
           this.player.attackTarget(clickedSprite);
         }else if(clickedSprite.gather){
+          this.player.attackTarget(clickedSprite);
+        }else if(clickedSprite.collectAll){
           this.player.attackTarget(clickedSprite);
         }
       }

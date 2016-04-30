@@ -69,10 +69,18 @@ export default class ProductionBuilding extends Sprite {
     }
   }
 
-  gather(gatherAmount, gatherer){
-    gatherer.resources[this.resourceType] = gatherer.resources[this.resourceType] || 0;
-    gatherer.resources[this.resourceType] += this.resourceAmount;
-    this.resourceAmount = 0;
+  collectAll(gatherer){
+    this.collect(this.resourceAmount, gatherer);
+  }
+
+  collect(gatherAmount, gatherer){
+    if(gatherAmount > this.resourceAmount){
+      gatherAmount = this.resourceAmount;
+    }
+    if(gatherAmount > 0){
+      gatherer.giveResource(this.resourceType, gatherAmount);
+      this.resourceAmount -= gatherAmount;
+    }
     gatherer.targetOfAttack = undefined;
   }
 

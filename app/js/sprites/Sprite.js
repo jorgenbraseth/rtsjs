@@ -260,4 +260,70 @@ export default class Sprite {
   get x(){
     return this._x;
   }
+
+  giveResource(type, amountGiven){
+    this.resources = this.resources || {};
+    this.resources[type] = this.resources[type] || 0;
+    this.resources[type] += amountGiven;
+  }
+
+  moveVertically(dy){
+    this.y += dy;
+
+    var collidingSprite = this.game.findCollision(this);
+    if(collidingSprite!==undefined){
+      if(collidingSprite.collide !== undefined){
+        collidingSprite.collide(this);
+      }
+      if(this.collide !== undefined){
+        this.collide(collidingSprite);
+      }
+      
+      if(dy<0){
+        const stepBackInGridUnits = collidingSprite.pixels.boundingBox.bottom-this.pixels.boundingBox.top;
+        this.y += stepBackInGridUnits/GRID_SIZE;
+      }else if(dy>0){
+        const stepBackInGridUnits = this.pixels.boundingBox.bottom-collidingSprite.pixels.boundingBox.top;
+        this.y -= stepBackInGridUnits/GRID_SIZE;
+      }
+    }
+
+    if(this.y <0){
+      this.y = 0;
+    }else if(this.grid.boundingBox.bottom > this.game.worldSize[1]){
+      this.y = this.game.worldSize[1]-this.grid.height;
+    }
+  }
+
+  moveHorizontally(dx){
+    this.x += dx;
+    this.invalidatePixels();
+
+    var collidingSprite = this.game.findCollision(this);
+    if(collidingSprite!==undefined){
+      if(collidingSprite.collide !== undefined){
+        collidingSprite.collide(this);
+      }
+      if(this.collide !== undefined){
+        this.collide(collidingSprite);
+      }
+
+      if (dx < 0) {
+        const stepBackInGridUnits = collidingSprite.boundingBox.right - this.pixels.boundingBox.left;
+        this.x += stepBackInGridUnits / GRID_SIZE;
+        this.invalidatePixels();
+      } else if (dx > 0) {
+        const stepBackInGridUnits = this.boundingBox.right - collidingSprite.pixels.boundingBox.left;
+        this.x -= stepBackInGridUnits / GRID_SIZE;
+        this.invalidatePixels();
+      }
+    }
+    if(this.x <0){
+      this.x = 0;
+      this.invalidatePixels();
+    }else if(this.grid.boundingBox.right > this.game.worldSize[0]){
+      this.x = this.game.worldSize[0]-this.grid.width;
+      this.invalidatePixels();
+    }
+  }
 }

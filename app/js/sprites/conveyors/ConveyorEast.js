@@ -1,9 +1,9 @@
-import Sprite from './Sprite'
-import {LAYERS} from '../constants/GameConstants.js'
+import Sprite from './../Sprite'
+import {LAYERS} from '../../constants/GameConstants.js'
 
-import { loadImage } from '../Utils'
+import { loadImage } from '../../Utils'
 
-import Image from '../../images/ConveyorBeltSprite_Red.png'
+import Image from '../../../images/ConveyorBeltSprite_Red.png'
 
 export default class ConveyorEast extends Sprite {
   constructor(game,coords=[0,0]){
@@ -28,9 +28,7 @@ export default class ConveyorEast extends Sprite {
   }
 
   get areaOfInfluence(){
-    return {...this.pixels.boundingBox,
-      right: this.pixels.boundingBox.right+this.pixels.width/2+5
-    }
+    return this.pixels.boundingBox;
   }
 
   tick(){

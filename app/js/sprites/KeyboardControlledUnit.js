@@ -2,7 +2,7 @@ import Sprite from './Sprite'
 import AStar from '../AStar'
 import { GRID_SIZE } from '../constants/GameConstants.js'
 
-export default class Unit extends Sprite {
+export default class Player extends Sprite {
 
   constructor(game, coords=[0,0], hp, attackDamage=0, width, height){
     super(game,coords, width, height);
@@ -28,6 +28,9 @@ export default class Unit extends Sprite {
     if(this.targetOfAttack && this.inAttackRange(this.targetOfAttack)){
       if(this.targetOfAttack.fireAt){
         this.fireAt(this.targetOfAttack);
+        this.firedThisRound = true;
+      }else if(this.targetOfAttack.collectAll){
+        this.collectAllFrom(this.targetOfAttack);
         this.firedThisRound = true;
       }else if(this.targetOfAttack.gather){
         this.gatherFrom(this.targetOfAttack);
@@ -62,6 +65,9 @@ export default class Unit extends Sprite {
     this.firedThisRound = true;
   }
 
+  collectAllFrom(resourceNode){
+    resourceNode.collectAll(this);
+  }
   gatherFrom(resourceNode){
     resourceNode.gather(this.gatheringSpeed, this);
   }

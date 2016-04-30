@@ -27,7 +27,7 @@ export default class Player extends Unit {
     super(game, coords, 100, 1, 25/GRID_SIZE, 13/GRID_SIZE);
 
     this.resources = {
-      wood: 15, stone: 10, food: 5, gold: 0
+      wood: 1512, stone: 1120, food: 125, gold: 120
     };
 
     this.dx = 0;
@@ -122,51 +122,7 @@ export default class Player extends Unit {
     this.gridPos = [this.pos.x,this.pos.y];
   }
 
-  moveVertically(dy){
-    this.y += dy;
-
-    var collidingSprite = this.game.findCollision(this);
-    if(collidingSprite!==undefined){
-      if(dy<0){
-        const stepBackInGridUnits = collidingSprite.pixels.boundingBox.bottom-this.pixels.boundingBox.top;
-        this.y += stepBackInGridUnits/GRID_SIZE;
-      }else if(dy>0){
-        const stepBackInGridUnits = this.pixels.boundingBox.bottom-collidingSprite.pixels.boundingBox.top;
-        this.y -= stepBackInGridUnits/GRID_SIZE;
-      }
-    }
-
-    if(this.y <0){
-      this.y = 0;
-    }else if(this.grid.boundingBox.bottom > this.game.worldSize[1]){
-      this.y = this.game.worldSize[1]-this.grid.height;
-    }
-  }
-
-  moveHorizontally(dx){
-    this.x += dx;
-    this.invalidatePixels();
-
-    var collision = this.game.findCollision(this);
-    if(collision!==undefined){
-      if(dx<0){
-        const stepBackInGridUnits = collision.boundingBox.right-this.pixels.boundingBox.left;
-        this.x += stepBackInGridUnits/GRID_SIZE;
-        this.invalidatePixels();
-      }else if(dx>0){
-        const stepBackInGridUnits = this.boundingBox.right-collision.pixels.boundingBox.left;
-        this.x -= stepBackInGridUnits/GRID_SIZE;
-        this.invalidatePixels();
-      }
-    }
-    if(this.x <0){
-      this.x = 0;
-      this.invalidatePixels();
-    }else if(this.grid.boundingBox.right > this.game.worldSize[0]){
-      this.x = this.game.worldSize[0]-this.grid.width;
-      this.invalidatePixels();
-    }
-  }
+  
 
   get animFrame(){
     return parseInt(this.animAge / 5)
