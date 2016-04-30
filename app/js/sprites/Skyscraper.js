@@ -16,7 +16,7 @@ export default class Skyscraper extends Sprite {
     const drawWidth = GRID_SIZE;
 
     this.image = [
-      loadImage(Image),
+      loadImage(Image),0,0,88,255,
       (GRID_SIZE/2)-(drawWidth/2),GRID_SIZE-drawHeight,drawWidth,drawHeight
     ];
   }
