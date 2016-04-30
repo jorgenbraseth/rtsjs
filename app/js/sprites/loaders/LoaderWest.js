@@ -1,5 +1,6 @@
 import Sprite from './../Sprite'
 import Food from './../materials/Food'
+import Gold from './../materials/Gold'
 
 import {LAYERS} from '../../constants/GameConstants.js'
 
@@ -17,7 +18,7 @@ export default class LoaderWest extends Sprite {
     this.ticksSinceLastMove = 0;
 
     this.cost = {
-      wood: 2
+      gold: 1, food: 15
     };
   }
 
@@ -68,6 +69,9 @@ export default class LoaderWest extends Sprite {
       var food = new Food(this.game, [this.gridPos[0]-1, this.gridPos[1]]);
 
       this.game.addSprite(food.layer,food);
+    }else if(type==="gold"){
+      var gold = new Gold(this.game, [this.gridPos[0]-1, this.gridPos[1]]);
+      this.game.addSprite(gold.layer,gold);
     }
 
   }

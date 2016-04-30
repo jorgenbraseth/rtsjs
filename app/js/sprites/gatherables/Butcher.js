@@ -6,10 +6,10 @@ import Image from '../../../images/buildings.png'
 
 export default class Butcher extends ProductionBuilding {
   constructor(game, coords=[0,0]){
-    super("food", 10, 200, undefined, game, coords,1,1);
+    super("food", 10, 400, undefined, game, coords,1,1);
 
     this.cost = {
-      wood: 5
+      wood: 10
     };
 
     const drawHeight = (73/64)*GRID_SIZE;

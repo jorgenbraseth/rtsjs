@@ -18,7 +18,7 @@ export default class LoaderEast extends Sprite {
     this.ticksSinceLastMove = 0;
 
     this.cost = {
-      wood: 2
+      gold: 1, food: 15
     };
   }
 

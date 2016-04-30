@@ -26,8 +26,8 @@ export default class Office extends Producer {
     ];
 
     this.cost = {
-      stone: 10,
-      food: 5
+      stone: 5,
+      food: 2
     };
   }
 

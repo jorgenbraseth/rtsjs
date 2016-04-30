@@ -10,7 +10,6 @@ export default class Food extends Sprite {
     this.color = "black";
 
     this.image = [ICONS.food,0,0,this.pixels.width,this.pixels.height];
-    console.log(this.pixels.width);
   }
 
   get layer() {

@@ -36,7 +36,7 @@ const UnitTypes = {
   LoaderWest: LoaderWest
 };
 
-import { toGridPos, intersects, containsPoint, containsRect } from './Utils'
+import { toGridPos, intersects, containsPoint, containsRect, rectCrossesVerticalLine, rectCrossesHorizontalLine } from './Utils'
 
 import { GENERATED, MAP_TEST } from './Maps'
 
@@ -300,8 +300,27 @@ export default class Game {
 
     containedSprites = containedSprites.concat(this.layers[layers[0]].filter((sprite)=>{
       // return containsPoint(rect, ...sprite.pixels.center);
-      // return containsRect(rect, sprite.pixels.boundingBox);
-      return intersects(rect, sprite.pixels.boundingBox);
+      return containsRect(rect, sprite.pixels.boundingBox);
+      // return intersects(rect, sprite.pixels.boundingBox);
+    }));
+
+    return containedSprites;
+  }
+  spritesCrossingVerticalLine(x,topY,bottomY,layers=[LAYERS.LAYER_GROUND]){
+    var containedSprites = [];
+
+    containedSprites = containedSprites.concat(this.layers[layers[0]].filter((sprite)=>{
+      return rectCrossesVerticalLine(sprite.pixels.boundingBox, x, topY, bottomY);
+    }));
+
+    return containedSprites;
+  }
+
+  spritesCrossingHorizontalLine(y, leftX, rightX,layers=[LAYERS.LAYER_GROUND]){
+    var containedSprites = [];
+
+    containedSprites = containedSprites.concat(this.layers[layers[0]].filter((sprite)=>{
+      return rectCrossesHorizontalLine(sprite.pixels.boundingBox, y, leftX, rightX);
     }));
 
     return containedSprites;

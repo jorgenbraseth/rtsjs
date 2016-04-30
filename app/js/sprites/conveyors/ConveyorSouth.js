@@ -18,7 +18,7 @@ export default class ConveyorSouth extends Sprite {
     this.pushSpeed = .05;
 
     this.cost = {
-      stone: 5,
+      stone: 3,
       gold: 1
     };
   }
@@ -32,6 +32,13 @@ export default class ConveyorSouth extends Sprite {
   }
   tick(){
     this.image = this.images[Math.floor(this.game.globalTime/7)%3];
+
+    const movingOut = this.game.spritesCrossingHorizontalLine(this.areaOfInfluence.bottom, this.areaOfInfluence.left, this.areaOfInfluence.right);
+    movingOut.forEach((toMove)=>{
+      if(toMove.moveVertically){
+        toMove.moveVertically(this.pushSpeed);
+      }
+    });
 
     const onMySpot = this.game.spritesInRect(this.areaOfInfluence);
     onMySpot.forEach((toMove)=>{

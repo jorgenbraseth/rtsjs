@@ -27,7 +27,7 @@ export default class Player extends Unit {
     super(game, coords, 100, 1, 25/GRID_SIZE, 13/GRID_SIZE);
 
     this.resources = {
-      wood: 1512, stone: 1120, food: 125, gold: 120
+      wood: 30, stone: 0, food: 0, gold: 0
     };
 
     this.dx = 0;
@@ -122,7 +122,7 @@ export default class Player extends Unit {
     this.gridPos = [this.pos.x,this.pos.y];
   }
 
-  
+
 
   get animFrame(){
     return parseInt(this.animAge / 5)

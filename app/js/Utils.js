@@ -25,6 +25,16 @@ module.exports = {
     r2.top >= r1.bottom ||
     r2.bottom <= r1.top);
   },
+  
+  rectCrossesVerticalLine: function(rect, x, topY,bottomY){
+    return rect.top >= topY && rect.bottom <= bottomY &&
+        rect.left <= x && rect.right >= x
+  },
+
+  rectCrossesHorizontalLine: function(rect, y, leftX,rightX){
+    return rect.left >= leftX && rect.right <= rightX &&
+      rect.bottom >= y && rect.top <= y
+  },
 
   containsPoint: function(rect, x,y){
     return x >= rect.left &&
