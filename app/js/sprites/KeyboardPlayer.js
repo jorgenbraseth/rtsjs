@@ -103,55 +103,68 @@ export default class Player extends Unit {
     this.dx = this.movingLeftMode ? -this.speed : this.movingRightMode ? this.speed : 0;
     this.dy = this.movingUpMode ? -this.speed : this.movingDownMode ? this.speed : 0;
 
-    this.moveHorizontally(this.dx);
-    this.moveVertically(this.dy);
+    if(this.dx){
+      this.moveHorizontally(this.dx);
+      this.invalidatePixels();
+    }
+    if(this.dy){
+      this.moveVertically(this.dy);
+      this.invalidatePixels();
+    }
 
     if(this.dx!=0 || this.dy !=0){
       this.ageTick();
+      this.invalidatePixels();
       this.updateDirection();
+      this.invalidatePixels();
     }
 
     this.gridPos = [this.pos.x,this.pos.y];
   }
 
   moveVertically(dy){
-    this._y += dy;
+    this.y += dy;
 
     var collidingSprite = this.game.findCollision(this);
     if(collidingSprite!==undefined){
       if(dy<0){
         const stepBackInGridUnits = collidingSprite.pixels.boundingBox.bottom-this.pixels.boundingBox.top;
-        this._y += stepBackInGridUnits/GRID_SIZE;
+        this.y += stepBackInGridUnits/GRID_SIZE;
       }else if(dy>0){
         const stepBackInGridUnits = this.pixels.boundingBox.bottom-collidingSprite.pixels.boundingBox.top;
-        this._y -= stepBackInGridUnits/GRID_SIZE;
+        this.y -= stepBackInGridUnits/GRID_SIZE;
       }
     }
 
-    if(this._y <0){
-      this._y = 0;
+    if(this.y <0){
+      this.y = 0;
     }else if(this.grid.boundingBox.bottom > this.game.worldSize[1]){
-      this._y = this.game.worldSize[1]-this.grid.height;
+      this.y = this.game.worldSize[1]-this.grid.height;
     }
   }
 
   moveHorizontally(dx){
-    this._x += dx;
+    this.x += dx;
+    this.invalidatePixels();
 
     var collision = this.game.findCollision(this);
     if(collision!==undefined){
       if(dx<0){
         const stepBackInGridUnits = collision.boundingBox.right-this.pixels.boundingBox.left;
-        this._x += stepBackInGridUnits/GRID_SIZE;
+        this.x += stepBackInGridUnits/GRID_SIZE;
+        this.invalidatePixels();
       }else if(dx>0){
         const stepBackInGridUnits = this.boundingBox.right-collision.pixels.boundingBox.left;
-        this._x -= stepBackInGridUnits/GRID_SIZE;
+        this.x -= stepBackInGridUnits/GRID_SIZE;
+        this.invalidatePixels();
       }
     }
-    if(this._x <0){
-      this._x = 0;
+    if(this.x <0){
+      this.x = 0;
+      this.invalidatePixels();
     }else if(this.grid.boundingBox.right > this.game.worldSize[0]){
-      this._x = this.game.worldSize[0]-this.grid.width;
+      this.x = this.game.worldSize[0]-this.grid.width;
+      this.invalidatePixels();
     }
   }
 

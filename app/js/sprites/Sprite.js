@@ -6,8 +6,8 @@ export default class Sprite {
   constructor(game, coords = [0, 0], width=1, height=1) {
     this.game = game;
 
-    this._x = coords[0];
-    this._y = coords[1];
+    this.x = coords[0];
+    this.y = coords[1];
     this._width = width;
     this._height = height;
 
@@ -30,8 +30,8 @@ export default class Sprite {
 
   get pos(){
     return {
-      x: this._x,
-      y: this._y
+      x: this.x,
+      y: this.y
     };
   }
   get width(){
@@ -62,8 +62,12 @@ export default class Sprite {
     }
   }
 
-  get pixels(){
-    return {
+  invalidatePixels(){
+    this._pixelsValid = false;
+  }
+
+  calculatePixels(){
+    this._pixels = {
       pos: this.grid.pos.map((p) => {return Math.round(p*GRID_SIZE)}),
       width: Math.round(this.grid.width * GRID_SIZE),
       height: Math.round(this.grid.height * GRID_SIZE),
@@ -74,20 +78,28 @@ export default class Sprite {
         left: Math.round(this.grid.boundingBox.left * GRID_SIZE),
         right: Math.round(this.grid.boundingBox.right * GRID_SIZE)
       }
+    };
+    this._pixelsValid = true;
+  }
+
+  get pixels(){
+    if(!this._pixelsValid){
+      this.calculatePixels();
     }
+    return this._pixels;
   }
 
   get grid(){
     return {
-      pos: [this._x,this._y],
+      pos: [this.x,this.y],
       width: this._width,
       height: this._height,
-      center: [this._x+this._width/2,this._y+this._height/2],
+      center: [this.x+this._width/2,this.y+this._height/2],
       boundingBox: {
-        top: this._y,
-        bottom: this._y+this._height,
-        left: this._x,
-        right: this._x+this._width
+        top: this.y,
+        bottom: this.y+this._height,
+        left: this.x,
+        right: this.x+this._width
       }
     }
   }
@@ -203,8 +215,9 @@ export default class Sprite {
   }
 
   setPosition(x, y) {
-    this._x = x;
-    this._y = y;
+    this.x = x;
+    this.y = y;
+    this.invalidatePixels();
   }
 
   drawGridCell(screen) {
@@ -228,5 +241,23 @@ export default class Sprite {
 
   get layer(){
     return LAYERS.LAYER_GROUND;
+  }
+
+  set y(y){
+    this._y = y;
+    this.invalidatePixels();
+  }
+
+  get y(){
+    return this._y;
+  }
+
+  set x(x){
+    this._x = x;
+    this.invalidatePixels();
+  }
+
+  get x(){
+    return this._x;
   }
 }

@@ -101,6 +101,7 @@ export default class Unit extends Sprite {
 
   set gridPos(coords) {
     this._gridPos = coords;
+    this.invalidatePixels();
   }
   get gridPos() {
     return this._gridPos;
